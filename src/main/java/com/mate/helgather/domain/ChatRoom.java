@@ -19,7 +19,7 @@ public class ChatRoom {
     @NotNull
     private Long id;
     @OneToOne
-    @Column(name = "recruitment_id", nullable = false)
+    @JoinColumn(name = "recruitment_id", nullable = false)
     private Recruitment recruitment;
     @CreatedDate
     private LocalDateTime createdDate;
