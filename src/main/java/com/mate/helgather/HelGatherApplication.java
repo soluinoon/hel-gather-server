@@ -8,6 +8,7 @@ public class HelGatherApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(HelGatherApplication.class, args);
+		//주석
 	}
 
 }
