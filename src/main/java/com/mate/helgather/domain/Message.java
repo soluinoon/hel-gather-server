@@ -17,10 +17,10 @@ public class Message {
     @NotNull
     private Long id;
     @ManyToOne
-    @Column(name = "user_id", nullable = false)
-    private User user;
+//    @Column(name = "user_id", nullable = false)
+    private Member member;
     @ManyToOne
-    @Column(name = "chat_room_id", nullable = false)
+//    @Column(name = "chat_room_id", nullable = false)
     private ChatRoom chatRoom;
     @NotNull
     private String description;

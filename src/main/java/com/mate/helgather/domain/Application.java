@@ -1,9 +1,9 @@
 package com.mate.helgather.domain;
 
+import com.mate.helgather.domain.status.ApplicationStatus;
 import com.sun.istack.NotNull;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -18,8 +18,8 @@ public class Application {
     @NotNull
     private Long id;
     @OneToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @JoinColumn(name = "member_id", nullable = false)
+    private Member member;
     @ManyToOne
     @JoinColumn(name = "recruitment_id", nullable = false)
     private Recruitment recruitment;
@@ -27,4 +27,7 @@ public class Application {
     private LocalDateTime createdDate;
     @LastModifiedDate
     private LocalDateTime updatedDate;
+    @Enumerated(EnumType.STRING)
+    @NotNull
+    private ApplicationStatus status;
 }

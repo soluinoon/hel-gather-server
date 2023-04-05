@@ -17,8 +17,8 @@ public class SocialLogin {
     @GeneratedValue
     private Long id;
     @OneToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @JoinColumn(name = "member_id", nullable = false)
+    private Member member;
     @NotNull
     private String provider;
     @NotNull

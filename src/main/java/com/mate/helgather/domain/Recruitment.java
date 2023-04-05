@@ -1,11 +1,11 @@
 package com.mate.helgather.domain;
 
+import com.mate.helgather.domain.status.RecruitmentStatus;
 import com.sun.istack.NotNull;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -19,8 +19,8 @@ public class Recruitment {
     @GeneratedValue
     private Long id;
     @OneToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @JoinColumn(name = "member_id", nullable = false)
+    private Member member;
     @NotNull
     private String title;
     private String description;
@@ -28,9 +28,9 @@ public class Recruitment {
     private LocalDateTime createdDate;
     @LastModifiedDate
     private LocalDateTime updatedDate;
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     @NotNull
-    private String status;
+    private RecruitmentStatus status;
 
     @OneToMany(mappedBy = "recruitment")
     private List<Application> applications = new ArrayList<>();

@@ -1,5 +1,6 @@
 package com.mate.helgather.domain;
 
+import com.mate.helgather.domain.status.MemberStatus;
 import com.sun.istack.NotNull;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -14,7 +15,7 @@ import java.util.List;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class User {
+public class Member {
     @Id
     @GeneratedValue
     private Long id;
@@ -34,6 +35,9 @@ public class User {
     private LocalDateTime createdDate;
     @LastModifiedDate
     private LocalDateTime updatedDate;
+    @Enumerated(EnumType.STRING)
+    @NotNull
+    private MemberStatus status;
 
     @OneToOne
     @JoinColumn(name = "user_profile_id")
@@ -46,6 +50,6 @@ public class User {
     private Recruitment recruitment;
     @OneToOne
     private Application application;
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "member")
     private List<Message> messages = new ArrayList<>();
 }

@@ -1,5 +1,6 @@
 package com.mate.helgather.domain;
 
+import com.mate.helgather.domain.status.ChatRoomStatus;
 import com.sun.istack.NotNull;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -25,12 +26,12 @@ public class ChatRoom {
     private LocalDateTime createdDate;
     @LastModifiedDate
     private LocalDateTime updatedDate;
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     @NotNull
-    private String status;
+    private ChatRoomStatus status;
 
     @OneToOne
-    private User user;
+    private Member member;
     @OneToMany(mappedBy = "chatRoom")
     private List<Message> messages = new ArrayList<>();
 }
