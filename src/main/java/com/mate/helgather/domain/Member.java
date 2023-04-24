@@ -2,35 +2,40 @@ package com.mate.helgather.domain;
 
 import com.mate.helgather.domain.status.MemberStatus;
 import com.sun.istack.NotNull;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Builder
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class Member {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @OneToOne
     @JoinColumn(name = "chat_room_id", nullable = true)
     private ChatRoom chatRoom;
-    @NotNull
+    @Column(length = 100, nullable = false)
     private String userName;
-    @NotNull
+    @Column(length = 20, nullable = false)
     private String phone;
-    @NotNull
+    @Column(length = 100, nullable = false)
+    private String nickname;
+    @Column(length = 100, nullable = false)
     private String password;
-    @DateTimeFormat
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     @NotNull
-    private String birthDate;
+    private LocalDate birthDate;
     @CreatedDate
     private LocalDateTime createdDate;
     @LastModifiedDate
@@ -39,17 +44,15 @@ public class Member {
     @NotNull
     private MemberStatus status;
 
-    @OneToOne
-    @JoinColumn(name = "user_profile_id")
+    @OneToOne(mappedBy = "member")
     private UserProfile userProfile;
-    @OneToOne
-    @JoinColumn(name = "social_login_id")
+    @OneToOne(mappedBy = "member")
     private SocialLogin socialLogin;
-    @OneToOne
-    @JoinColumn(name = "recruitment_id")
+    @OneToOne(mappedBy = "member")
     private Recruitment recruitment;
-    @OneToOne
+    @OneToOne(mappedBy = "member")
     private Application application;
+    @Builder.Default
     @OneToMany(mappedBy = "member")
     private List<Message> messages = new ArrayList<>();
 }

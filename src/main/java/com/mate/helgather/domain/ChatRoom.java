@@ -2,8 +2,7 @@ package com.mate.helgather.domain;
 
 import com.mate.helgather.domain.status.ChatRoomStatus;
 import com.sun.istack.NotNull;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -13,10 +12,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Builder
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class ChatRoom {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @NotNull
     private Long id;
     @OneToOne
@@ -32,6 +34,7 @@ public class ChatRoom {
 
     @OneToOne
     private Member member;
+    @Builder.Default
     @OneToMany(mappedBy = "chatRoom")
     private List<Message> messages = new ArrayList<>();
 }

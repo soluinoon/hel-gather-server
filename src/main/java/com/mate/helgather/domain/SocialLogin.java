@@ -2,6 +2,7 @@ package com.mate.helgather.domain;
 
 import com.sun.istack.NotNull;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -12,20 +13,21 @@ import java.time.LocalDateTime;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class SocialLogin {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @OneToOne
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
-    @NotNull
+    @Column(length = 20, nullable = false)
     private String provider;
     @NotNull
     private Long provider_id;
-    @NotNull
+    @Column(length = 200, nullable = false)
     private String accessToken;
-    @NotNull
+    @Column(length = 200, nullable = false)
     private String refreshToken;
     @DateTimeFormat
     @NotNull

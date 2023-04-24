@@ -1,8 +1,7 @@
 package com.mate.helgather.domain;
 
 import com.sun.istack.NotNull;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -10,10 +9,13 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
+@Builder
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class Message {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @NotNull
     private Long id;
     @ManyToOne
@@ -22,7 +24,7 @@ public class Message {
     @ManyToOne
 //    @Column(name = "chat_room_id", nullable = false)
     private ChatRoom chatRoom;
-    @NotNull
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String description;
     @CreatedDate
     private LocalDateTime createdDate;
