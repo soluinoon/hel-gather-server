@@ -1,28 +1,30 @@
 package com.mate.helgather.controller;
 
-import com.mate.helgather.domain.Member;
+import com.mate.helgather.dto.ChatRoomDTO;
 import com.mate.helgather.dto.MemberDTO;
 import com.mate.helgather.service.ChatService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/chats")
 @Slf4j
-/*
-v1 특징
-- 1:1 대화만
-- 한사람은 하나의 채팅방만 가질 수 있음.
-*/
-public class ChatController {
-
+public class ChatRoomController {
     private final ChatService chatService;
 
+    /**
+     * 멤버의 id를 이용해 채팅방을 반환한다.
+     * 없다면 null을 반환
+     * @param id 멤버의 id 이다.
+     * @return ChatRoomDTO 채팅방의 id가 담겨있다.
+     */
+    @GetMapping("/members/{id}/chatroom")
+    public ChatRoomDTO getChatRoomByMemberId(@PathVariable Long id) {
+        return chatService.getChatRoomByMemberId(id);
+    }
 }

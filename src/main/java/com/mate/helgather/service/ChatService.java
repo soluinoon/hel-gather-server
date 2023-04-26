@@ -5,6 +5,7 @@ import com.mate.helgather.domain.ChatRoom;
 import com.mate.helgather.domain.Member;
 import com.mate.helgather.domain.Recruitment;
 import com.mate.helgather.dto.ChatRoomDTO;
+import com.mate.helgather.dto.MemberDTO;
 import com.mate.helgather.repository.ApplicationRepository;
 import com.mate.helgather.repository.ChatRoomRepository;
 import com.mate.helgather.repository.MemberRepository;
@@ -15,6 +16,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.NoSuchElementException;
+
 @Service
 @RequiredArgsConstructor
 public class ChatService {
@@ -22,14 +25,19 @@ public class ChatService {
     private final MessageRepository messageRepository;
     private final MemberRepository memberRepository;
     private final ApplicationRepository applicationRepository;
-
-    // 채팅방을 크루지원 id값을 이용해 가져온다.
-    // 만약, 채팅방이 없다면 새로 만들어 줌.
-    public ChatRoomDTO getChatRoom(Member member) {
-        return null;
+    /**
+     채팅방을 크루지원 id값을 이용해 가져온다.
+     만약, 채팅방이 없다면 예외를 발생
+     멤버가 자기 페이지에서 채팅을 들어갈 때 사용
+     */
+    @Transactional
+    public ChatRoomDTO getChatRoomByMemberId(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(NoSuchElementException::new);
+        return new ChatRoomDTO(member.getChatRoom().getId());
     }
 
-    /*
+    /**
     채팅방을 지원서를 이용해 만든다.
     지원서를 참고해 지원한 유저와 모집글의 유저로 채팅방을 만든 뒤,
     각각의 유저의 채팅방을 설정해준다.
@@ -50,4 +58,6 @@ public class ChatService {
         applyMember.setChatRoom(savedChatRoom);
         return savedChatRoom;
     }
+
+
 }
