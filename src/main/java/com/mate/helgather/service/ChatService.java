@@ -1,20 +1,15 @@
 package com.mate.helgather.service;
 
-import com.mate.helgather.domain.Application;
-import com.mate.helgather.domain.ChatRoom;
-import com.mate.helgather.domain.Member;
-import com.mate.helgather.domain.Recruitment;
-import com.mate.helgather.dto.ChatRoomDTO;
-import com.mate.helgather.dto.MemberDTO;
+import com.mate.helgather.domain.*;
+import com.mate.helgather.dto.ChatDto;
+import com.mate.helgather.dto.ChatRoomDto;
 import com.mate.helgather.repository.ApplicationRepository;
 import com.mate.helgather.repository.ChatRoomRepository;
 import com.mate.helgather.repository.MemberRepository;
 import com.mate.helgather.repository.MessageRepository;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.NoSuchElementException;
 
@@ -31,10 +26,10 @@ public class ChatService {
      멤버가 자기 페이지에서 채팅을 들어갈 때 사용
      */
     @Transactional
-    public ChatRoomDTO getChatRoomByMemberId(Long memberId) {
+    public ChatRoomDto getChatRoomsByMemberId(Long memberId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(NoSuchElementException::new);
-        return new ChatRoomDTO(member.getChatRoom().getId());
+        return new ChatRoomDto(member.getChatRoom().getId());
     }
 
     /**
@@ -59,5 +54,9 @@ public class ChatService {
         return savedChatRoom;
     }
 
-
+    public void saveMessage(ChatDto chatDTO) {
+        messageRepository.save(Message.builder().chatRoom(chatRoomRepository.getReferenceById(chatDTO.getRoomId()))
+                .member(memberRepository.getReferenceById(chatDTO.getUserId()))
+                .description(chatDTO.getMessage()).build());
+    }
 }
