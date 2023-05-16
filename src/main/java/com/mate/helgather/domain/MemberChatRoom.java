@@ -17,18 +17,23 @@ import java.util.List;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MemberChatRoom {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @NotNull
     private Long id;
+
     @ManyToOne
     @JoinColumn(name = "member_id")
     private Member member;
+
     @ManyToOne
     @JoinColumn(name = "chatroom_id")
     private ChatRoom chatRoom;
+
     @CreatedDate
     private LocalDateTime createdDate;
+
     @LastModifiedDate
     private LocalDateTime updatedDate;
 }

@@ -18,16 +18,19 @@ public class Message {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @NotNull
     private Long id;
+
     @ManyToOne
-//    @Column(name = "user_id", nullable = false)
     private Member member;
+
     @ManyToOne
-//    @Column(name = "chat_room_id", nullable = false)
     private ChatRoom chatRoom;
+
     @Column(nullable = false, columnDefinition = "TEXT")
     private String description;
+
     @CreatedDate
     private LocalDateTime createdDate;
+
     @LastModifiedDate
     private LocalDateTime updatedDate;
 
