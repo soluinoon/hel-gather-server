@@ -17,26 +17,33 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class ChatRoom {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @NotNull
     private Long id;
+
     @OneToOne
     @JoinColumn(name = "recruitment_id", nullable = false)
     private Recruitment recruitment;
+
     @CreatedDate
     private LocalDateTime createdDate;
+
     @LastModifiedDate
     private LocalDateTime updatedDate;
+
     @Enumerated(EnumType.STRING)
     @NotNull
     private ChatRoomStatus status;
 
     @OneToOne
     private Member member;
+
     @Builder.Default
     @OneToMany(mappedBy = "chatRoom")
     private List<Message> messages = new ArrayList<>();
+
     @OneToMany(mappedBy = "chatRoom")
     private List<MemberChatRoom> memberChatRooms = new ArrayList<>();
 }

@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class ChatDto {
+
     private long roomId; // 방 번호
     private long userId; // 채팅을 보낸 사람
     private String message; // 메시지

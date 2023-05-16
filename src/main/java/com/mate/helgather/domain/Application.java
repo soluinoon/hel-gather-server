@@ -17,20 +17,26 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Application {
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @NotNull
     private Long id;
+
     @OneToOne
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
+
     @ManyToOne
     @JoinColumn(name = "recruitment_id", nullable = false)
     private Recruitment recruitment;
+
     @CreatedDate
     private LocalDateTime createdDate;
+
     @LastModifiedDate
     private LocalDateTime updatedDate;
+
     @Enumerated(EnumType.STRING)
     @NotNull
     private ApplicationStatus status;
