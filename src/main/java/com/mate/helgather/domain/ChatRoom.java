@@ -37,9 +37,6 @@ public class ChatRoom {
     @NotNull
     private ChatRoomStatus status;
 
-    @OneToOne
-    private Member member;
-
     @Builder.Default
     @OneToMany(mappedBy = "chatRoom")
     private List<Message> messages = new ArrayList<>();
