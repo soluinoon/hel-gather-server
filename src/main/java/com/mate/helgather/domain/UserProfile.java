@@ -33,8 +33,8 @@ public class UserProfile {
     private int deadLift;
 
     @CreatedDate
-    private LocalDateTime createdDate;
+    private LocalDateTime createdAt;
 
     @LastModifiedDate
-    private LocalDateTime updatedDate;
+    private LocalDateTime updatedAt;
 }
