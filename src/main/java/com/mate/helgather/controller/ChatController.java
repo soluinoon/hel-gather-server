@@ -4,6 +4,7 @@ import com.mate.helgather.dto.ChatDto;
 import com.mate.helgather.service.ChatService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.web.bind.annotation.*;
@@ -16,10 +17,14 @@ public class ChatController {
     private final ChatService chatService;
     private final SimpMessageSendingOperations template;
 
-    @MessageMapping("/chatroom/{chatroomId}") // 실제론 메세지 매핑으로 pub/chatroom/{id} 임
-    public void sendMessage(ChatDto chatDTO, @PathVariable Long chatroomId) {
-        log.info("chat {} send by {} to room number{}", chatDTO.getMessage(), chatDTO.getUserId(), chatroomId);
+    @GetMapping("/chat/test")
+    public void testChat() {
+        chatService.testChat();
+    }
+    @MessageMapping("/chatroom/{id}") // 실제론 메세지 매핑으로 pub/chatroom/{id} 임
+    public void sendMessage(@DestinationVariable("id") Long id, ChatDto chatDTO) {
+        log.info("chat {} send by {} to room number{}", chatDTO.getMessage(), chatDTO.getUserId(), chatDTO.getRoomId());
         chatService.saveMessage(chatDTO);
-        template.convertAndSend("/sub/chatroom/" + chatroomId, chatDTO);
+        template.convertAndSend("/sub/chatroom/" + chatDTO.getRoomId(), chatDTO);
     }
 }

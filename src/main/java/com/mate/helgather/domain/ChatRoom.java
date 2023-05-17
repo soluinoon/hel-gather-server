@@ -20,7 +20,7 @@ public class ChatRoom {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @NotNull
+//    @NotNull
     private Long id;
 
     @OneToOne
@@ -36,9 +36,6 @@ public class ChatRoom {
     @Enumerated(EnumType.STRING)
     @NotNull
     private ChatRoomStatus status;
-
-    @OneToOne
-    private Member member;
 
     @Builder.Default
     @OneToMany(mappedBy = "chatRoom")

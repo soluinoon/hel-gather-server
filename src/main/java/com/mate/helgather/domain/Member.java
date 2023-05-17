@@ -25,10 +25,6 @@ public class Member {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
-    @JoinColumn(name = "chat_room_id", nullable = true)
-    private ChatRoom chatRoom;
-
     @Column(length = 100, nullable = false)
     private String userName;
 
