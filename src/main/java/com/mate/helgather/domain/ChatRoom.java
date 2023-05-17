@@ -28,10 +28,10 @@ public class ChatRoom {
     private Recruitment recruitment;
 
     @CreatedDate
-    private LocalDateTime createdDate;
+    private LocalDateTime createdAt;
 
     @LastModifiedDate
-    private LocalDateTime updatedDate;
+    private LocalDateTime updatedAt;
 
     @Enumerated(EnumType.STRING)
     @NotNull

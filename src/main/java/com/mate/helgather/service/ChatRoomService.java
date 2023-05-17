@@ -24,10 +24,10 @@ public class ChatRoomService {
         List<ChatRoomListResponse> chatRoomListResponses = new ArrayList<>();
 
         for (MemberChatRoom memberChatRoom : memberChatRooms) {
-            Message recentMessage = messageRepository.findTopByChatRoomOrderByCreatedDateDesc(memberChatRoom.getChatRoom())
+            Message recentMessage = messageRepository.findTopByChatRoomOrderByCreatedAtDesc(memberChatRoom.getChatRoom())
                     .orElse(null);
             chatRoomListResponses.add(new ChatRoomListResponse(memberChatRoom.getMember().getNickname(),
-                    recentMessage.getCreatedDate().toString(),
+                    recentMessage.getCreatedAt().toString(),
                     recentMessage.getDescription(),
                     memberChatRoom.getId()));
         }

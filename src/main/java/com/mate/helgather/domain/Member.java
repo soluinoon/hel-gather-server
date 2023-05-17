@@ -46,10 +46,10 @@ public class Member {
     private LocalDate birthDate;
 
     @CreatedDate
-    private LocalDateTime createdDate;
+    private LocalDateTime createdAt;
 
     @LastModifiedDate
-    private LocalDateTime updatedDate;
+    private LocalDateTime updatedAt;
 
     @Enumerated(EnumType.STRING)
     @NotNull
