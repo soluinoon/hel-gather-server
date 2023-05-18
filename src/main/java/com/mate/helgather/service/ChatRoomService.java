@@ -9,6 +9,8 @@ import com.mate.helgather.repository.MessageRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,14 +25,19 @@ public class ChatRoomService {
         List<MemberChatRoom> memberChatRooms = memberChatRoomRepository.findAllByMemberId(id);
         List<ChatRoomListResponse> chatRoomListResponses = new ArrayList<>();
 
-        for (MemberChatRoom memberChatRoom : memberChatRooms) {
-            Message recentMessage = messageRepository.findTopByChatRoomOrderByCreatedAtDesc(memberChatRoom.getChatRoom())
-                    .orElse(null);
-            chatRoomListResponses.add(new ChatRoomListResponse(memberChatRoom.getMember().getNickname(),
-                    recentMessage.getCreatedAt().toString(),
-                    recentMessage.getDescription(),
-                    memberChatRoom.getId()));
-        }
-        return chatRoomListResponses;
+    for (MemberChatRoom memberChatRoom : memberChatRooms) {
+        Message recentMessage = messageRepository.findTopByChatRoomOrderByCreatedAtDesc(memberChatRoom.getChatRoom())
+                .orElse(Message.builder()
+                        .chatRoom(memberChatRoom.getChatRoom())
+                        .description("아직 채팅이 없습니다.")
+                        .member(null)
+                        .createdAt(LocalDateTime.now())
+                        .build());
+        chatRoomListResponses.add(new ChatRoomListResponse(memberChatRoom.getMember().getNickname(),
+                recentMessage.getCreatedAt().toString(),
+                recentMessage.getDescription(),
+                memberChatRoom.getId()));
+    }
+    return chatRoomListResponses;
     }
 }
