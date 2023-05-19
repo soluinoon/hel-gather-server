@@ -6,12 +6,15 @@ import com.mate.helgather.domain.status.MemberStatus;
 import com.mate.helgather.domain.status.RecruitmentStatus;
 import com.mate.helgather.dto.ChatDto;
 import com.mate.helgather.dto.ChatRoomDto;
+import com.mate.helgather.dto.MessagesResponse;
 import com.mate.helgather.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
@@ -62,6 +65,20 @@ public class ChatService {
                 .member(memberRepository.getReferenceById(chatDTO.getUserId()))
                 .description(chatDTO.getMessage())
                 .build());
+    }
+
+    public List<MessagesResponse> getMessages(Long chatRoomId) {
+        List<Message> messages = messageRepository.findAllByChatRoom_IdOrderByCreatedAt(chatRoomId);
+        List<MessagesResponse> messagesResponses = new ArrayList<>();
+
+        for (Message message : messages) {
+            messagesResponses.add(new MessagesResponse(message.getMember().getId(),
+                    0,
+                    message.getDescription(),
+                    message.getCreatedAt().toString(),
+                    false));
+        }
+        return messagesResponses;
     }
 
     public void testChat() {

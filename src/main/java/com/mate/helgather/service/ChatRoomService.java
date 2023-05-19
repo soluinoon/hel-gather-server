@@ -36,7 +36,7 @@ public class ChatRoomService {
         chatRoomListResponses.add(new ChatRoomListResponse(memberChatRoom.getMember().getNickname(),
                 recentMessage.getCreatedAt().toString(),
                 recentMessage.getDescription(),
-                memberChatRoom.getId()));
+                memberChatRoom.getChatRoom().getId()));
     }
     return chatRoomListResponses;
     }
