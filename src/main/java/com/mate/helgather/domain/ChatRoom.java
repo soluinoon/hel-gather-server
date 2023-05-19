@@ -41,6 +41,7 @@ public class ChatRoom {
     @OneToMany(mappedBy = "chatRoom")
     private List<Message> messages = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "chatRoom")
     private List<MemberChatRoom> memberChatRooms = new ArrayList<>();
 }
