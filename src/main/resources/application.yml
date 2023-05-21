@@ -11,13 +11,13 @@ spring:
       password: password
 
   datasource:
-    url: jdbc:mysql://hel-gather-db.cps699alalgs.ap-northeast-2.rds.amazonaws.com:3306/hel_gather_prod?serverTimezone=UTC&characterEncoding=UTF-8
-    username: kingjihong
+    url: jdbc:mysql://localhost/hel_gather?serverTimezone=UTC&characterEncoding=UTF-8
+    username: root
     password: aA1349529!!!!
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
     properties:
       hibernate:
         format_sql: true
