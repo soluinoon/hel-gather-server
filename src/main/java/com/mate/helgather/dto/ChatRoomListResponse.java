@@ -4,15 +4,11 @@ import lombok.Getter;
 
 @Getter
 public class ChatRoomListResponse {
-    // 상대 유저 아이디
-    String id;
+    String id; // 상대 유저 아이디
     String time;
-    // 유저 프로필 사진
-    int profile;
-    // 프리뷰
-    String preview;
-    // 채팅방 id
-    Long chatId;
+    int profile; // 유저 프로필 사진
+    String preview; // 프리뷰
+    Long chatId; // 채팅방 id
 
     public ChatRoomListResponse(String id, String time, String preview, Long chatId) {
         this.id = id;
