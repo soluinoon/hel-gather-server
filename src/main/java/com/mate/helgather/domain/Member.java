@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Builder
 @Getter
 @Setter
@@ -49,9 +50,10 @@ public class Member {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
+    @Builder.Default
     @Enumerated(EnumType.STRING)
     @NotNull
-    private MemberStatus status;
+    private MemberStatus status = MemberStatus.ACTIVE;
 
     @OneToOne(mappedBy = "member")
     private UserProfile userProfile;
