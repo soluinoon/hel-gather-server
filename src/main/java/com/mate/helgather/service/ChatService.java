@@ -5,7 +5,6 @@ import com.mate.helgather.domain.status.ChatRoomStatus;
 import com.mate.helgather.domain.status.MemberStatus;
 import com.mate.helgather.domain.status.RecruitmentStatus;
 import com.mate.helgather.dto.ChatDto;
-import com.mate.helgather.repository.ApplicationRepository;
 import com.mate.helgather.repository.ChatRoomRepository;
 import com.mate.helgather.repository.MemberRepository;
 import com.mate.helgather.repository.MessageRepository;
