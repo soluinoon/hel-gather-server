@@ -19,10 +19,10 @@ public class ChatRoomController {
     private final ChatRoomService chatRoomService;
 
     /**
-     * 멤버의 id를 이용해 채팅방 목록을 반환한다.
+     * 멤버의 id를 이용해 채팅방 정보 리스트를 반환한다.
      * 없다면 null을 반환
      * @param id 멤버의 id 이다.
-     * @return ChatRoomDTO 채팅방의 id가 담겨있다.
+     * @return List<ChatRoomListResponse> 채팅방들의 원하는 정보를 리스트로 반환
      */
     @GetMapping("/members/{id}/chatrooms")
     public List<ChatRoomListResponse> getChatRoomsByMemberIdV2(@PathVariable Long id) {

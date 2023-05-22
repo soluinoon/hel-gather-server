@@ -20,7 +20,7 @@ public class ChatRoom {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @NotNull
+//    @NotNull
     private Long id;
 
     @OneToOne
@@ -41,6 +41,7 @@ public class ChatRoom {
     @OneToMany(mappedBy = "chatRoom")
     private List<Message> messages = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "chatRoom")
     private List<MemberChatRoom> memberChatRooms = new ArrayList<>();
 }

@@ -1,5 +1,8 @@
 package com.mate.helgather.dto;
 
+import lombok.Getter;
+
+@Getter
 public class ChatRoomListResponse {
     // 상대 유저 아이디
     String id;

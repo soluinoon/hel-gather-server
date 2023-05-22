@@ -21,6 +21,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@EntityListeners(AuditingEntityListener.class) // 추가
 public class Member {
 
     @Id
@@ -70,6 +71,7 @@ public class Member {
     @OneToMany(mappedBy = "member")
     private List<Message> messages = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "member")
     private List<MemberChatRoom> memberChatRooms = new ArrayList<>();
 }
