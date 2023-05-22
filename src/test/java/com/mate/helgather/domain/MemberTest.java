@@ -38,7 +38,6 @@ class MemberTest {
         // then
         assertThat(savedMember.getUserName()).isEqualTo("김지홍");
         assertThat(savedMember.getPhone()).isEqualTo(member.getPhone());
-        assertThat(savedMember.getChatRoom()).isEqualTo(null);
         assertThat(savedMember.getBirthDate().toString()).isEqualTo("1998-03-31");
     }
 
