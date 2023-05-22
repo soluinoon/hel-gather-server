@@ -1,5 +1,6 @@
 package com.mate.helgather.dto;
 
+import com.mate.helgather.domain.Message;
 import lombok.Getter;
 
 @Getter
@@ -16,5 +17,13 @@ public class MessagesResponse {
         this.message = message;
         this.time = time;
         this.isFirst = isFirst;
+    }
+
+    public MessagesResponse(Message message, Long requestUserId) {
+        this.userId = message.getMember().getId();
+        this.userProfile = 0;
+        this.message = message.getDescription();
+        this.time = message.getCreatedAt().toString();
+        this.isFirst = (userId == requestUserId);
     }
 }

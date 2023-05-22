@@ -3,6 +3,8 @@ package com.mate.helgather.service;
 import com.mate.helgather.domain.MemberChatRoom;
 import com.mate.helgather.domain.Message;
 import com.mate.helgather.dto.ChatRoomListResponse;
+import com.mate.helgather.exception.BaseException;
+import com.mate.helgather.exception.ErrorCode;
 import com.mate.helgather.repository.ChatRoomRepository;
 import com.mate.helgather.repository.MemberChatRoomRepository;
 import com.mate.helgather.repository.MemberRepository;
@@ -24,9 +26,9 @@ public class ChatRoomService {
     private final MessageRepository messageRepository;
     private final MemberChatRoomRepository memberChatRoomRepository;
 
-    public List<ChatRoomListResponse> getChatRoomsByMemberId(Long id) throws NoSuchElementException {
+    public List<ChatRoomListResponse> getChatRoomsByMemberId(Long id) throws BaseException {
         if (!memberRepository.existsById(id)) {
-            throw new NoSuchElementException("존재하지 않는 유저 입니다.");
+            throw new BaseException(ErrorCode.NO_SUCH_MEMBER_ERROR);
         }
         List<MemberChatRoom> memberChatRooms = memberChatRoomRepository.findAllByMemberId(id);
         List<ChatRoomListResponse> chatRoomListResponses = new ArrayList<>();
