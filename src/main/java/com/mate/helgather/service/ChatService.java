@@ -7,6 +7,8 @@ import com.mate.helgather.domain.status.RecruitmentStatus;
 import com.mate.helgather.dto.ChatDto;
 import com.mate.helgather.dto.ChatRoomDto;
 import com.mate.helgather.dto.MessagesResponse;
+import com.mate.helgather.exception.BaseException;
+import com.mate.helgather.exception.ErrorCode;
 import com.mate.helgather.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -60,24 +62,31 @@ public class ChatService {
 //        return savedChatRoom;
 //    }
 
-    public void saveMessage(ChatDto chatDTO) {
+    public void saveMessage(ChatDto chatDTO) throws BaseException {
+        if (!chatRoomRepository.existsById(chatDTO.getRoomId())) {
+            throw new BaseException(ErrorCode.NO_SUCH_CHATROOM_ERROR);
+        }
         messageRepository.save(Message.builder().chatRoom(chatRoomRepository.findById(chatDTO.getRoomId()).orElseThrow(NoSuchElementException::new))
                 .member(memberRepository.getReferenceById(chatDTO.getUserId()))
                 .description(chatDTO.getMessage())
                 .build());
     }
 
-    public List<MessagesResponse> getMessages(Long chatRoomId) {
+    public List<MessagesResponse> getMessages(Long chatRoomId, Long requestUserId) throws BaseException {
+        if (!chatRoomRepository.existsById(chatRoomId)) {
+            throw new BaseException(ErrorCode.NO_SUCH_CHATROOM_ERROR);
+        }
+        if (!memberRepository.existsById(requestUserId)) {
+            throw new BaseException(ErrorCode.NO_SUCH_MEMBER_ERROR);
+        }
+        // TODO: 채팅방에 없는 유저가 넘어올 때도 예외처리 필요
         List<Message> messages = messageRepository.findAllByChatRoom_IdOrderByCreatedAt(chatRoomId);
         List<MessagesResponse> messagesResponses = new ArrayList<>();
 
         for (Message message : messages) {
-            messagesResponses.add(new MessagesResponse(message.getMember().getId(),
-                    0,
-                    message.getDescription(),
-                    message.getCreatedAt().toString(),
-                    false));
+            messagesResponses.add(new MessagesResponse(message, requestUserId));
         }
+
         return messagesResponses;
     }
 

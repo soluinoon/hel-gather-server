@@ -32,6 +32,6 @@ public class ChatRoomController {
     @GetMapping("/members/{id}/chatrooms")
     public ResponseEntity<BaseResponse> getChatRoomsByMemberIdV2(@PathVariable @Valid Long id) throws Exception {
         List<ChatRoomListResponse> chatRoomsByMemberId = chatRoomService.getChatRoomsByMemberId(id);
-        return new ResponseEntity<>(new BaseResponse(200, "성공입니다.", chatRoomsByMemberId), HttpStatus.OK);
+        return new ResponseEntity<>(new BaseResponse(chatRoomsByMemberId), HttpStatus.OK);
     }
 }
