@@ -15,12 +15,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Builder
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@EntityListeners(AuditingEntityListener.class) // 추가
 public class Member {
 
     @Id
@@ -49,9 +49,10 @@ public class Member {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
+    @Builder.Default
     @Enumerated(EnumType.STRING)
     @NotNull
-    private MemberStatus status;
+    private MemberStatus status = MemberStatus.ACTIVE;
 
     @OneToOne(mappedBy = "member")
     private UserProfile userProfile;
