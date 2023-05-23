@@ -31,9 +31,9 @@ public class ChatController {
 
     @MessageMapping("/chatroom/{id}") // 실제론 메세지 매핑으로 pub/chatroom/{id} 임
     public void pubMessage(@DestinationVariable("id") Long id, ChatDto chatDTO) throws Exception {
-        log.info("chat {} send by {} to room number{}", chatDTO.getMessage(), chatDTO.getUserId(), chatDTO.getRoomId());
-        chatService.saveMessage(chatDTO);
-        template.convertAndSend("/sub/chatroom/" + chatDTO.getRoomId(), chatDTO);
+        log.info("chat {} send by {} to room number{}", chatDTO.getMessage(), chatDTO.getUserId(), id);
+        chatService.saveMessage(chatDTO, id);
+        template.convertAndSend("/sub/chatroom/" + id, chatDTO);
     }
 
     @GetMapping("/chatroom/{id}")
