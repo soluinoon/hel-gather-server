@@ -11,21 +11,24 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 @Controller
 @RequiredArgsConstructor
+@RequestMapping("/members")
 public class MemberController {
 
     private final MemberService memberService;
 
     //회원가입 로직
     @Transactional
-    @PostMapping("/members")
+    @PostMapping("/register")
     public ResponseEntity<BaseResponse> createMember(@RequestBody @Valid MemberRequestDto memberRequestDto) throws BaseException {
         MemberResponseDto result = memberService.createMember(memberRequestDto);
         return new ResponseEntity<>(new BaseResponse(result), HttpStatus.OK);
     }
+
 }
