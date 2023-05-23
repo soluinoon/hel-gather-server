@@ -7,13 +7,20 @@ import java.time.LocalDate;
 
 @Getter
 public class MemberRequestDto {
+
     private String userName;
+
     private String phone;
+
     private String nickname;
+
     private String password;
-    private int birthYear;
-    private int birthMonth;
-    private int birthDay;
+
+    private Integer birthYear;
+
+    private Integer birthMonth;
+
+    private Integer birthDay;
 
     public Member toEntity() {
         LocalDate birthDate = LocalDate.of(birthYear, birthMonth, birthDay);
