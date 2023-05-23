@@ -29,8 +29,8 @@ public class ChatService {
     private final MemberChatRoomRepository memberChatRoomRepository;
     private final RecruitmentRepository recruitmentRepository;
 
-    public void saveMessage(ChatDto chatDTO) {
-        messageRepository.save(Message.builder().chatRoom(chatRoomRepository.findById(chatDTO.getRoomId()).orElseThrow(NoSuchElementException::new))
+    public void saveMessage(ChatDto chatDTO, Long chatRoomId) {
+        messageRepository.save(Message.builder().chatRoom(chatRoomRepository.findById(chatRoomId).orElseThrow(NoSuchElementException::new))
                 .member(memberRepository.getReferenceById(chatDTO.getUserId()))
                 .description(chatDTO.getMessage())
                 .build());
