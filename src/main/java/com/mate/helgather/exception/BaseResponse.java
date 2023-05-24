@@ -1,5 +1,6 @@
 package com.mate.helgather.exception;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import org.springframework.validation.BindingResult;
 
@@ -8,8 +9,9 @@ public class BaseResponse {
 
     private boolean isSuccess;
     private int code;
-
     private String message;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Object result;
 
     // 실패했을 때
