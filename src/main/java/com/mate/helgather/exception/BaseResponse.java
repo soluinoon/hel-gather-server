@@ -4,14 +4,14 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import org.springframework.validation.BindingResult;
 
+import java.util.ArrayList;
+
 @Getter
 public class BaseResponse {
 
     private boolean isSuccess;
     private int code;
     private String message;
-
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Object result;
 
     // 실패했을 때
@@ -26,6 +26,7 @@ public class BaseResponse {
         this.isSuccess = false;
         this.code = errorCode.getCode();
         this.message = errorCode.getMessage();
+        this.result = new ArrayList<>();
     }
 
     public BaseResponse(BindingResult bindingResult) {
