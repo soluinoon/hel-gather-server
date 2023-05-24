@@ -21,8 +21,11 @@ public enum ErrorCode {
     NO_SUCH_MEMBER_ERROR(4001, "존재하지 않는 멤버 입니다."),
     NO_SUCH_CHATROOM_ERROR(4002, "존재하지 않는 채팅방 입니다."),
     EXIST_NICKNAME_ERROR(4003, "이미 존재하는 닉네임입니다."),
-    EXIST_PHONE_ERROR(4004, "이미 존재하는 전화번호입니다.");
-
+    EXIST_PHONE_ERROR(4004, "이미 존재하는 전화번호입니다."),
+    S3_CONNECT_ERROR(5001, "S3 오류입니다."),
+    S3_NO_PATH_ERROR(5002, "S3 경로 디렉토리가 있는지 확인해주세요."),
+    DEFAULT_IMAGE_ERROR(5003, "기본 이미지가 없습니다."),
+    ;
     @Getter
     private int code;
     @Getter
