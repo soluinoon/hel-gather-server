@@ -1,5 +1,6 @@
 package com.mate.helgather.controller;
 
+import com.mate.helgather.dto.MemberLoginRequestDto;
 import com.mate.helgather.dto.MemberResponseDto;
 import com.mate.helgather.dto.MemberRequestDto;
 import com.mate.helgather.exception.BaseException;
@@ -14,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.transaction.Transactional;
-import javax.validation.Valid;
 
 @Controller
 @RequiredArgsConstructor
@@ -26,9 +26,16 @@ public class MemberController {
     //회원가입 로직
     @Transactional
     @PostMapping("/register")
-    public ResponseEntity<BaseResponse> createMember(@RequestBody @Valid MemberRequestDto memberRequestDto) throws BaseException {
+    public ResponseEntity<BaseResponse> createMember(@RequestBody MemberRequestDto memberRequestDto) throws BaseException {
         MemberResponseDto result = memberService.createMember(memberRequestDto);
         return new ResponseEntity<>(new BaseResponse(result), HttpStatus.OK);
     }
 
+    //로그인 로직
+    @Transactional
+    @PostMapping("/login")
+    public ResponseEntity<BaseResponse> loginMember(@RequestBody MemberLoginRequestDto memberLoginRequestDto) throws BaseException {
+        MemberResponseDto result = memberService.loginMember(memberLoginRequestDto);
+        return new ResponseEntity<>(new BaseResponse(result), HttpStatus.OK);
+    }
 }

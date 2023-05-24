@@ -1,6 +1,7 @@
 package com.mate.helgather.service;
 
 import com.mate.helgather.domain.Member;
+import com.mate.helgather.dto.MemberLoginRequestDto;
 import com.mate.helgather.dto.MemberRequestDto;
 import com.mate.helgather.dto.MemberResponseDto;
 import com.mate.helgather.exception.BaseException;
@@ -12,6 +13,9 @@ import org.springframework.util.StringUtils;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static com.mate.helgather.exception.ErrorCode.NO_SUCH_MEMBER_ERROR;
+import static com.mate.helgather.exception.ErrorCode.PASSWORD_CORRECT_ERROR;
 
 @Service
 @RequiredArgsConstructor
@@ -30,6 +34,29 @@ public class MemberService {
                 member.getNickname()
         );
     }
+
+    public MemberResponseDto loginMember(MemberLoginRequestDto memberLoginRequestDto) throws BaseException {
+
+        String nickname = memberLoginRequestDto.getNickname();
+        String password = memberLoginRequestDto.getPassword();
+
+        Member member = memberRepository.findByNickname(nickname)
+                .orElseThrow(() -> new BaseException(NO_SUCH_MEMBER_ERROR));
+
+        // 비밀번호가 해당 아이디와 일치하는지 확인
+        if (password.equals(member.getPassword())) {
+            throw new BaseException(PASSWORD_CORRECT_ERROR);
+        }
+
+        // jwt 발급
+
+
+        return new MemberResponseDto(
+                member.getId(),
+                nickname
+        );
+    }
+
 
     private void validateMemberRequest(MemberRequestDto memberRequestDto) throws BaseException {
 
@@ -86,7 +113,5 @@ public class MemberService {
         if (memberRepository.existsByNickname(memberRequestDto.getNickname())) {
             throw new BaseException(ErrorCode.EXIST_NICKNAME_ERROR);
         }
-
-
     }
 }
