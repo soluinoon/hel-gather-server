@@ -19,7 +19,7 @@ public class ExceptionController {
     public ResponseEntity<BaseResponse> handleBaseException(BaseException e) {
         e.printStackTrace();
         BaseResponse baseResponse = new BaseResponse(e.getErrorCode());
-        return new ResponseEntity<>(baseResponse, HttpStatus.OK);
+        return new ResponseEntity<>(baseResponse, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(AmazonS3Exception.class)
