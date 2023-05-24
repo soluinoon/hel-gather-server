@@ -3,6 +3,8 @@ package com.mate.helgather.exception;
 import lombok.Getter;
 import org.springframework.validation.BindingResult;
 
+import java.util.ArrayList;
+
 @Getter
 public class BaseResponse {
 
@@ -23,12 +25,14 @@ public class BaseResponse {
         this.isSuccess = false;
         this.code = errorCode.getCode();
         this.message = errorCode.getMessage();
+        this.result = new ArrayList<>();
     }
 
     public BaseResponse(BindingResult bindingResult) {
         this.isSuccess = false;
         this.code = ErrorCode.FORMAT_ERROR.getCode();
         this.message = bindingResult.getFieldError().getDefaultMessage();
+        this.result = new ArrayList<>();
     }
 
     // 성공했을 때
