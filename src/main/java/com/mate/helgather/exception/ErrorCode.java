@@ -27,6 +27,7 @@ public enum ErrorCode {
     S3_NO_PATH_ERROR(5002, "S3 경로 디렉토리가 있는지 확인해주세요."),
     DEFAULT_IMAGE_ERROR(5003, "기본 이미지가 없습니다.");
 
+
     @Getter
     private int code;
     @Getter
