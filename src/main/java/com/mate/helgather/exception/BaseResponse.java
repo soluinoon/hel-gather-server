@@ -1,17 +1,23 @@
 package com.mate.helgather.exception;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.Getter;
 import org.springframework.validation.BindingResult;
 
 import java.util.ArrayList;
 
 @Getter
-public class BaseResponse {
+@JsonPropertyOrder({"isSuccess", "code", "message", "result"})
+public class BaseResponse<T> {
 
-    private boolean isSuccess;
-    private int code;
-    private String message;
-    private Object result;
+    @JsonProperty("isSuccess")
+    private final boolean isSuccess;
+    private final int code;
+    private final String message;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private T result;
 
     // 실패했을 때
     public BaseResponse(int code, String message) {
@@ -25,18 +31,16 @@ public class BaseResponse {
         this.isSuccess = false;
         this.code = errorCode.getCode();
         this.message = errorCode.getMessage();
-        this.result = new ArrayList<>();
     }
 
     public BaseResponse(BindingResult bindingResult) {
         this.isSuccess = false;
         this.code = ErrorCode.FORMAT_ERROR.getCode();
         this.message = bindingResult.getFieldError().getDefaultMessage();
-        this.result = new ArrayList<>();
     }
 
     // 성공했을 때
-    public BaseResponse(Object result) {
+    public BaseResponse(T result) {
         this.isSuccess = true;
         this.code = 200;
         this.message = "성공입니다.";
@@ -44,7 +48,7 @@ public class BaseResponse {
     }
 
     // 넘겨받을 때
-    public BaseResponse(boolean isSuccess, int code, String message, Object result) {
+    public BaseResponse(boolean isSuccess, int code, String message, T result) {
         this.isSuccess = isSuccess;
         this.code = code;
         this.message = message;
