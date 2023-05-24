@@ -25,14 +25,14 @@ public class BaseResponse {
         this.isSuccess = false;
         this.code = errorCode.getCode();
         this.message = errorCode.getMessage();
-        this.result = new ArrayList<>();
+        this.result = "실패입니다.";
     }
 
     public BaseResponse(BindingResult bindingResult) {
         this.isSuccess = false;
         this.code = ErrorCode.FORMAT_ERROR.getCode();
         this.message = bindingResult.getFieldError().getDefaultMessage();
-        this.result = new ArrayList<>();
+        this.result = "실패입니다.";
     }
 
     // 성공했을 때
