@@ -11,7 +11,6 @@ import com.mate.helgather.repository.AmazonS3Repository;
 import com.mate.helgather.repository.ExerciseRepository;
 import com.mate.helgather.repository.MemberRepository;
 import lombok.AllArgsConstructor;
-import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.jcodec.api.FrameGrab;
 import org.jcodec.common.io.NIOUtils;
 import org.jcodec.common.model.Picture;
@@ -26,7 +25,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.UUID;
 
 @Service
@@ -79,7 +77,10 @@ public class ExerciseService {
     }
 
     public String getLocalHomeDirectory() {
-        return System.getProperty("user.home");
+        // 로컬
+//        return System.getProperty("user.home");
+        // 서버
+        return "/home/ubuntu/";
     }
 
     public String getFormat(String contentType) {
