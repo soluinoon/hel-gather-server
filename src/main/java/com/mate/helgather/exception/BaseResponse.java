@@ -8,7 +8,6 @@ public class BaseResponse {
 
     private boolean isSuccess;
     private int code;
-
     private String message;
     private Object result;
 
