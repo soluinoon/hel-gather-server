@@ -1,10 +1,7 @@
 package com.mate.helgather.exception;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import org.springframework.validation.BindingResult;
-
-import java.util.ArrayList;
 
 @Getter
 public class BaseResponse {
@@ -26,7 +23,6 @@ public class BaseResponse {
         this.isSuccess = false;
         this.code = errorCode.getCode();
         this.message = errorCode.getMessage();
-        this.result = new ArrayList<>();
     }
 
     public BaseResponse(BindingResult bindingResult) {

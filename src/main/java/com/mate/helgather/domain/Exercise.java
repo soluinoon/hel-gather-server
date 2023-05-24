@@ -1,5 +1,6 @@
 package com.mate.helgather.domain;
 
+import com.mate.helgather.repository.MemberRepository;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -12,7 +13,6 @@ import java.time.LocalDateTime;
 @EntityListeners(AuditingEntityListener.class)
 @Builder
 @Getter
-@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class Exercise {
@@ -23,11 +23,9 @@ public class Exercise {
     @ManyToOne
     private Member member;
 
-    private String url;
+    private String videoUrl;
 
-    private String thumbnail;
-
-    private String description;
+    private String thumbnailUrl;
 
     @CreatedDate
     private LocalDateTime createdAt;
