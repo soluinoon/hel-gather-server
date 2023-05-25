@@ -1,28 +1,37 @@
 package com.mate.helgather.service;
 
 import com.mate.helgather.domain.Member;
-import com.mate.helgather.dto.MemberLoginRequestDto;
 import com.mate.helgather.dto.MemberRequestDto;
 import com.mate.helgather.dto.MemberResponseDto;
+import com.mate.helgather.dto.TokenDto;
 import com.mate.helgather.exception.BaseException;
 import com.mate.helgather.exception.ErrorCode;
 import com.mate.helgather.repository.MemberRepository;
+import com.mate.helgather.util.JwtTokenProvider;
+import com.mate.helgather.dto.MemberLoginResponseDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import javax.transaction.Transactional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.mate.helgather.exception.ErrorCode.NO_SUCH_MEMBER_ERROR;
-import static com.mate.helgather.exception.ErrorCode.PASSWORD_CORRECT_ERROR;
-
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class MemberService {
 
     private final MemberRepository memberRepository;
+    private final AuthenticationManagerBuilder authenticationManagerBuilder;
+    private final JwtTokenProvider jwtTokenProvider;
 
+    @Transactional
     public MemberResponseDto createMember(MemberRequestDto memberRequestDto) throws BaseException {
         validateMemberRequest(memberRequestDto);
 
@@ -35,26 +44,43 @@ public class MemberService {
         );
     }
 
-    public MemberResponseDto loginMember(MemberLoginRequestDto memberLoginRequestDto) throws BaseException {
-
-        String nickname = memberLoginRequestDto.getNickname();
-        String password = memberLoginRequestDto.getPassword();
-
-        Member member = memberRepository.findByNickname(nickname)
-                .orElseThrow(() -> new BaseException(NO_SUCH_MEMBER_ERROR));
-
-        // 비밀번호가 해당 아이디와 일치하는지 확인
-        if (password.equals(member.getPassword())) {
-            throw new BaseException(PASSWORD_CORRECT_ERROR);
+    @Transactional
+    public MemberLoginResponseDto loginMember(String nickname, String password) throws BaseException {
+        if (!StringUtils.hasText(nickname)) {
+            throw new BaseException(ErrorCode.NO_INPUT_NICKNAME);
         }
 
-        // jwt 발급
+        if (!StringUtils.hasText(password)) {
+            throw new BaseException(ErrorCode.NO_INPUT_PASSWORD);
+        }
 
+        // 1. Login ID/PW 기반으로 Authentication 객체 생성
+        // 이 때 authentication 는 인증 여부를 확인하는 authenticated 값이 false
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(nickname, password);
 
-        return new MemberResponseDto(
-                member.getId(),
-                nickname
-        );
+        // 2. 실제 검증 (사용자 비밀번호 체크)이 이루어지는 부분
+        // authenticate 메서드가 실행될 때 CustomUserDetailsService 에서 만든 loadUserByUsername 가 실행
+        try {
+            Authentication authenticate = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+            // 3. Authentication 객체를 통해 Principal 얻기
+            Object principal = authenticate.getPrincipal();
+
+            // 4. UserDetails 캐스팅
+            UserDetails userDetails = (UserDetails) principal;
+
+            String username = userDetails.getUsername();
+            TokenDto tokenDto = jwtTokenProvider.generateToken(authenticate);
+
+            // 인증 정보를 기반으로 JWT 토큰 생성
+            return MemberLoginResponseDto.builder()
+                    .nickname(userDetails.getUsername())
+                    .grantType("Bearer")
+                    .accessToken(tokenDto.getAccessToken())
+                    .refreshToken(tokenDto.getRefreshToken())
+                    .build();
+        } catch (AuthenticationException e) {
+            throw new BaseException(ErrorCode.PASSWORD_CORRECT_ERROR);
+        }
     }
 
 
