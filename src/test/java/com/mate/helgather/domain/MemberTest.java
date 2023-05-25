@@ -1,9 +1,7 @@
 package com.mate.helgather.domain;
 
 import com.mate.helgather.domain.status.MemberStatus;
-import com.mate.helgather.repository.ChatRoomRepository;
 import com.mate.helgather.repository.MemberRepository;
-import com.mate.helgather.repository.RecruitmentRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +24,7 @@ class MemberTest {
     void canSave() {
         // given
         member = Member.builder()
-                .userName("김지홍")
+                .name("김지홍")
                 .nickname("king")
                 .phone("01085422990")
                 .password("a1349529")
@@ -36,7 +34,7 @@ class MemberTest {
         // when
         Member savedMember = memberRepository.save(member);
         // then
-        assertThat(savedMember.getUserName()).isEqualTo("김지홍");
+        assertThat(savedMember.getName()).isEqualTo("김지홍");
         assertThat(savedMember.getPhone()).isEqualTo(member.getPhone());
         assertThat(savedMember.getBirthDate().toString()).isEqualTo("1998-03-31");
     }
@@ -45,7 +43,7 @@ class MemberTest {
     void canFindById() {
         // given
         member = Member.builder()
-                .userName("김지홍")
+                .name("김지홍")
                 .nickname("king")
                 .phone("01085422990")
                 .password("a1349529")
