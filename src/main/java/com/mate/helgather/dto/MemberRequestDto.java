@@ -8,7 +8,7 @@ import java.time.LocalDate;
 @Getter
 public class MemberRequestDto {
 
-    private String userName;
+    private String name;
 
     private String phone;
 
@@ -26,7 +26,7 @@ public class MemberRequestDto {
         LocalDate birthDate = LocalDate.of(birthYear, birthMonth, birthDay);
 
         return Member.builder()
-                .userName(this.userName)
+                .name(this.name)
                 .phone(this.phone)
                 .nickname(this.nickname)
                 .password(this.password)

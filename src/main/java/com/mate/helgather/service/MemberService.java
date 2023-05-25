@@ -68,7 +68,6 @@ public class MemberService {
             // 4. UserDetails 캐스팅
             UserDetails userDetails = (UserDetails) principal;
 
-            String username = userDetails.getUsername();
             TokenDto tokenDto = jwtTokenProvider.generateToken(authenticate);
 
             // 인증 정보를 기반으로 JWT 토큰 생성
@@ -92,7 +91,7 @@ public class MemberService {
         String passwordPattern = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&+=])(?=\\S+$).{8,}$";
         Matcher passwordMatcher = Pattern.compile(passwordPattern).matcher(memberRequestDto.getPassword());
 
-        if (!StringUtils.hasText(memberRequestDto.getUserName())) {//이름 입력 안할 시
+        if (!StringUtils.hasText(memberRequestDto.getName())) {//이름 입력 안할 시
             throw new BaseException(ErrorCode.NO_INPUT_USERNAME);
         }
 

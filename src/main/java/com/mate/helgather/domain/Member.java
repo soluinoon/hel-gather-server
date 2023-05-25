@@ -33,7 +33,7 @@ public class Member implements UserDetails {
     private Long id;
 
     @Column(length = 100, nullable = false)
-    private String userName;
+    private String name;
 
     @Column(length = 20, nullable = false)
     private String phone;
