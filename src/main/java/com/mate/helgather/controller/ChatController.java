@@ -1,6 +1,8 @@
 package com.mate.helgather.controller;
 
-import com.mate.helgather.dto.ChatDto;
+import com.mate.helgather.domain.Message;
+import com.mate.helgather.dto.ChatRequestDto;
+import com.mate.helgather.dto.ChatResponseDto;
 import com.mate.helgather.dto.MessagesResponse;
 import com.mate.helgather.exception.BaseResponse;
 import com.mate.helgather.service.ChatService;
@@ -11,8 +13,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
-import org.springframework.messaging.simp.annotation.SubscribeMapping;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -24,16 +28,11 @@ public class ChatController {
     private final ChatService chatService;
     private final SimpMessageSendingOperations template;
 
-    @GetMapping("/chat/test")
-    public void testChat() {
-        chatService.testChat();
-    }
-
     @MessageMapping("/chatroom/{id}") // 실제론 메세지 매핑으로 pub/chatroom/{id} 임
-    public void pubMessage(@DestinationVariable("id") Long id, ChatDto chatDTO) throws Exception {
-        log.info("chat {} send by {} to room number{}", chatDTO.getMessage(), chatDTO.getUserId(), id);
-        chatService.saveMessage(chatDTO, id);
-        template.convertAndSend("/sub/chatroom/" + id, chatDTO);
+    public void pubMessage(@DestinationVariable("id") Long chatRoomId, ChatRequestDto chatRequestDTO) throws Exception {
+        log.info("chat {} send by {} to room number{}", chatRequestDTO.getMessage(), chatRequestDTO.getUserId(), chatRoomId);
+        Message message = chatService.saveMessage(chatRequestDTO, chatRoomId);
+        template.convertAndSend("/sub/chatroom/" + chatRoomId, new ChatResponseDto(chatRequestDTO, message));
     }
 
     @GetMapping("/chatroom/{id}")
