@@ -80,13 +80,12 @@ public class ExerciseService {
 
     public ExerciseResponseDto saveToday(ExerciseCategory exerciseCategory, Long memberId, MultipartFile multipartFile) throws Exception {
         String fileId = UUID.randomUUID().toString();
-        File file = new File(getLocalHomeDirectory(), createPath(multipartFile.getContentType(), fileId));
+        String thumbNailPath = String.format("%s/%s.%s", THUMBNAIL_BASE_DIR, fileId, THUMBNAIL_EXTENSION);
+        File file = new File(getLocalHomeDirectory(), thumbNailPath);
 
         try {
             multipartFile.transferTo(file);
-            String thumbnailUrl = amazonS3Repository.save(file,
-                            createPath(multipartFile.getContentType(),
-                            fileId));
+            String thumbnailUrl = amazonS3Repository.save(file, thumbNailPath);
             Member member = memberRepository.findById(memberId)
                     .orElseThrow(() -> new BaseException(ErrorCode.NO_SUCH_MEMBER_ERROR));
             // 레포지터리에 운동영상, 썸네일 영상 저장
@@ -114,9 +113,9 @@ public class ExerciseService {
 
     public String getLocalHomeDirectory() {
         // 로컬
-//        return System.getProperty("user.home");
+        return System.getProperty("user.home");
         // 서버
-        return "/home/ubuntu/";
+//        return "/home/ubuntu/";
     }
 
     public String getFormat(String contentType) {
@@ -129,7 +128,6 @@ public class ExerciseService {
 
     public File extractThumbnail(File source, String path) throws Exception {
         // 썸네일 파일 생성
-        System.out.println(source.getName());
         File thumbnail = new File(getLocalHomeDirectory(), path);
 
         try {
