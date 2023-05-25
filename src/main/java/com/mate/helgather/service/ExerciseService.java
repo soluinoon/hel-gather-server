@@ -2,6 +2,8 @@ package com.mate.helgather.service;
 
 import com.mate.helgather.domain.Exercise;
 import com.mate.helgather.domain.Member;
+import com.mate.helgather.domain.status.ExerciseCategory;
+import com.mate.helgather.dto.ExerciseRequestDto;
 import com.mate.helgather.dto.ExerciseResponseDto;
 import com.mate.helgather.exception.BaseException;
 import com.mate.helgather.exception.DefaultImageException;
@@ -38,29 +40,63 @@ public class ExerciseService {
     private static final String THUMBNAIL_EXTENSION = "png";
     private static final String DEFAULT_IMAGE_PATH = "src/main/resources/static/images/default-thumbnail.png";
 
-    public ExerciseResponseDto saveExercise(Long memberId, MultipartFile multipartFile) throws Exception {
+    public ExerciseResponseDto saveExercise(Long memberId, String category, MultipartFile multipartFile) throws Exception {
+        ExerciseCategory exerciseCategory = ExerciseCategory.of(category);
+        if (exerciseCategory.equals(ExerciseCategory.TODAY)) {
+            return saveToday(exerciseCategory, memberId, multipartFile);
+        } else {
+            return saveSBD(exerciseCategory, memberId, multipartFile);
+        }
+    }
+    public ExerciseResponseDto saveSBD(ExerciseCategory exerciseCategory, Long memberId, MultipartFile multipartFile) throws Exception {
         String fileId = UUID.randomUUID().toString();
         File videoFile = new File(getLocalHomeDirectory(), createPath(multipartFile.getContentType(), fileId));
         String thumbNailPath = String.format("%s/%s.%s", THUMBNAIL_BASE_DIR, fileId, THUMBNAIL_EXTENSION);
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new BaseException(ErrorCode.NO_SUCH_MEMBER_ERROR));
 
         try {
             multipartFile.transferTo(videoFile);
             File thumbnailFile = extractThumbnail(videoFile, thumbNailPath);
+            // 비디오 세이브
             String videoUrl = amazonS3Repository.save(videoFile, createPath(multipartFile.getContentType(), fileId));
-
             String thumbnailUrl = DEFAULT_IMAGE_PATH;
             // 이미지 추출이 성공했다면 세이브 진행.
             if (!thumbnailFile.getPath().equals(DEFAULT_IMAGE_PATH)) {
                 thumbnailUrl = amazonS3Repository.save(thumbnailFile, thumbNailPath);
             }
+            // 레포지터리에 운동영상, 썸네일 영상 저장
+            Exercise exercise = exerciseRepository.save(Exercise.builder()
+                    .member(member)
+                    .category(exerciseCategory)
+                    .videoUrl(videoUrl)
+                    .thumbnailUrl(thumbnailUrl)
+                    .build());
+            return new ExerciseResponseDto(exercise);
+        } catch (IOException e) {
+            throw new S3NoPathException();
+        }
+    }
+
+    public ExerciseResponseDto saveToday(ExerciseCategory exerciseCategory, Long memberId, MultipartFile multipartFile) throws Exception {
+        String fileId = UUID.randomUUID().toString();
+        File file = new File(getLocalHomeDirectory(), createPath(multipartFile.getContentType(), fileId));
+
+        try {
+            multipartFile.transferTo(file);
+            String thumbnailUrl = amazonS3Repository.save(file,
+                            createPath(multipartFile.getContentType(),
+                            fileId));
             Member member = memberRepository.findById(memberId)
                     .orElseThrow(() -> new BaseException(ErrorCode.NO_SUCH_MEMBER_ERROR));
-            exerciseRepository.save(Exercise.builder()
-                            .member(member)
-                            .videoUrl(videoUrl)
-                            .thumbnailUrl(thumbnailUrl)
-                            .build());
-            return new ExerciseResponseDto(videoUrl, thumbnailUrl);
+            // 레포지터리에 운동영상, 썸네일 영상 저장
+            Exercise exercise = exerciseRepository.save(Exercise.builder()
+                    .member(member)
+                    .category(exerciseCategory)
+                    .videoUrl("")
+                    .thumbnailUrl(thumbnailUrl)
+                    .build());
+            return new ExerciseResponseDto(exercise);
         } catch (IOException e) {
             throw new S3NoPathException();
         }
@@ -117,11 +153,13 @@ public class ExerciseService {
         }
     }
 
-    public List<ExerciseResponseDto> findExercisesById(Long memberId) throws BaseException {
+    public List<ExerciseResponseDto> findExercisesByCategory(Long memberId, String category) throws Exception {
+        ExerciseCategory exerciseCategory = ExerciseCategory.of(category);
+
         if (!memberRepository.existsById(memberId)) {
             throw new BaseException(ErrorCode.NO_SUCH_MEMBER_ERROR);
         }
-        List<Exercise> exercises = exerciseRepository.findAllByMemberId(memberId);
+        List<Exercise> exercises = exerciseRepository.findAllByMemberIdAndCategory(memberId, exerciseCategory);
         List<ExerciseResponseDto> exerciseResponseDtos = new ArrayList<>();
 
         for (Exercise exercise : exercises) {
@@ -129,5 +167,45 @@ public class ExerciseService {
         }
 
         return exerciseResponseDtos;
+    }
+
+    public List<ExerciseResponseDto> findSBD(Long memberId) throws Exception {
+        ExerciseCategory exerciseCategory = ExerciseCategory.TODAY;
+
+        if (!memberRepository.existsById(memberId)) {
+            throw new BaseException(ErrorCode.NO_SUCH_MEMBER_ERROR);
+        }
+
+        List<ExerciseResponseDto> exerciseResponseDtos = new ArrayList<>();
+
+        exerciseResponseDtos.add(new ExerciseResponseDto(exerciseRepository
+                .findTopByMemberIdAndCategoryOrderByCreatedAtDesc(memberId, ExerciseCategory.DEAD_LIFT).orElse(Exercise.builder()
+                        .category(ExerciseCategory.DEAD_LIFT)
+                        .thumbnailUrl("")
+                        .videoUrl("")
+                        .build())));
+        exerciseResponseDtos.add(new ExerciseResponseDto(exerciseRepository
+                .findTopByMemberIdAndCategoryOrderByCreatedAtDesc(memberId, ExerciseCategory.SQUAT).orElse(Exercise.builder()
+                        .category(ExerciseCategory.SQUAT)
+                        .thumbnailUrl("")
+                        .videoUrl("")
+                        .build())));
+        exerciseResponseDtos.add(new ExerciseResponseDto(exerciseRepository
+                .findTopByMemberIdAndCategoryOrderByCreatedAtDesc(memberId, ExerciseCategory.BENCH_PRESS).orElse(Exercise.builder()
+                        .category(ExerciseCategory.BENCH_PRESS)
+                        .thumbnailUrl("")
+                        .videoUrl("")
+                        .build())));
+        return exerciseResponseDtos;
+    }
+
+    public void deleteExercise(Long memberId, ExerciseRequestDto exerciseRequestDto) throws Exception {
+        if (!memberRepository.existsById(memberId)) {
+            throw new BaseException(ErrorCode.NO_SUCH_MEMBER_ERROR);
+        }
+        amazonS3Repository.delete(exerciseRequestDto.getVideoUrl());
+        amazonS3Repository.delete(exerciseRequestDto.getThumbNailUrl());
+        exerciseRepository.deleteByMemberIdAndVideoUrlAndThumbnailUrl(memberId, exerciseRequestDto.getVideoUrl(),
+                                                    exerciseRequestDto.getThumbNailUrl());
     }
 }

@@ -1,17 +1,16 @@
 package com.mate.helgather.repository;
 
+import com.amazonaws.AmazonServiceException;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.AmazonS3Exception;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.mate.helgather.exception.S3NoPathException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
-import java.io.IOException;
 
 @Component
 @RequiredArgsConstructor
@@ -20,6 +19,7 @@ public class AmazonS3Repository {
     private String bucket;
     private final AmazonS3Client amazonS3Client;
 
+    // /{dir}/fileName.{extention} 형태
     public String save(File file, String fullPath) throws Exception {
         try {
             amazonS3Client.putObject(new PutObjectRequest(bucket, fullPath, file)
@@ -31,6 +31,14 @@ public class AmazonS3Repository {
             if (file.exists()) {
                 file.delete();
             }
+        }
+    }
+
+    public void delete(String path) throws Exception {
+        try {
+            amazonS3Client.deleteObject(new DeleteObjectRequest(bucket, path));
+        } catch (AmazonServiceException e) {
+            throw new AmazonS3Exception("아마존 S3 에러");
         }
     }
 }
