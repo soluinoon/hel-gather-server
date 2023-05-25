@@ -113,9 +113,9 @@ public class ExerciseService {
 
     public String getLocalHomeDirectory() {
         // 로컬
-        return System.getProperty("user.home");
+//        return System.getProperty("user.home");
         // 서버
-//        return "/home/ubuntu/";
+        return "/home/ubuntu/";
     }
 
     public String getFormat(String contentType) {
