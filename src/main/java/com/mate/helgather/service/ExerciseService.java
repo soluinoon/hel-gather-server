@@ -201,9 +201,16 @@ public class ExerciseService {
         if (!memberRepository.existsById(memberId)) {
             throw new BaseException(ErrorCode.NO_SUCH_MEMBER_ERROR);
         }
-        amazonS3Repository.delete(exerciseRequestDto.getVideoUrl());
-        amazonS3Repository.delete(exerciseRequestDto.getThumbNailUrl());
+        if (!exerciseRequestDto.getVideoUrl().equals("")) {
+            amazonS3Repository.delete(extractKey(exerciseRequestDto.getVideoUrl(), VIDEO_BASE_DIR));
+        }
+        amazonS3Repository.delete(extractKey(exerciseRequestDto.getThumbNailUrl(), THUMBNAIL_BASE_DIR));
         exerciseRepository.deleteByMemberIdAndVideoUrlAndThumbnailUrl(memberId, exerciseRequestDto.getVideoUrl(),
                                                     exerciseRequestDto.getThumbNailUrl());
+    }
+
+    private String extractKey(String url, String baseUrl) {
+        int index = url.indexOf(baseUrl);
+        return url.substring(index);
     }
 }
