@@ -6,16 +6,17 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.Getter;
 import org.springframework.validation.BindingResult;
 
-import java.util.ArrayList;
-
 @Getter
 @JsonPropertyOrder({"isSuccess", "code", "message", "result"})
 public class BaseResponse<T> {
 
     @JsonProperty("isSuccess")
-    private final boolean isSuccess;
+    private final Boolean isSuccess;
+
     private final int code;
+
     private final String message;
+
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private T result;
 
