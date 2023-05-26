@@ -36,6 +36,7 @@ public class MemberService {
         validateMemberRequest(memberRequestDto);
 
         Member member = memberRequestDto.toEntity();
+        member.getRoles().add("USER");
         memberRepository.save(member);
 
         return new MemberResponseDto(
