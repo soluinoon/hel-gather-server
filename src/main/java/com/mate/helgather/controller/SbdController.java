@@ -48,13 +48,13 @@ public class SbdController {
      * 운동 인증 삭제 API
      * 클라이언트에서 url을 받아와서 삭제시킨다.
      *
-     * @param userId 유저 id
+     * @param memberId 유저 id
      * @param sbdRequestDto 비디오, 썸네일 url을 담고있다.
      */
     @DeleteMapping("/sbd")
-    public ResponseEntity<BaseResponse> deleteExerciseV1(@PathVariable("id") Long userId,
+    public ResponseEntity<BaseResponse> deleteExerciseV1(@PathVariable("member") Long memberId,
                                                          SbdRequestDto sbdRequestDto) throws Exception {
-        sbdService.deleteExercise(userId, sbdRequestDto);
+        sbdService.deleteExercise(memberId, sbdRequestDto);
         return new ResponseEntity<>(new BaseResponse("삭제 성공"), HttpStatus.OK);
     }
 }

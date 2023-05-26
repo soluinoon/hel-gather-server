@@ -1,7 +1,10 @@
 package com.mate.helgather.service;
 
 import com.mate.helgather.domain.TodayExercise;
+import com.mate.helgather.dto.TodayExerciseRequestDto;
 import com.mate.helgather.dto.TodayExerciseResponseDto;
+import com.mate.helgather.exception.BaseException;
+import com.mate.helgather.exception.ErrorCode;
 import com.mate.helgather.repository.AmazonS3Repository;
 import com.mate.helgather.repository.MemberRepository;
 import com.mate.helgather.repository.TodayExerciseRepository;
@@ -36,5 +39,18 @@ public class TodayExerciseService {
         return todayExercises.stream()
                 .map(todayExercise -> new TodayExerciseResponseDto(todayExercise.getImageUrl()))
                 .collect(Collectors.toList());
+    }
+
+    public void delete(Long memberId, TodayExerciseRequestDto todayExerciseRequestDto) {
+        if (!memberRepository.existsById(memberId)) {
+            throw new BaseException(ErrorCode.NO_SUCH_MEMBER_ERROR);
+        }
+        amazonS3Repository.delete(extractKey(todayExerciseRequestDto.getImageUrl(), TODAY_EXERCISE_BASE_DIR));
+        todayExerciseRepository.deleteByMemberIdAndImageUrl(memberId, todayExerciseRequestDto.getImageUrl());
+    }
+
+    private String extractKey(String url, String baseUrl) {
+        int index = url.indexOf(baseUrl);
+        return url.substring(index);
     }
 }

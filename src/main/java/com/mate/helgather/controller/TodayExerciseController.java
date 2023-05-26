@@ -1,5 +1,7 @@
 package com.mate.helgather.controller;
 
+import com.mate.helgather.dto.SbdRequestDto;
+import com.mate.helgather.dto.TodayExerciseRequestDto;
 import com.mate.helgather.dto.TodayExerciseResponseDto;
 import com.mate.helgather.exception.BaseResponse;
 import com.mate.helgather.service.TodayExerciseService;
@@ -21,10 +23,18 @@ public class TodayExerciseController {
         List<TodayExerciseResponseDto> todayExerciseResponseDtos = todayExerciseService.find(memberId);
         return new ResponseEntity<>(new BaseResponse(todayExerciseResponseDtos), HttpStatus.OK);
     }
+
     @PostMapping("/today-exercises")
     public ResponseEntity<BaseResponse> saveTodayExercise(@RequestParam("member") Long memberId,
                                                           @RequestPart("file") MultipartFile multipartFile) throws Exception {
         TodayExerciseResponseDto todayExerciseResponseDto = todayExerciseService.save(memberId, multipartFile);
         return new ResponseEntity<>(new BaseResponse(todayExerciseResponseDto), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/today-exercise")
+    public ResponseEntity<BaseResponse> deleteExerciseV1(@PathVariable("member") Long memberId,
+                                                         TodayExerciseRequestDto todayExerciseRequestDto) throws Exception {
+        todayExerciseService.delete(memberId, todayExerciseRequestDto);
+        return new ResponseEntity<>(new BaseResponse("삭제 성공"), HttpStatus.OK);
     }
 }

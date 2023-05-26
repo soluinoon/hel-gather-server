@@ -196,13 +196,11 @@ public class SbdService {
         return sbdResponseDtos;
     }
 
-    public void deleteExercise(Long memberId, SbdRequestDto sbdRequestDto) throws Exception {
+    public void deleteExercise(Long memberId, SbdRequestDto sbdRequestDto) {
         if (!memberRepository.existsById(memberId)) {
             throw new BaseException(ErrorCode.NO_SUCH_MEMBER_ERROR);
         }
-        if (!sbdRequestDto.getVideoUrl().equals("")) {
-            amazonS3Repository.delete(extractKey(sbdRequestDto.getVideoUrl(), VIDEO_BASE_DIR));
-        }
+        amazonS3Repository.delete(extractKey(sbdRequestDto.getVideoUrl(), VIDEO_BASE_DIR));
         amazonS3Repository.delete(extractKey(sbdRequestDto.getThumbNailUrl(), THUMBNAIL_BASE_DIR));
         sbdRepository.deleteByMemberIdAndVideoUrlAndThumbnailUrl(memberId, sbdRequestDto.getVideoUrl(),
                                                     sbdRequestDto.getThumbNailUrl());
