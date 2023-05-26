@@ -44,8 +44,8 @@ public class ChatController {
 
     @GetMapping("/chatroom/{id}")
     public ResponseEntity<BaseResponse> findMessages(@PathVariable("id") Long chatRoomId,
-                                                     @RequestParam(value = "userId", required = true) Long userId) {
-        List<MessagesResponseDto> messages = chatService.findMessages(chatRoomId, userId);
+                                                     @RequestParam(value = "member", required = true) Long memberId) {
+        List<MessagesResponseDto> messages = chatService.findMessages(chatRoomId, memberId);
         return new ResponseEntity<>(new BaseResponse(messages), HttpStatus.OK);
     }
 }

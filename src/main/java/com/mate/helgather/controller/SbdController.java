@@ -1,5 +1,6 @@
 package com.mate.helgather.controller;
 
+import com.mate.helgather.domain.status.SbdCategory;
 import com.mate.helgather.dto.SbdRequestDto;
 import com.mate.helgather.dto.SbdResponseDto;
 import com.mate.helgather.exception.BaseResponse;
@@ -25,31 +26,21 @@ public class SbdController {
      * @param multipartFile 동영상 파일
      * @param category 운동 카테고리이다. 스쿼트, 데드리프트, 벤치프레스로 나뉨.
      */
-    @PostMapping(value = "/members/{id}/exercises", produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<BaseResponse> saveSbd(@PathVariable("id") Long memberId,
+    @PostMapping(value = "/sbd", produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity<BaseResponse> saveSBD(@PathVariable("member") Long memberId,
                                                 @RequestParam("category") String category,
                                                 @RequestPart("file") MultipartFile multipartFile) throws Exception {
-        SbdResponseDto sbdResponseDto = sbdService.saveExercise(memberId, category, multipartFile);
+        SbdResponseDto sbdResponseDto = sbdService.saveSBD(SbdCategory.of(category), memberId, multipartFile);
         return new ResponseEntity<>(new BaseResponse(sbdResponseDto), HttpStatus.OK);
     }
     /**
-     * SBD 조회 API
-     *
-     */
-    @GetMapping("/members/{id}/exercises")
-    public ResponseEntity<BaseResponse> findExercise(@PathVariable("id") Long userId,
-                                                     @RequestParam("category") String category) throws Exception {
-        List<SbdResponseDto> sbdResponseDtoList = sbdService.findExercisesByCategory(userId, category);
-        return new ResponseEntity<>(new BaseResponse(sbdResponseDtoList), HttpStatus.OK);
-    }
-
-    /**
      * SBD 운동 인증 조회 API
-     * @param userId
+     * @param memberId 멤버의 id다
+     * @return SBD를 각각 최신 하나씩 돌려줌
      */
-    @GetMapping("/members/{id}/exercises/sbd")
-    public ResponseEntity<BaseResponse> findSBD(@PathVariable("id") Long userId) throws Exception {
-        List<SbdResponseDto> sbdResponseDtoList = sbdService.findSBD(userId);
+    @GetMapping("/sbd")
+    public ResponseEntity<BaseResponse> findSBD(@RequestParam("member") Long memberId) throws Exception {
+        List<SbdResponseDto> sbdResponseDtoList = sbdService.findSBD(memberId);
         return new ResponseEntity<>(new BaseResponse(sbdResponseDtoList), HttpStatus.OK);
     }
 
@@ -60,7 +51,7 @@ public class SbdController {
      * @param userId 유저 id
      * @param sbdRequestDto 비디오, 썸네일 url을 담고있다.
      */
-    @DeleteMapping("/members/{id}/exercises")
+    @DeleteMapping("/sbd")
     public ResponseEntity<BaseResponse> deleteExerciseV1(@PathVariable("id") Long userId,
                                                          SbdRequestDto sbdRequestDto) throws Exception {
         sbdService.deleteExercise(userId, sbdRequestDto);

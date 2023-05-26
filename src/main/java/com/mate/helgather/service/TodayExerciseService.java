@@ -9,6 +9,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class TodayExerciseService {
@@ -21,9 +24,17 @@ public class TodayExerciseService {
     public TodayExerciseResponseDto save(Long memberId, MultipartFile multipartFile) throws Exception {
         String imageUrl = amazonS3Repository.saveV2(multipartFile, TODAY_EXERCISE_BASE_DIR);
         todayExerciseRepository.save(TodayExercise.builder()
-                        .member(memberRepository.getReferenceById(memberId))
-                        .imageUrl(imageUrl)
-                        .build());
+                .member(memberRepository.getReferenceById(memberId))
+                .imageUrl(imageUrl)
+                .build());
         return new TodayExerciseResponseDto(imageUrl);
+    }
+
+    public List<TodayExerciseResponseDto> find(Long memberId) throws Exception {
+        List<TodayExercise> todayExercises = todayExerciseRepository.findAllByMemberId(memberId);
+
+        return todayExercises.stream()
+                .map(todayExercise -> new TodayExerciseResponseDto(todayExercise.getImageUrl()))
+                .collect(Collectors.toList());
     }
 }

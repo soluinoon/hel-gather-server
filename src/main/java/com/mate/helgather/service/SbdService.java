@@ -169,8 +169,6 @@ public class SbdService {
     }
 
     public List<SbdResponseDto> findSBD(Long memberId) throws Exception {
-        SbdCategory sbdCategory = SbdCategory.TODAY;
-
         if (!memberRepository.existsById(memberId)) {
             throw new BaseException(ErrorCode.NO_SUCH_MEMBER_ERROR);
         }
