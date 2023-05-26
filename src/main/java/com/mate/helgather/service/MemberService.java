@@ -70,8 +70,12 @@ public class MemberService {
 
             TokenDto tokenDto = jwtTokenProvider.generateToken(authenticate);
 
+            Member member = memberRepository.findByNickname(nickname)
+                    .orElseThrow(() -> new BaseException(ErrorCode.NO_SUCH_MEMBER_ERROR));
+
             // 인증 정보를 기반으로 JWT 토큰 생성
             return MemberLoginResponseDto.builder()
+                    .memberId(member.getId())
                     .nickname(userDetails.getUsername())
                     .grantType("Bearer")
                     .accessToken(tokenDto.getAccessToken())
