@@ -16,12 +16,12 @@ import java.util.List;
 public class TodayExerciseController {
     private final TodayExerciseService todayExerciseService;
 
-    @GetMapping("/today-exercise")
+    @GetMapping("/today-exercises")
     public ResponseEntity<BaseResponse> findTodayExercise(@RequestParam("member") Long memberId) throws Exception {
         List<TodayExerciseResponseDto> todayExerciseResponseDtos = todayExerciseService.find(memberId);
         return new ResponseEntity<>(new BaseResponse(todayExerciseResponseDtos), HttpStatus.OK);
     }
-    @PostMapping("/today-exercise")
+    @PostMapping("/today-exercises")
     public ResponseEntity<BaseResponse> saveTodayExercise(@RequestParam("member") Long memberId,
                                                           @RequestPart("file") MultipartFile multipartFile) throws Exception {
         TodayExerciseResponseDto todayExerciseResponseDto = todayExerciseService.save(memberId, multipartFile);
