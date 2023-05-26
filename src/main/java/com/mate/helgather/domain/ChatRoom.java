@@ -20,7 +20,6 @@ public class ChatRoom {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    @NotNull
     private Long id;
 
     @OneToOne

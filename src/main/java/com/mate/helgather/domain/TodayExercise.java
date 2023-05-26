@@ -1,14 +1,12 @@
 package com.mate.helgather.domain;
 
-import com.mate.helgather.domain.status.ExerciseCategory;
-import com.sun.istack.NotNull;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Entity
@@ -17,7 +15,7 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class Exercise {
+public class TodayExercise {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -25,16 +23,8 @@ public class Exercise {
     @ManyToOne
     private Member member;
 
-    @Enumerated(EnumType.STRING)
-    @Column(columnDefinition = "ENUM('DEAD_LIFT', 'SQUAT', 'BENCH_PRESS', 'TODAY')")
     @NotNull
-    private ExerciseCategory category;
-
-    @Nullable
-    private String videoUrl;
-
-    @Nullable
-    private String thumbnailUrl;
+    private String imageUrl;
 
     @CreatedDate
     private LocalDateTime createdAt;

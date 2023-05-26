@@ -1,6 +1,6 @@
 package com.mate.helgather.controller;
 
-import com.mate.helgather.dto.ChatRoomListResponse;
+import com.mate.helgather.dto.ChatRoomListResponseDto;
 import com.mate.helgather.exception.BaseResponse;
 import com.mate.helgather.service.ChatRoomService;
 import com.mate.helgather.service.ChatService;
@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @RestController
 @RequiredArgsConstructor
@@ -30,8 +29,8 @@ public class ChatRoomController {
      * @return List<ChatRoomListResponse> 채팅방들의 원하는 정보를 리스트로 반환
      */
     @GetMapping("/members/{id}/chatrooms")
-    public ResponseEntity<BaseResponse> getChatRoomsByMemberIdV2(@PathVariable @Valid Long id) throws Exception {
-        List<ChatRoomListResponse> chatRoomsByMemberId = chatRoomService.getChatRoomsByMemberId(id);
+    public ResponseEntity<BaseResponse> getChatRoomsByMemberIdV2(@PathVariable @Valid Long id) {
+        List<ChatRoomListResponseDto> chatRoomsByMemberId = chatRoomService.getChatRoomsByMemberId(id);
         return new ResponseEntity<>(new BaseResponse(chatRoomsByMemberId), HttpStatus.OK);
     }
 }

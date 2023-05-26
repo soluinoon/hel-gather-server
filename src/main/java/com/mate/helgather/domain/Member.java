@@ -77,7 +77,11 @@ public class Member implements UserDetails {
 
     @Builder.Default
     @OneToMany(mappedBy = "member")
-    private List<Exercise> exercises = new ArrayList<>();
+    private List<TodayExercise> todayExercises = new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "member")
+    private List<Sbd> sbds = new ArrayList<>();
 
     @Builder.Default
     @OneToMany(mappedBy = "member")

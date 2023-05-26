@@ -1,18 +1,18 @@
 package com.mate.helgather.dto;
 
-import com.mate.helgather.domain.Exercise;
-import com.mate.helgather.domain.status.ExerciseCategory;
+import com.mate.helgather.domain.Sbd;
+import com.mate.helgather.domain.status.SbdCategory;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class ExerciseResponseDto {
-    ExerciseCategory category;
+public class SbdResponseDto {
+    SbdCategory category;
     String videoUrl;
     String thumbNailUrl;
 
-    public ExerciseResponseDto(Exercise exercise) {
+    public SbdResponseDto(Sbd exercise) {
         this.category = exercise.getCategory();
         this.videoUrl = exercise.getVideoUrl();
         this.thumbNailUrl = exercise.getThumbnailUrl();

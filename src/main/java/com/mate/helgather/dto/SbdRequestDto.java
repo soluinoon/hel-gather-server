@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class ExerciseRequestDto {
+public class SbdRequestDto {
     String videoUrl;
     String thumbNailUrl;
 }

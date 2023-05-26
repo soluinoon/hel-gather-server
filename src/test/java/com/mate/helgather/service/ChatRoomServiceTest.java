@@ -1,32 +1,11 @@
 package com.mate.helgather.service;
 
-import com.mate.helgather.domain.ChatRoom;
-import com.mate.helgather.domain.Member;
-import com.mate.helgather.domain.MemberChatRoom;
-import com.mate.helgather.domain.Recruitment;
-import com.mate.helgather.domain.status.ChatRoomStatus;
-import com.mate.helgather.domain.status.MemberStatus;
-import com.mate.helgather.domain.status.RecruitmentStatus;
-import com.mate.helgather.dto.ChatRoomListResponse;
 import com.mate.helgather.repository.ChatRoomRepository;
 import com.mate.helgather.repository.MemberChatRoomRepository;
 import com.mate.helgather.repository.MemberRepository;
 import com.mate.helgather.repository.RecruitmentRepository;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
-
-import java.time.LocalDate;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 class ChatRoomServiceTest {

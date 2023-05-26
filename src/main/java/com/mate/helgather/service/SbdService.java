@@ -1,16 +1,16 @@
 package com.mate.helgather.service;
 
-import com.mate.helgather.domain.Exercise;
+import com.mate.helgather.domain.Sbd;
 import com.mate.helgather.domain.Member;
-import com.mate.helgather.domain.status.ExerciseCategory;
-import com.mate.helgather.dto.ExerciseRequestDto;
-import com.mate.helgather.dto.ExerciseResponseDto;
+import com.mate.helgather.domain.status.SbdCategory;
+import com.mate.helgather.dto.SbdRequestDto;
+import com.mate.helgather.dto.SbdResponseDto;
 import com.mate.helgather.exception.BaseException;
 import com.mate.helgather.exception.DefaultImageException;
 import com.mate.helgather.exception.ErrorCode;
 import com.mate.helgather.exception.S3NoPathException;
 import com.mate.helgather.repository.AmazonS3Repository;
-import com.mate.helgather.repository.ExerciseRepository;
+import com.mate.helgather.repository.SbdRepository;
 import com.mate.helgather.repository.MemberRepository;
 import lombok.AllArgsConstructor;
 import org.jcodec.api.FrameGrab;
@@ -31,24 +31,33 @@ import java.util.UUID;
 
 @Service
 @AllArgsConstructor
-public class ExerciseService {
+public class SbdService {
     private final AmazonS3Repository amazonS3Repository;
-    private final ExerciseRepository exerciseRepository;
+    private final SbdRepository sbdRepository;
     private final MemberRepository memberRepository;
     private static final String VIDEO_BASE_DIR = "videos";
     private static final String THUMBNAIL_BASE_DIR = "thumbnails";
     private static final String THUMBNAIL_EXTENSION = "png";
     private static final String DEFAULT_IMAGE_PATH = "src/main/resources/static/images/default-thumbnail.png";
 
-    public ExerciseResponseDto saveExercise(Long memberId, String category, MultipartFile multipartFile) throws Exception {
-        ExerciseCategory exerciseCategory = ExerciseCategory.of(category);
-        if (exerciseCategory.equals(ExerciseCategory.TODAY)) {
-            return saveToday(exerciseCategory, memberId, multipartFile);
+    public SbdResponseDto saveExercise(Long memberId, String category, MultipartFile multipartFile) throws Exception {
+        SbdCategory sbdCategory = SbdCategory.of(category);
+        if (sbdCategory.equals(SbdCategory.TODAY)) {
+            return saveToday(sbdCategory, memberId, multipartFile);
         } else {
-            return saveSBD(exerciseCategory, memberId, multipartFile);
+            return saveSBD(sbdCategory, memberId, multipartFile);
         }
     }
-    public ExerciseResponseDto saveSBD(ExerciseCategory exerciseCategory, Long memberId, MultipartFile multipartFile) throws Exception {
+
+    /**
+     * SBD를 저장한다.
+     * @param sbdCategory
+     * @param memberId
+     * @param multipartFile
+     * @return
+     * @throws Exception
+     */
+    public SbdResponseDto saveSBD(SbdCategory sbdCategory, Long memberId, MultipartFile multipartFile) throws Exception {
         String fileId = UUID.randomUUID().toString();
         File videoFile = new File(getLocalHomeDirectory(), createPath(multipartFile.getContentType(), fileId));
         String thumbNailPath = String.format("%s/%s.%s", THUMBNAIL_BASE_DIR, fileId, THUMBNAIL_EXTENSION);
@@ -66,19 +75,19 @@ public class ExerciseService {
                 thumbnailUrl = amazonS3Repository.save(thumbnailFile, thumbNailPath);
             }
             // 레포지터리에 운동영상, 썸네일 영상 저장
-            Exercise exercise = exerciseRepository.save(Exercise.builder()
+            Sbd exercise = sbdRepository.save(Sbd.builder()
                     .member(member)
-                    .category(exerciseCategory)
+                    .category(sbdCategory)
                     .videoUrl(videoUrl)
                     .thumbnailUrl(thumbnailUrl)
                     .build());
-            return new ExerciseResponseDto(exercise);
+            return new SbdResponseDto(exercise);
         } catch (IOException e) {
             throw new S3NoPathException();
         }
     }
 
-    public ExerciseResponseDto saveToday(ExerciseCategory exerciseCategory, Long memberId, MultipartFile multipartFile) throws Exception {
+    public SbdResponseDto saveToday(SbdCategory sbdCategory, Long memberId, MultipartFile multipartFile) throws Exception {
         String fileId = UUID.randomUUID().toString();
         String thumbNailPath = String.format("%s/%s.%s", THUMBNAIL_BASE_DIR, fileId, THUMBNAIL_EXTENSION);
         File file = new File(getLocalHomeDirectory(), thumbNailPath);
@@ -89,13 +98,13 @@ public class ExerciseService {
             Member member = memberRepository.findById(memberId)
                     .orElseThrow(() -> new BaseException(ErrorCode.NO_SUCH_MEMBER_ERROR));
             // 레포지터리에 운동영상, 썸네일 영상 저장
-            Exercise exercise = exerciseRepository.save(Exercise.builder()
+            Sbd exercise = sbdRepository.save(Sbd.builder()
                     .member(member)
-                    .category(exerciseCategory)
+                    .category(sbdCategory)
                     .videoUrl("")
                     .thumbnailUrl(thumbnailUrl)
                     .build());
-            return new ExerciseResponseDto(exercise);
+            return new SbdResponseDto(exercise);
         } catch (IOException e) {
             throw new S3NoPathException();
         }
@@ -116,14 +125,6 @@ public class ExerciseService {
 //        return System.getProperty("user.home");
         // 서버
         return "/home/ubuntu/";
-    }
-
-    public String getFormat(String contentType) {
-        if (StringUtils.hasText(contentType)) {
-            return contentType.substring(contentType.lastIndexOf('/') + 1);
-        }
-
-        return null;
     }
 
     public File extractThumbnail(File source, String path) throws Exception {
@@ -151,62 +152,62 @@ public class ExerciseService {
         }
     }
 
-    public List<ExerciseResponseDto> findExercisesByCategory(Long memberId, String category) throws Exception {
-        ExerciseCategory exerciseCategory = ExerciseCategory.of(category);
+    public List<SbdResponseDto> findExercisesByCategory(Long memberId, String category) throws Exception {
+        SbdCategory sbdCategory = SbdCategory.of(category);
 
         if (!memberRepository.existsById(memberId)) {
             throw new BaseException(ErrorCode.NO_SUCH_MEMBER_ERROR);
         }
-        List<Exercise> exercises = exerciseRepository.findAllByMemberIdAndCategory(memberId, exerciseCategory);
-        List<ExerciseResponseDto> exerciseResponseDtos = new ArrayList<>();
+        List<Sbd> exercises = sbdRepository.findAllByMemberIdAndCategory(memberId, sbdCategory);
+        List<SbdResponseDto> sbdResponseDtos = new ArrayList<>();
 
-        for (Exercise exercise : exercises) {
-            exerciseResponseDtos.add(new ExerciseResponseDto(exercise));
+        for (Sbd exercise : exercises) {
+            sbdResponseDtos.add(new SbdResponseDto(exercise));
         }
 
-        return exerciseResponseDtos;
+        return sbdResponseDtos;
     }
 
-    public List<ExerciseResponseDto> findSBD(Long memberId) throws Exception {
-        ExerciseCategory exerciseCategory = ExerciseCategory.TODAY;
+    public List<SbdResponseDto> findSBD(Long memberId) throws Exception {
+        SbdCategory sbdCategory = SbdCategory.TODAY;
 
         if (!memberRepository.existsById(memberId)) {
             throw new BaseException(ErrorCode.NO_SUCH_MEMBER_ERROR);
         }
 
-        List<ExerciseResponseDto> exerciseResponseDtos = new ArrayList<>();
+        List<SbdResponseDto> sbdResponseDtos = new ArrayList<>();
 
-        exerciseResponseDtos.add(new ExerciseResponseDto(exerciseRepository
-                .findTopByMemberIdAndCategoryOrderByCreatedAtDesc(memberId, ExerciseCategory.DEAD_LIFT).orElse(Exercise.builder()
-                        .category(ExerciseCategory.DEAD_LIFT)
+        sbdResponseDtos.add(new SbdResponseDto(sbdRepository
+                .findTopByMemberIdAndCategoryOrderByCreatedAtDesc(memberId, SbdCategory.DEAD_LIFT).orElse(Sbd.builder()
+                        .category(SbdCategory.DEAD_LIFT)
                         .thumbnailUrl("")
                         .videoUrl("")
                         .build())));
-        exerciseResponseDtos.add(new ExerciseResponseDto(exerciseRepository
-                .findTopByMemberIdAndCategoryOrderByCreatedAtDesc(memberId, ExerciseCategory.SQUAT).orElse(Exercise.builder()
-                        .category(ExerciseCategory.SQUAT)
+        sbdResponseDtos.add(new SbdResponseDto(sbdRepository
+                .findTopByMemberIdAndCategoryOrderByCreatedAtDesc(memberId, SbdCategory.SQUAT).orElse(Sbd.builder()
+                        .category(SbdCategory.SQUAT)
                         .thumbnailUrl("")
                         .videoUrl("")
                         .build())));
-        exerciseResponseDtos.add(new ExerciseResponseDto(exerciseRepository
-                .findTopByMemberIdAndCategoryOrderByCreatedAtDesc(memberId, ExerciseCategory.BENCH_PRESS).orElse(Exercise.builder()
-                        .category(ExerciseCategory.BENCH_PRESS)
+        sbdResponseDtos.add(new SbdResponseDto(sbdRepository
+                .findTopByMemberIdAndCategoryOrderByCreatedAtDesc(memberId, SbdCategory.BENCH_PRESS).orElse(Sbd.builder()
+                        .category(SbdCategory.BENCH_PRESS)
                         .thumbnailUrl("")
                         .videoUrl("")
                         .build())));
-        return exerciseResponseDtos;
+        return sbdResponseDtos;
     }
 
-    public void deleteExercise(Long memberId, ExerciseRequestDto exerciseRequestDto) throws Exception {
+    public void deleteExercise(Long memberId, SbdRequestDto sbdRequestDto) throws Exception {
         if (!memberRepository.existsById(memberId)) {
             throw new BaseException(ErrorCode.NO_SUCH_MEMBER_ERROR);
         }
-        if (!exerciseRequestDto.getVideoUrl().equals("")) {
-            amazonS3Repository.delete(extractKey(exerciseRequestDto.getVideoUrl(), VIDEO_BASE_DIR));
+        if (!sbdRequestDto.getVideoUrl().equals("")) {
+            amazonS3Repository.delete(extractKey(sbdRequestDto.getVideoUrl(), VIDEO_BASE_DIR));
         }
-        amazonS3Repository.delete(extractKey(exerciseRequestDto.getThumbNailUrl(), THUMBNAIL_BASE_DIR));
-        exerciseRepository.deleteByMemberIdAndVideoUrlAndThumbnailUrl(memberId, exerciseRequestDto.getVideoUrl(),
-                                                    exerciseRequestDto.getThumbNailUrl());
+        amazonS3Repository.delete(extractKey(sbdRequestDto.getThumbNailUrl(), THUMBNAIL_BASE_DIR));
+        sbdRepository.deleteByMemberIdAndVideoUrlAndThumbnailUrl(memberId, sbdRequestDto.getVideoUrl(),
+                                                    sbdRequestDto.getThumbNailUrl());
     }
 
     private String extractKey(String url, String baseUrl) {
