@@ -9,6 +9,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public class MemberLoginResponseDto {
 
+    private Long memberId;
     private String nickname;
     private String grantType; //jwt 인증 타입
     private String accessToken;
