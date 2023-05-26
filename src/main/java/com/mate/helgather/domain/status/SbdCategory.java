@@ -5,7 +5,7 @@ import com.mate.helgather.exception.ErrorCode;
 import lombok.Getter;
 
 @Getter
-public enum ExerciseCategory {
+public enum SbdCategory {
     DEAD_LIFT("dead_lift"),
     SQUAT("squat"),
     BENCH_PRESS("bench_press"),
@@ -13,14 +13,14 @@ public enum ExerciseCategory {
 
     private String category;
 
-    ExerciseCategory(String category) {
+    SbdCategory(String category) {
         this.category = category;
     }
 
-    public static ExerciseCategory of(String category) throws Exception {
-        for (ExerciseCategory exerciseCategory : ExerciseCategory.values()) {
-            if (exerciseCategory.getCategory().equals(category)) {
-                return exerciseCategory;
+    public static SbdCategory of(String category) throws Exception {
+        for (SbdCategory sbdCategory : SbdCategory.values()) {
+            if (sbdCategory.getCategory().equals(category)) {
+                return sbdCategory;
             }
         }
         throw new BaseException(ErrorCode.NO_SUCH_CATEGORY_ERROR);
