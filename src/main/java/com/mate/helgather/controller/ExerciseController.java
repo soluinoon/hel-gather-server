@@ -3,7 +3,7 @@ package com.mate.helgather.controller;
 import com.mate.helgather.dto.TodayExerciseRequestDto;
 import com.mate.helgather.dto.TodayExerciseResponseDto;
 import com.mate.helgather.exception.BaseResponse;
-import com.mate.helgather.service.TodayExerciseService;
+import com.mate.helgather.service.ExerciseService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,26 +14,26 @@ import java.util.List;
 
 @RestController
 @AllArgsConstructor
-public class TodayExerciseController {
-    private final TodayExerciseService todayExerciseService;
+public class ExerciseController {
+    private final ExerciseService exerciseService;
 
-    @GetMapping("/today-exercises")
-    public ResponseEntity<BaseResponse> findTodayExercise(@RequestParam("member") Long memberId) throws Exception {
-        List<TodayExerciseResponseDto> todayExerciseResponseDtos = todayExerciseService.find(memberId);
+    @GetMapping("/exercises")
+    public ResponseEntity<BaseResponse> findExercise(@RequestParam("member") Long memberId) throws Exception {
+        List<TodayExerciseResponseDto> todayExerciseResponseDtos = exerciseService.findAll(memberId);
         return new ResponseEntity<>(new BaseResponse(todayExerciseResponseDtos), HttpStatus.OK);
     }
 
-    @PostMapping("/today-exercises")
-    public ResponseEntity<BaseResponse> saveTodayExercise(@RequestParam("member") Long memberId,
+    @PostMapping("/exercises")
+    public ResponseEntity<BaseResponse> saveExercise(@RequestParam("member") Long memberId,
                                                           @RequestPart("file") MultipartFile multipartFile) throws Exception {
-        TodayExerciseResponseDto todayExerciseResponseDto = todayExerciseService.save(memberId, multipartFile);
+        TodayExerciseResponseDto todayExerciseResponseDto = exerciseService.save(memberId, multipartFile);
         return new ResponseEntity<>(new BaseResponse(todayExerciseResponseDto), HttpStatus.OK);
     }
 
-    @DeleteMapping("/today-exercises")
+    @DeleteMapping("/exercises")
     public ResponseEntity<BaseResponse> deleteExerciseV1(@PathVariable("member") Long memberId,
                                                          TodayExerciseRequestDto todayExerciseRequestDto) throws Exception {
-        todayExerciseService.delete(memberId, todayExerciseRequestDto);
+        exerciseService.delete(memberId, todayExerciseRequestDto);
         return new ResponseEntity<>(new BaseResponse("삭제 성공"), HttpStatus.OK);
     }
 }

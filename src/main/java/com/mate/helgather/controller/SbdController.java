@@ -53,8 +53,8 @@ public class SbdController {
      * @param sbdRequestDto 비디오, 썸네일 url을 담고있다.
      */
     @DeleteMapping("/sbd")
-    public ResponseEntity<BaseResponse> deleteExerciseV1(@PathVariable("member") Long memberId,
-                                                         SbdRequestDto sbdRequestDto) throws Exception {
+    public ResponseEntity<BaseResponse> deleteSBDV1(@PathVariable("member") Long memberId,
+                                                    SbdRequestDto sbdRequestDto) throws Exception {
         sbdService.deleteExercise(memberId, sbdRequestDto);
         return new ResponseEntity<>(new BaseResponse("삭제 성공"), HttpStatus.OK);
     }
