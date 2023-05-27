@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class TodayExerciseService {
+public class ExerciseService {
     private final TodayExerciseRepository todayExerciseRepository;
     private final AmazonS3Repository amazonS3Repository;
     private final MemberRepository memberRepository;
@@ -25,15 +25,24 @@ public class TodayExerciseService {
     private static final String TODAY_EXERCISE_BASE_DIR = "thumbnails";
 
     public TodayExerciseResponseDto save(Long memberId, MultipartFile multipartFile) throws Exception {
+        if (!memberRepository.existsById(memberId)) {
+            throw new BaseException(ErrorCode.NO_SUCH_MEMBER_ERROR);
+        }
+
         String imageUrl = amazonS3Repository.saveV2(multipartFile, TODAY_EXERCISE_BASE_DIR);
         todayExerciseRepository.save(TodayExercise.builder()
                 .member(memberRepository.getReferenceById(memberId))
                 .imageUrl(imageUrl)
                 .build());
+
         return new TodayExerciseResponseDto(imageUrl);
     }
 
-    public List<TodayExerciseResponseDto> find(Long memberId) throws Exception {
+    public List<TodayExerciseResponseDto> findAll(Long memberId) throws Exception {
+        if (!memberRepository.existsById(memberId)) {
+            throw new BaseException(ErrorCode.NO_SUCH_MEMBER_ERROR);
+        }
+
         List<TodayExercise> todayExercises = todayExerciseRepository.findAllByMemberId(memberId);
 
         return todayExercises.stream()
@@ -45,6 +54,7 @@ public class TodayExerciseService {
         if (!memberRepository.existsById(memberId)) {
             throw new BaseException(ErrorCode.NO_SUCH_MEMBER_ERROR);
         }
+
         amazonS3Repository.delete(extractKey(todayExerciseRequestDto.getImageUrl(), TODAY_EXERCISE_BASE_DIR));
         todayExerciseRepository.deleteByMemberIdAndImageUrl(memberId, todayExerciseRequestDto.getImageUrl());
     }

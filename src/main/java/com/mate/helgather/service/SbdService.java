@@ -40,15 +40,6 @@ public class SbdService {
     private static final String THUMBNAIL_EXTENSION = "png";
     private static final String DEFAULT_IMAGE_PATH = "src/main/resources/static/images/default-thumbnail.png";
 
-    public SbdResponseDto saveExercise(Long memberId, String category, MultipartFile multipartFile) throws Exception {
-        SbdCategory sbdCategory = SbdCategory.of(category);
-        if (sbdCategory.equals(SbdCategory.TODAY)) {
-            return saveToday(sbdCategory, memberId, multipartFile);
-        } else {
-            return saveSBD(sbdCategory, memberId, multipartFile);
-        }
-    }
-
     /**
      * SBD를 저장한다.
      * @param sbdCategory
@@ -79,29 +70,6 @@ public class SbdService {
                     .member(member)
                     .category(sbdCategory)
                     .videoUrl(videoUrl)
-                    .thumbnailUrl(thumbnailUrl)
-                    .build());
-            return new SbdResponseDto(exercise);
-        } catch (IOException e) {
-            throw new S3NoPathException();
-        }
-    }
-
-    public SbdResponseDto saveToday(SbdCategory sbdCategory, Long memberId, MultipartFile multipartFile) throws Exception {
-        String fileId = UUID.randomUUID().toString();
-        String thumbNailPath = String.format("%s/%s.%s", THUMBNAIL_BASE_DIR, fileId, THUMBNAIL_EXTENSION);
-        File file = new File(getLocalHomeDirectory(), thumbNailPath);
-
-        try {
-            multipartFile.transferTo(file);
-            String thumbnailUrl = amazonS3Repository.save(file, thumbNailPath);
-            Member member = memberRepository.findById(memberId)
-                    .orElseThrow(() -> new BaseException(ErrorCode.NO_SUCH_MEMBER_ERROR));
-            // 레포지터리에 운동영상, 썸네일 영상 저장
-            Sbd exercise = sbdRepository.save(Sbd.builder()
-                    .member(member)
-                    .category(sbdCategory)
-                    .videoUrl("")
                     .thumbnailUrl(thumbnailUrl)
                     .build());
             return new SbdResponseDto(exercise);
@@ -152,7 +120,7 @@ public class SbdService {
         }
     }
 
-    public List<SbdResponseDto> findExercisesByCategory(Long memberId, String category) throws Exception {
+    public List<SbdResponseDto> findSBDByCategory(Long memberId, String category) throws Exception {
         SbdCategory sbdCategory = SbdCategory.of(category);
 
         if (!memberRepository.existsById(memberId)) {
