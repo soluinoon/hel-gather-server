@@ -38,7 +38,7 @@ public class ChatController {
      * @param chatRequestDto 채팅 DTO
      */
     @MessageMapping("/chats/{id}") // 실제론 메세지 매핑으로 pub/chatroom/{id} 임
-    public void pubMessage(@DestinationVariable("id") Long chatRoomId, ChatRequestDto chatRequestDto) {
+    public ResponseEntity<BaseResponse> pubMessage(@DestinationVariable("id") Long chatRoomId, ChatRequestDto chatRequestDto) {
         log.info("chat {} send by {} to room number{}", chatRequestDto.getMessage(), chatRequestDto.getUserId(), chatRoomId);
         Message message = chatService.saveMessage(chatRequestDto, chatRoomId);
         /**
@@ -47,10 +47,11 @@ public class ChatController {
          * API 명세서
          */
         template.convertAndSend("/sub/chats/" + chatRoomId, new ChatResponseDto(chatRequestDto, message));
+        return new ResponseEntity<>(new BaseResponse("성공"), HttpStatus.OK);
     }
 
     /**
-     * 채팅방 메세지 API 명세서 5번
+     * 5. 채팅방 메세지 API
      * @param chatRoomId
      * @param memberId
      * @return

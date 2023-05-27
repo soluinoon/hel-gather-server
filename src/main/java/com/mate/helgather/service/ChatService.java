@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,7 +28,8 @@ public class ChatService {
     private final MemberChatRoomRepository memberChatRoomRepository;
 
     public Message saveMessage(ChatRequestDto chatRequestDTO, Long chatRoomId) {
-        return messageRepository.save(Message.builder().chatRoom(chatRoomRepository.findById(chatRoomId).orElseThrow(NoSuchElementException::new))
+        return messageRepository.save(Message.builder().chatRoom(chatRoomRepository.findById(chatRoomId)
+                        .orElseThrow(() -> new BaseException(ErrorCode.NO_SUCH_CHATROOM_ERROR)))
                 .member(memberRepository.getReferenceById(chatRequestDTO.getUserId()))
                 .description(chatRequestDTO.getMessage())
                 .build());
