@@ -1,6 +1,5 @@
 package com.mate.helgather.controller;
 
-import com.mate.helgather.dto.SbdRequestDto;
 import com.mate.helgather.dto.TodayExerciseRequestDto;
 import com.mate.helgather.dto.TodayExerciseResponseDto;
 import com.mate.helgather.exception.BaseResponse;
@@ -31,7 +30,7 @@ public class TodayExerciseController {
         return new ResponseEntity<>(new BaseResponse(todayExerciseResponseDto), HttpStatus.OK);
     }
 
-    @DeleteMapping("/today-exercise")
+    @DeleteMapping("/today-exercises")
     public ResponseEntity<BaseResponse> deleteExerciseV1(@PathVariable("member") Long memberId,
                                                          TodayExerciseRequestDto todayExerciseRequestDto) throws Exception {
         todayExerciseService.delete(memberId, todayExerciseRequestDto);

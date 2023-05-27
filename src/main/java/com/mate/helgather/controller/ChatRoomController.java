@@ -25,6 +25,7 @@ public class ChatRoomController {
     /**
      * 멤버의 id를 이용해 채팅방 정보 리스트를 반환한다.
      * 없다면 null을 반환
+     * API 명세서 4번 항목
      * @param memberId 멤버의 id 이다.
      * @return List<ChatRoomListResponse> 채팅방들의 원하는 정보를 리스트로 반환
      */

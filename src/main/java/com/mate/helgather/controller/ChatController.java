@@ -31,18 +31,19 @@ public class ChatController {
     /**
      * 채팅 발행 API
      * 실제 URL은 pub/chatroom/{id}이다.
+     * API 명세서 6번
      * 구독하고 있는 모든 사용자에게 메세지를 전달한다.
      * @param chatRoomId 채팅룸 id
      * @param chatRequestDto 채팅 DTO
      */
-    @MessageMapping("/chatroom/{id}") // 실제론 메세지 매핑으로 pub/chatroom/{id} 임
+    @MessageMapping("/chatrooms/{id}") // 실제론 메세지 매핑으로 pub/chatroom/{id} 임
     public void pubMessage(@DestinationVariable("id") Long chatRoomId, ChatRequestDto chatRequestDto) {
         log.info("chat {} send by {} to room number{}", chatRequestDto.getMessage(), chatRequestDto.getUserId(), chatRoomId);
         Message message = chatService.saveMessage(chatRequestDto, chatRoomId);
-        template.convertAndSend("/sub/chatroom/" + chatRoomId, new ChatResponseDto(chatRequestDto, message));
+        template.convertAndSend("/sub/chatrooms/" + chatRoomId, new ChatResponseDto(chatRequestDto, message));
     }
 
-    @GetMapping("/chatroom/{id}")
+    @GetMapping("/chatrooms/{id}")
     public ResponseEntity<BaseResponse> findMessages(@PathVariable("id") Long chatRoomId,
                                                      @RequestParam(value = "member", required = true) Long memberId) {
         List<MessagesResponseDto> messages = chatService.findMessages(chatRoomId, memberId);

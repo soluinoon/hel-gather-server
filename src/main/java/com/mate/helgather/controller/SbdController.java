@@ -22,6 +22,7 @@ public class SbdController {
 
     /**
      * SBD 인증 작성 API
+     * API 명세서 12번
      * @param memberId 멤버 id
      * @param multipartFile 동영상 파일
      * @param category 운동 카테고리이다. 스쿼트, 데드리프트, 벤치프레스로 나뉨.
@@ -47,7 +48,7 @@ public class SbdController {
     /**
      * 운동 인증 삭제 API
      * 클라이언트에서 url을 받아와서 삭제시킨다.
-     *
+     * API 명세서 14번
      * @param memberId 유저 id
      * @param sbdRequestDto 비디오, 썸네일 url을 담고있다.
      */
