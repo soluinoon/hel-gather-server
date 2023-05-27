@@ -30,7 +30,8 @@ public class ChatService {
     public Message saveMessage(ChatRequestDto chatRequestDTO, Long chatRoomId) {
         return messageRepository.save(Message.builder().chatRoom(chatRoomRepository.findById(chatRoomId)
                         .orElseThrow(() -> new BaseException(ErrorCode.NO_SUCH_CHATROOM_ERROR)))
-                .member(memberRepository.getReferenceById(chatRequestDTO.getUserId()))
+                .member(memberRepository.findById(chatRequestDTO.getUserId()).
+                        orElseThrow(() -> new BaseException(ErrorCode.NO_SUCH_MEMBER_ERROR)))
                 .description(chatRequestDTO.getMessage())
                 .build());
     }

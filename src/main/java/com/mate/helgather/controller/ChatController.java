@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 @RestController
 @RequiredArgsConstructor
@@ -29,7 +30,7 @@ public class ChatController {
 
     private final ChatService chatService;
     private final SimpMessageSendingOperations template;
-
+    private final static ConcurrentHashMap<Long, Long> prevMap = new ConcurrentHashMap<>();
     /**
      * 채팅 발행 API 명세서 6번
      * 실제 URL은 pub/chats/{id}이다.
@@ -41,12 +42,16 @@ public class ChatController {
     public ResponseEntity<BaseResponse> pubMessage(@DestinationVariable("id") Long chatRoomId, ChatRequestDto chatRequestDto) {
         log.info("chat {} send by {} to room number{}", chatRequestDto.getMessage(), chatRequestDto.getUserId(), chatRoomId);
         Message message = chatService.saveMessage(chatRequestDto, chatRoomId);
+        // 이전 유저 꺼내오기
+        Long prevMemberId = prevMap.getOrDefault(chatRoomId, -1L);
+        // 이전 유저 저장
+        prevMap.put(chatRoomId, chatRequestDto.getUserId());
         /**
          * 채팅 구독 API
          * 실제 URL은 sub/chats/{id}이다.
          * API 명세서
          */
-        template.convertAndSend("/sub/chats/" + chatRoomId, new ChatResponseDto(chatRequestDto, message));
+        template.convertAndSend("/sub/chats/" + chatRoomId, new ChatResponseDto(chatRequestDto, message, prevMemberId));
         return new ResponseEntity<>(new BaseResponse("성공"), HttpStatus.OK);
     }
 

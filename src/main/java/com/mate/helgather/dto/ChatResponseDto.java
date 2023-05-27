@@ -14,9 +14,6 @@ public class ChatResponseDto {
     @NotNull(message = "유저 id는 필수 입니다.")
     private long userId; // 채팅을 보낸 사람
 
-    @NotNull(message = "채팅 id는 필수 입니다.")
-    private long chatId; // 채팅 id
-
     @NotNull(message = "메세지는 필수 입니다.")
     private String message; // 메시지
 
@@ -25,14 +22,13 @@ public class ChatResponseDto {
 
     private boolean isFirst;
 
-    private int userProfile;
+    private String userProfile;
 
-    public ChatResponseDto(ChatRequestDto chatRequestDto, Message message) {
+    public ChatResponseDto(ChatRequestDto chatRequestDto, Message message, Long prevMemberId) {
         this.userId = chatRequestDto.getUserId();
-        this.chatId = message.getId();
         this.message = chatRequestDto.getMessage();
         this.time = chatRequestDto.getTime();
-        this.isFirst = chatRequestDto.isFirst();
+        this.isFirst = this.getUserId() != prevMemberId;
         this.userProfile = chatRequestDto.getUserProfile();
     }
 
