@@ -43,7 +43,7 @@ public class MemberService {
     private final MemberProfileRepository memberProfileRepository;
     private final AmazonS3Repository amazonS3Repository;
     private static final String MEMBER_PROFILE_BASE_DIR = "profiles";
-    private static final String DEFAULT_IMAGE_URL = "s3://hel-gather/profiles/Base_Image.png";
+    private static final String DEFAULT_IMAGE_URL = "https://hel-gather.s3.ap-northeast-2.amazonaws.com/profiles/Base_Image.png";
 
     @Transactional
     public MemberResponseDto createMember(MemberRequestDto memberRequestDto) throws BaseException {
