@@ -34,12 +34,27 @@ public class SbdController {
         SbdResponseDto sbdResponseDto = sbdService.saveSBD(SbdCategory.of(category), memberId, multipartFile);
         return new ResponseEntity<>(new BaseResponse(sbdResponseDto), HttpStatus.OK);
     }
+
+    /**
+     * 24 SBD 운동 스트리밍 API
+     * 사실상 그냥 주소를 반환
+     * @param memberId 멤버 id
+     * @param category 카테고리
+     * @return HTTP 주소로 변환하여 반환한다.
+     */
+    @GetMapping(value = "/sbd", params = {"member", "category"})
+    public ResponseEntity<BaseResponse> find(@RequestParam("member") Long memberId,
+                                             @RequestParam("category") String category) {
+        SbdResponseDto sbdResponseDto = sbdService.find(memberId, category);
+        return new ResponseEntity<>(new BaseResponse(sbdResponseDto), HttpStatus.OK);
+    }
+
     /**
      * SBD 운동 인증 조회 API
      * @param memberId 멤버의 id다
      * @return SBD를 각각 최신 하나씩 돌려줌
      */
-    @GetMapping("/sbd")
+    @GetMapping(value = "/sbd", params = {"member"})
     public ResponseEntity<BaseResponse> findSBD(@RequestParam("member") Long memberId) throws Exception {
         List<SbdResponseDto> sbdResponseDtoList = sbdService.findSBD(memberId);
         return new ResponseEntity<>(new BaseResponse(sbdResponseDtoList), HttpStatus.OK);

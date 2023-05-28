@@ -1,5 +1,6 @@
 package com.mate.helgather.service;
 
+import com.mate.helgather.domain.Member;
 import com.mate.helgather.domain.TodayExercise;
 import com.mate.helgather.dto.TodayExerciseRequestDto;
 import com.mate.helgather.dto.TodayExerciseResponseDto;
@@ -42,8 +43,8 @@ public class ExerciseService {
         if (!memberRepository.existsById(memberId)) {
             throw new BaseException(ErrorCode.NO_SUCH_MEMBER_ERROR);
         }
-
-        List<TodayExercise> todayExercises = todayExerciseRepository.findAllByMemberId(memberId);
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new BaseException(ErrorCode.NO_SUCH_MEMBER_ERROR));
+        List<TodayExercise> todayExercises = todayExerciseRepository.findAllByMember(member);
 
         return todayExercises.stream()
                 .map(todayExercise -> new TodayExerciseResponseDto(todayExercise.getImageUrl()))

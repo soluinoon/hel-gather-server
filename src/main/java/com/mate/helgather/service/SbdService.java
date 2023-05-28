@@ -78,6 +78,20 @@ public class SbdService {
         }
     }
 
+    public SbdResponseDto find(Long memberId, String category) {
+        if (!memberRepository.existsById(memberId)) {
+            throw new BaseException(ErrorCode.NO_SUCH_MEMBER_ERROR);
+        }
+        SbdCategory sbdCategory = SbdCategory.of(category);
+        Sbd sbd = sbdRepository.findTopByMemberIdAndCategoryOrderByCreatedAtDesc(memberId, sbdCategory)
+                .orElse(Sbd.builder()
+                        .videoUrl("")
+                        .thumbnailUrl("")
+                        .category(sbdCategory)
+                        .build());
+        return new SbdResponseDto(sbd);
+    }
+
     public String createPath(String contentType, String fileId) {
         String format = null;
 
