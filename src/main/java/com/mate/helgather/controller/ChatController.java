@@ -50,7 +50,8 @@ public class ChatController {
         for (Map.Entry<String, Object> entry : headers.entrySet()) {
             String headerName = entry.getKey();
             Object headerValue = entry.getValue();
-            log.info("Header - {}: {}", headerName, headerValue);
+            System.out.println("headerName = " + headerName);
+            System.out.println("headerValue = " + headerValue);
         }
 //        log.info("chat {} send by {} to room number{}", chatRequestDto.getMessage(), chatRequestDto.getUserId(), chatRoomId);
         Message message = chatService.saveMessage(chatRequestDto, chatRoomId);
