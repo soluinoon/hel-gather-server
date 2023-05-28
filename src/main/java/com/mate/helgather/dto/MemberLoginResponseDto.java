@@ -11,7 +11,7 @@ public class MemberLoginResponseDto {
 
     private Long memberId;
     private String nickname;
-    private String grantType; //jwt 인증 타입
-    private String accessToken;
-    private String refreshToken; //accessToken 재발급
+//    private String grantType; //jwt 인증 타입
+//    private String accessToken;
+//    private String refreshToken; //accessToken 재발급
 }

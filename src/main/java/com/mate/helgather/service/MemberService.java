@@ -8,7 +8,7 @@ import com.mate.helgather.exception.ErrorCode;
 import com.mate.helgather.repository.AmazonS3Repository;
 import com.mate.helgather.repository.MemberProfileRepository;
 import com.mate.helgather.repository.MemberRepository;
-import com.mate.helgather.util.JwtTokenProvider;
+//import com.mate.helgather.util.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -31,8 +31,8 @@ import static com.mate.helgather.exception.ErrorCode.*;
 public class MemberService {
 
     private final MemberRepository memberRepository;
-    private final AuthenticationManagerBuilder authenticationManagerBuilder;
-    private final JwtTokenProvider jwtTokenProvider;
+//    private final AuthenticationManagerBuilder authenticationManagerBuilder;
+//    private final JwtTokenProvider jwtTokenProvider;
     private final MemberProfileRepository memberProfileRepository;
     private final AmazonS3Repository amazonS3Repository;
     private static final String MEMBER_PROFILE_BASE_DIR = "profiles";
@@ -43,7 +43,7 @@ public class MemberService {
         validateMemberRequest(memberRequestDto);
 
         Member member = memberRequestDto.toEntity();
-        member.getRoles().add("USER");
+//        member.getRoles().add("USER");
         memberRepository.save(member);
 
         return new MemberResponseDto(
@@ -62,36 +62,42 @@ public class MemberService {
             throw new BaseException(ErrorCode.NO_INPUT_PASSWORD);
         }
 
+        Member member = memberRepository.findByNickname(nickname)
+        .orElseThrow(() -> new BaseException(NO_SUCH_MEMBER_ERROR));
+        return MemberLoginResponseDto.builder()
+                .memberId(member.getId())
+                .nickname(nickname)
+                .build();
         // 1. Login ID/PW 기반으로 Authentication 객체 생성
         // 이 때 authentication 는 인증 여부를 확인하는 authenticated 값이 false
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(nickname, password);
+//        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(nickname, password);
 
         // 2. 실제 검증 (사용자 비밀번호 체크)이 이루어지는 부분
         // authenticate 메서드가 실행될 때 CustomUserDetailsService 에서 만든 loadUserByUsername 가 실행
-        try {
-            Authentication authenticate = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
-            // 3. Authentication 객체를 통해 Principal 얻기
-            Object principal = authenticate.getPrincipal();
-
-            // 4. UserDetails 캐스팅
-            UserDetails userDetails = (UserDetails) principal;
-
-            TokenDto tokenDto = jwtTokenProvider.generateToken(authenticate);
-
-            Member member = memberRepository.findByNickname(nickname)
-                    .orElseThrow(() -> new BaseException(NO_SUCH_MEMBER_ERROR));
-
-            // 인증 정보를 기반으로 JWT 토큰 생성
-            return MemberLoginResponseDto.builder()
-                    .memberId(member.getId())
-                    .nickname(userDetails.getUsername())
-                    .grantType("Bearer")
-                    .accessToken(tokenDto.getAccessToken())
-                    .refreshToken(tokenDto.getRefreshToken())
-                    .build();
-        } catch (AuthenticationException e) {
-            throw new BaseException(ErrorCode.PASSWORD_CORRECT_ERROR);
-        }
+//        try {
+//            Authentication authenticate = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+//            // 3. Authentication 객체를 통해 Principal 얻기
+//            Object principal = authenticate.getPrincipal();
+//
+//            // 4. UserDetails 캐스팅
+//            UserDetails userDetails = (UserDetails) principal;
+//
+//            TokenDto tokenDto = jwtTokenProvider.generateToken(authenticate);
+//
+//            Member member = memberRepository.findByNickname(nickname)
+//                    .orElseThrow(() -> new BaseException(NO_SUCH_MEMBER_ERROR));
+//
+//            // 인증 정보를 기반으로 JWT 토큰 생성
+//            return MemberLoginResponseDto.builder()
+//                    .memberId(member.getId())
+//                    .nickname(userDetails.getUsername())
+//                    .grantType("Bearer")
+//                    .accessToken(tokenDto.getAccessToken())
+//                    .refreshToken(tokenDto.getRefreshToken())
+//                    .build();
+//        } catch (AuthenticationException e) {
+//            throw new BaseException(ErrorCode.PASSWORD_CORRECT_ERROR);
+//        }
     }
 
     @Transactional
