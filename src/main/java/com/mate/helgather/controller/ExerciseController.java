@@ -18,20 +18,21 @@ public class ExerciseController {
     private final ExerciseService exerciseService;
 
     @GetMapping("/exercises")
-    public ResponseEntity<BaseResponse> findExercise(@RequestParam("member") Long memberId) throws Exception {
-        List<TodayExerciseResponseDto> todayExerciseResponseDtos = exerciseService.findAll(memberId);
+    public ResponseEntity<BaseResponse> findAllByMemberId(@RequestParam("member") Long memberId) {
+        //TODO: memberId 1에서 오류 발생
+        List<TodayExerciseResponseDto> todayExerciseResponseDtos = exerciseService.findAllByMemberId(memberId);
         return new ResponseEntity<>(new BaseResponse(todayExerciseResponseDtos), HttpStatus.OK);
     }
 
     @PostMapping("/exercises")
-    public ResponseEntity<BaseResponse> saveExercise(@RequestParam("member") Long memberId,
-                                                          @RequestPart("file") MultipartFile multipartFile) throws Exception {
+    public ResponseEntity<BaseResponse> save(@RequestParam("member") Long memberId,
+                                                          @RequestPart("file") MultipartFile multipartFile) {
         TodayExerciseResponseDto todayExerciseResponseDto = exerciseService.save(memberId, multipartFile);
         return new ResponseEntity<>(new BaseResponse(todayExerciseResponseDto), HttpStatus.OK);
     }
 
     @DeleteMapping("/exercises")
-    public ResponseEntity<BaseResponse> deleteExerciseV1(@PathVariable("member") Long memberId,
+    public ResponseEntity<BaseResponse> delete(@PathVariable("member") Long memberId,
                                                          TodayExerciseRequestDto todayExerciseRequestDto) throws Exception {
         exerciseService.delete(memberId, todayExerciseRequestDto);
         return new ResponseEntity<>(new BaseResponse("삭제 성공"), HttpStatus.OK);
