@@ -37,7 +37,7 @@ public class MemberService {
     private final MemberProfileRepository memberProfileRepository;
     private final AmazonS3Repository amazonS3Repository;
     private static final String MEMBER_PROFILE_BASE_DIR = "profiles";
-    private static final String DEFAULT_IMAGE_URL = "https://hel-gather.s3.ap-northeast-2.amazonaws.com/profiles/Base_Image.png";
+    private static final String DEFAULT_IMAGE_URL = "http://hel-gather.s3.ap-northeast-2.amazonaws.com/profiles/Base_Image.png";
 
     @Transactional
     public MemberResponseDto createMember(MemberRequestDto memberRequestDto) throws BaseException {
@@ -156,13 +156,13 @@ public class MemberService {
                 .orElseThrow(() -> new BaseException(NO_SUCH_MEMBER_PROFILE));
 
         String imageUrl = amazonS3Repository.saveV2(multipartFile, MEMBER_PROFILE_BASE_DIR);
-
+        String httpImageUrl = imageUrl.substring(0, 4) + imageUrl.substring(5);
         //memberProfile 에 이미지 등록해주기
-        memberProfile.setImageUrl(imageUrl);
+        memberProfile.setImageUrl(httpImageUrl);
         memberProfileRepository.save(memberProfile);
 
         return MemberProfileImageResponseDto.builder()
-                .imageUrl(imageUrl)
+                .imageUrl(httpImageUrl)
                 .build();
     }
 
@@ -181,11 +181,12 @@ public class MemberService {
 
         //memberProfile 에 이미지 등록해주기
         String imageUrl = amazonS3Repository.saveV2(multipartFile, MEMBER_PROFILE_BASE_DIR);
-        memberProfile.setImageUrl(imageUrl);
+        String httpImageUrl = imageUrl.substring(0, 4) + imageUrl.substring(5);
+        memberProfile.setImageUrl(httpImageUrl);
         memberProfileRepository.save(memberProfile);
 
         return MemberProfileImageResponseDto.builder()
-                .imageUrl(imageUrl)
+                .imageUrl(httpImageUrl)
                 .build();
     }
 
