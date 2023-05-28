@@ -44,7 +44,14 @@ public class MemberService {
 
         Member member = memberRequestDto.toEntity();
 //        member.getRoles().add("USER");
-        memberRepository.save(member);
+
+        member = memberRepository.save(member);
+
+        MemberProfile profile = MemberProfile.builder()
+                .member(member)
+                .build();
+
+        memberProfileRepository.save(profile);
 
         return new MemberResponseDto(
                 member.getId(),
