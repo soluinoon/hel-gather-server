@@ -82,4 +82,11 @@ public class MemberController {
         MemberProfileResponseDto memberProfileResponseDto = memberService.getProfile(memberId);
         return new ResponseEntity<>(new BaseResponse(memberProfileResponseDto), HttpStatus.OK);
     }
+
+    //회원 탈퇴 로직
+    @DeleteMapping("/{memberId}")
+    public ResponseEntity<BaseResponse> deleteMember (@PathVariable Long memberId) {
+        MemberResponseDto memberProfileResponseDto = memberService.deleteMember(memberId);
+        return new ResponseEntity<>(new BaseResponse(memberProfileResponseDto), HttpStatus.OK);
+    }
 }

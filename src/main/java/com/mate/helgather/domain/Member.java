@@ -84,6 +84,10 @@ public class Member { //implements UserDetails
     @OneToMany(mappedBy = "member")
     private List<MemberChatRoom> memberChatRooms = new ArrayList<>();
 
+    public void changeStatus(MemberStatus status) {
+        this.status = status;
+    }
+
 //    @ElementCollection(fetch = FetchType.EAGER)
 //    @Builder.Default
 //    private List<String> roles = new ArrayList<>();
