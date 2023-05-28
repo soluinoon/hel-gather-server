@@ -51,7 +51,6 @@ public class MemberController {
     @PostMapping("/profile/{memberId}/image")
     public ResponseEntity<BaseResponse> createProfileImage(@PathVariable Long memberId,
                                                            @RequestPart("file") MultipartFile multipartFile) throws Exception {
-        System.out.println(multipartFile.getName());
         MemberProfileImageResponseDto dto = memberService.createProfileImage(memberId, multipartFile);
         return new ResponseEntity<>(new BaseResponse(dto), HttpStatus.OK);
     }
