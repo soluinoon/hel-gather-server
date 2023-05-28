@@ -216,6 +216,25 @@ public class MemberService {
                 .build();
     }
 
+    public MemberProfileResponseDto getProfile(Long memberId) {
+        if (!memberRepository.existsById(memberId)) {
+            throw new BaseException(NO_SUCH_MEMBER_ERROR);
+        }
+
+        MemberProfile profile = memberProfileRepository.findByMember_id(memberId)
+                .orElseThrow(() -> new BaseException(NO_SUCH_MEMBER_PROFILE));
+
+        return MemberProfileResponseDto.builder()
+                .memberId(memberId)
+                .imageUrl(profile.getImageUrl())
+                .introduction(profile.getIntroduction())
+                .benchPress(profile.getBenchPress())
+                .squat(profile.getSquat())
+                .deadlift(profile.getDeadLift())
+                .exerciseCount(profile.getExerciseCount())
+                .build();
+    }
+
     private String extractKey(String url, String baseUrl) {
         int index = url.indexOf(baseUrl);
         return url.substring(index);
@@ -277,6 +296,7 @@ public class MemberService {
             throw new BaseException(ErrorCode.EXIST_NICKNAME_ERROR);
         }
     }
+
 
 
 }
