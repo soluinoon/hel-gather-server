@@ -1,5 +1,7 @@
 package com.mate.helgather.domain;
 
+import com.mate.helgather.domain.status.MemberProfileStatus;
+import com.sun.istack.NotNull;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -43,6 +45,11 @@ public class MemberProfile {
 
     @LastModifiedDate
     private LocalDateTime updatedAt;
+
+    @Builder.Default
+    @Enumerated(EnumType.STRING)
+    @NotNull
+    private MemberProfileStatus status = MemberProfileStatus.ACTIVE;
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;

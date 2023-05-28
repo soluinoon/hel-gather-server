@@ -54,4 +54,12 @@ public class MemberController {
         MemberProfileImageResponseDto dto = memberService.createProfileImage(memberId, multipartFile);
         return new ResponseEntity<>(new BaseResponse(dto), HttpStatus.OK);
     }
+
+    //프로필 이미지 정보 변경 로직
+    @PatchMapping("/profile/{memberId}/image")
+    public ResponseEntity<BaseResponse> updateProfileImage(@PathVariable Long memberId,
+                                                           @RequestPart("file") MultipartFile multipartFile) throws Exception {
+        MemberProfileImageResponseDto dto = memberService.updateProfileImage(memberId, multipartFile);
+        return new ResponseEntity<>(new BaseResponse(dto), HttpStatus.OK);
+    }
 }

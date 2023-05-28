@@ -158,6 +158,34 @@ public class MemberService {
                 .build();
     }
 
+    @Transactional
+    public MemberProfileImageResponseDto updateProfileImage(Long memberId, MultipartFile multipartFile) throws Exception {
+        if (!memberRepository.existsById(memberId)) {
+            throw new BaseException(ErrorCode.NO_SUCH_MEMBER_ERROR);
+        }
+
+        //MemberProfile 데이터에서 특정 데이터 가져오기
+        MemberProfile memberProfile = memberProfileRepository.findByMember_id(memberId)
+                .orElseThrow(() -> new BaseException(NO_SUCH_MEMBER_PROFILE));
+
+        //s3에서 기존 이미지 정보 지우기
+        amazonS3Repository.delete(extractKey(memberProfile.getImageUrl(), MEMBER_PROFILE_BASE_DIR));
+
+        //memberProfile 에 이미지 등록해주기
+        String imageUrl = amazonS3Repository.saveV2(multipartFile, MEMBER_PROFILE_BASE_DIR);
+        memberProfile.setImageUrl(imageUrl);
+        memberProfileRepository.save(memberProfile);
+
+        return MemberProfileImageResponseDto.builder()
+                .imageUrl(imageUrl)
+                .build();
+    }
+
+    private String extractKey(String url, String baseUrl) {
+        int index = url.indexOf(baseUrl);
+        return url.substring(index);
+    }
+
     private void validateMemberRequest(MemberRequestDto memberRequestDto) throws BaseException {
 
         String phonePattern = "^\\d{3}-\\d{3,4}-\\d{4}$";
