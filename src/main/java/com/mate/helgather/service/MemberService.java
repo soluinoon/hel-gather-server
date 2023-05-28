@@ -2,12 +2,9 @@ package com.mate.helgather.service;
 
 import com.mate.helgather.domain.Member;
 import com.mate.helgather.domain.MemberProfile;
-import com.mate.helgather.domain.Sbd;
-import com.mate.helgather.domain.TodayExercise;
 import com.mate.helgather.dto.*;
 import com.mate.helgather.exception.BaseException;
 import com.mate.helgather.exception.ErrorCode;
-import com.mate.helgather.exception.S3NoPathException;
 import com.mate.helgather.repository.AmazonS3Repository;
 import com.mate.helgather.repository.MemberProfileRepository;
 import com.mate.helgather.repository.MemberRepository;
@@ -23,10 +20,6 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
-import java.io.File;
-import java.io.IOException;
-import java.util.Optional;
-import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -181,6 +174,34 @@ public class MemberService {
                 .build();
     }
 
+    @Transactional
+    public MemberProfileResponseDto updateProfile(Long memberId, String introduction,
+                                                  Integer benchPress, Integer squat, Integer deadlift) {
+        //특정 id를 가진 멤버 찾기
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new BaseException(NO_SUCH_MEMBER_ERROR));
+
+        MemberProfile profile = memberProfileRepository.findByMember_id(memberId)
+                .orElseThrow(() -> new BaseException(NO_SUCH_MEMBER_PROFILE));
+
+        profile.setIntroduction(introduction);
+        profile.setBenchPress(benchPress);
+        profile.setDeadLift(deadlift);
+        profile.setSquat(squat);
+
+        memberProfileRepository.save(profile);
+
+        return MemberProfileResponseDto.builder()
+                .memberId(memberId)
+                .imageUrl(profile.getImageUrl())
+                .introduction(introduction)
+                .benchPress(benchPress)
+                .squat(squat)
+                .deadlift(deadlift)
+                .exerciseCount(profile.getExerciseCount())
+                .build();
+    }
+
     private String extractKey(String url, String baseUrl) {
         int index = url.indexOf(baseUrl);
         return url.substring(index);
@@ -242,4 +263,6 @@ public class MemberService {
             throw new BaseException(ErrorCode.EXIST_NICKNAME_ERROR);
         }
     }
+
+
 }
