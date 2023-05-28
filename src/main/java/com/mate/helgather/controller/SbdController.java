@@ -28,9 +28,9 @@ public class SbdController {
      * @param category 운동 카테고리이다. 스쿼트, 데드리프트, 벤치프레스로 나뉨.
      */
     @PostMapping(value = "/sbd", produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<BaseResponse> saveSBD(@PathVariable("member") Long memberId,
+    public ResponseEntity<BaseResponse> saveSBD(@RequestParam("member") Long memberId,
                                                 @RequestParam("category") String category,
-                                                @RequestPart("file") MultipartFile multipartFile) throws Exception {
+                                                @RequestPart("file") MultipartFile multipartFile) {
         SbdResponseDto sbdResponseDto = sbdService.saveSBD(SbdCategory.of(category), memberId, multipartFile);
         return new ResponseEntity<>(new BaseResponse(sbdResponseDto), HttpStatus.OK);
     }
