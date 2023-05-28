@@ -13,8 +13,22 @@ public class SbdResponseDto {
     String thumbNailUrl;
 
     public SbdResponseDto(Sbd exercise) {
+        StringBuilder stringBuilder;
+
         this.category = exercise.getCategory();
-        this.videoUrl = exercise.getVideoUrl();
-        this.thumbNailUrl = exercise.getThumbnailUrl();
+        if (exercise.getVideoUrl().equals("")) {
+            this.videoUrl = exercise.getVideoUrl();
+        } else {
+            stringBuilder = new StringBuilder(exercise.getVideoUrl());
+            stringBuilder.deleteCharAt(4);
+            this.videoUrl = stringBuilder.toString();
+        }
+        if (exercise.getVideoUrl().equals("")) {
+            this.thumbNailUrl = exercise.getThumbnailUrl();
+        } else {
+            stringBuilder = new StringBuilder(exercise.getThumbnailUrl());
+            stringBuilder.deleteCharAt(4);
+            this.thumbNailUrl = stringBuilder.toString();
+        }
     }
 }
