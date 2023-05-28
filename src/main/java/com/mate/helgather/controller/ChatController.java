@@ -13,7 +13,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
+import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @RestController
@@ -39,8 +43,16 @@ public class ChatController {
      * @param chatRequestDto 채팅 DTO
      */
     @MessageMapping("/chats/{id}") // 실제론 메세지 매핑으로 pub/chatroom/{id} 임
-    public ResponseEntity<BaseResponse> pubMessage(@DestinationVariable("id") Long chatRoomId, ChatRequestDto chatRequestDto) {
-        log.info("chat {} send by {} to room number{}", chatRequestDto.getMessage(), chatRequestDto.getUserId(), chatRoomId);
+    public ResponseEntity<BaseResponse> pubMessage(@DestinationVariable("id") Long chatRoomId, @Payload ChatRequestDto chatRequestDto,
+                                                   SimpMessageHeaderAccessor headerAccessor) {
+        System.out.println("ChatController.pubMessage");
+        Map<String, Object> headers = headerAccessor.toMap();
+        for (Map.Entry<String, Object> entry : headers.entrySet()) {
+            String headerName = entry.getKey();
+            Object headerValue = entry.getValue();
+            log.info("Header - {}: {}", headerName, headerValue);
+        }
+//        log.info("chat {} send by {} to room number{}", chatRequestDto.getMessage(), chatRequestDto.getUserId(), chatRoomId);
         Message message = chatService.saveMessage(chatRequestDto, chatRoomId);
         // 이전 유저 꺼내오기
         Long prevMemberId = prevMap.getOrDefault(chatRoomId, -1L);
@@ -53,6 +65,17 @@ public class ChatController {
          */
         template.convertAndSend("/sub/chats/" + chatRoomId, new ChatResponseDto(chatRequestDto, message, prevMemberId));
         return new ResponseEntity<>(new BaseResponse("성공"), HttpStatus.OK);
+    }
+
+    @SubscribeMapping("/chats/{id}")
+    public void subMessage(@DestinationVariable("id") Long chatRoomId, ChatRequestDto chatRequestDto, SimpMessageHeaderAccessor headerAccessor) {
+        System.out.println("ChatController.subMessage");
+        Map<String, Object> headers = headerAccessor.toMap();
+        for (Map.Entry<String, Object> entry : headers.entrySet()) {
+            String headerName = entry.getKey();
+            Object headerValue = entry.getValue();
+            log.info("Header - {}: {}", headerName, headerValue);
+        }
     }
 
     /**
