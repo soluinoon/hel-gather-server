@@ -24,7 +24,7 @@ public class ExerciseService {
 
     private static final String TODAY_EXERCISE_BASE_DIR = "thumbnails";
 
-    public TodayExerciseResponseDto save(Long memberId, MultipartFile multipartFile) throws Exception {
+    public TodayExerciseResponseDto save(Long memberId, MultipartFile multipartFile) {
         if (!memberRepository.existsById(memberId)) {
             throw new BaseException(ErrorCode.NO_SUCH_MEMBER_ERROR);
         }
@@ -38,7 +38,7 @@ public class ExerciseService {
         return new TodayExerciseResponseDto(imageUrl);
     }
 
-    public List<TodayExerciseResponseDto> findAll(Long memberId) throws Exception {
+    public List<TodayExerciseResponseDto> findAllByMemberId(Long memberId) {
         if (!memberRepository.existsById(memberId)) {
             throw new BaseException(ErrorCode.NO_SUCH_MEMBER_ERROR);
         }
