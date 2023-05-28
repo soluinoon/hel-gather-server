@@ -49,6 +49,7 @@ public class MemberService {
 
         MemberProfile profile = MemberProfile.builder()
                 .member(member)
+                .imageUrl(DEFAULT_IMAGE_URL)
                 .build();
 
         memberProfileRepository.save(profile);
