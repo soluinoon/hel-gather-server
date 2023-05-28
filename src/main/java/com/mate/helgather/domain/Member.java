@@ -60,7 +60,7 @@ public class Member implements UserDetails {
     private MemberStatus status = MemberStatus.ACTIVE;
 
     @OneToOne(mappedBy = "member")
-    private UserProfile userProfile;
+    private MemberProfile memberProfile;
 
     @OneToOne(mappedBy = "member")
     private SocialLogin socialLogin;

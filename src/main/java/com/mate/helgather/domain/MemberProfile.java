@@ -2,17 +2,21 @@ package com.mate.helgather.domain;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
+@Builder
+@EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class UserProfile {
+public class MemberProfile {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,11 +30,15 @@ public class UserProfile {
 
     private String introduction;
 
-    private int benchPress;
+    private Integer benchPress;
 
-    private int squat;
+    private Integer squat;
 
-    private int deadLift;
+    private Integer deadLift;
+
+    @Builder.Default
+    @Column(name = "exercise_count")
+    private Integer exerciseCount = 0;
 
     @CreatedDate
     private LocalDateTime createdAt;

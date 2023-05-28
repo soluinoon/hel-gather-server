@@ -1,14 +1,13 @@
 package com.mate.helgather.service;
 
 import com.mate.helgather.domain.Member;
-import com.mate.helgather.dto.MemberRequestDto;
-import com.mate.helgather.dto.MemberResponseDto;
-import com.mate.helgather.dto.TokenDto;
+import com.mate.helgather.domain.MemberProfile;
+import com.mate.helgather.dto.*;
 import com.mate.helgather.exception.BaseException;
 import com.mate.helgather.exception.ErrorCode;
+import com.mate.helgather.repository.MemberProfileRepository;
 import com.mate.helgather.repository.MemberRepository;
 import com.mate.helgather.util.JwtTokenProvider;
-import com.mate.helgather.dto.MemberLoginResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -19,8 +18,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import javax.transaction.Transactional;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static com.mate.helgather.exception.ErrorCode.EXIST_MEMBER_PROFILE;
+import static com.mate.helgather.exception.ErrorCode.NO_SUCH_MEMBER_ERROR;
 
 @Service
 @Transactional
@@ -30,6 +33,7 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final JwtTokenProvider jwtTokenProvider;
+    private final MemberProfileRepository memberProfileRepository;
 
     @Transactional
     public MemberResponseDto createMember(MemberRequestDto memberRequestDto) throws BaseException {
@@ -72,7 +76,7 @@ public class MemberService {
             TokenDto tokenDto = jwtTokenProvider.generateToken(authenticate);
 
             Member member = memberRepository.findByNickname(nickname)
-                    .orElseThrow(() -> new BaseException(ErrorCode.NO_SUCH_MEMBER_ERROR));
+                    .orElseThrow(() -> new BaseException(NO_SUCH_MEMBER_ERROR));
 
             // 인증 정보를 기반으로 JWT 토큰 생성
             return MemberLoginResponseDto.builder()
@@ -87,6 +91,38 @@ public class MemberService {
         }
     }
 
+    @Transactional
+    public MemberProfileResponseDto createProfile(Long memberId, String introduction,
+                                                  Integer benchPress, Integer squat, Integer deadlift) {
+
+        //특정 id를 가진 멤버 찾기
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new BaseException(NO_SUCH_MEMBER_ERROR));
+
+        //memberProfile 에 이미 존재하는 회원인지 확인하기
+        if (memberProfileRepository.existsByMember_id(memberId)) {
+            throw new BaseException(EXIST_MEMBER_PROFILE);
+        }
+
+        MemberProfile profile = MemberProfile.builder()
+                .member(member)
+                .introduction(introduction)
+                .benchPress(benchPress)
+                .squat(squat)
+                .deadLift(deadlift)
+                .build();
+
+        memberProfileRepository.save(profile);
+
+        return MemberProfileResponseDto.builder()
+                .memberId(memberId)
+                .introduction(introduction)
+                .benchPress(benchPress)
+                .squat(squat)
+                .deadlift(deadlift)
+                .exerciseCount(0)
+                .build();
+    }
 
     private void validateMemberRequest(MemberRequestDto memberRequestDto) throws BaseException {
 

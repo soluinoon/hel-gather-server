@@ -1,18 +1,13 @@
 package com.mate.helgather.controller;
 
-import com.mate.helgather.dto.MemberLoginRequestDto;
-import com.mate.helgather.dto.MemberResponseDto;
-import com.mate.helgather.dto.MemberRequestDto;
+import com.mate.helgather.dto.*;
 import com.mate.helgather.exception.BaseResponse;
 import com.mate.helgather.service.MemberService;
-import com.mate.helgather.dto.MemberLoginResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequiredArgsConstructor
@@ -36,5 +31,18 @@ public class MemberController {
 
         MemberLoginResponseDto memberLoginResponseDto = memberService.loginMember(nickname, password);
         return new ResponseEntity<>(new BaseResponse(memberLoginResponseDto), HttpStatus.OK);
+    }
+
+    //프로필 입력 정보 로직(이미지 제외)
+    @PostMapping("/profile/{memberId}")
+    public ResponseEntity<BaseResponse> createProfile(@PathVariable Long memberId,
+                                                      @RequestBody MemberProfileRequestDto memberProfileRequestDto) {
+        String introduction = memberProfileRequestDto.getIntroduction();
+        Integer benchPress = memberProfileRequestDto.getBenchPress();
+        Integer squat = memberProfileRequestDto.getSquat();
+        Integer deadlift = memberProfileRequestDto.getDeadlift();
+
+        MemberProfileResponseDto memberProfileResponseDto = memberService.createProfile(memberId, introduction, benchPress, squat, deadlift);
+        return new ResponseEntity<>(new BaseResponse(memberProfileResponseDto), HttpStatus.OK);
     }
 }

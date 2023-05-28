@@ -25,6 +25,7 @@ public enum ErrorCode {
     PASSWORD_CORRECT_ERROR(4005, "비밀번호가 일치하지 않습니다."),
     NO_SUCH_CATEGORY_ERROR(4006, "카테고리가 존재하지 않습니다."),
     MEMBER_NOT_EXIST_IN_ROOM(4007, "채팅방에 존재하지 않는 멤버입니다."),
+    EXIST_MEMBER_PROFILE(4008, "이미 프로필 등록된 회원입니다."),
     S3_CONNECT_ERROR(5001, "S3 오류입니다."),
     S3_NO_PATH_ERROR(5002, "S3 경로 디렉토리가 있는지 확인해주세요."),
     DEFAULT_IMAGE_ERROR(5003, "기본 이미지가 없습니다.");
