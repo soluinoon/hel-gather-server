@@ -2,9 +2,13 @@ package com.mate.helgather.service;
 
 import com.mate.helgather.domain.Member;
 import com.mate.helgather.domain.MemberProfile;
+import com.mate.helgather.domain.Sbd;
+import com.mate.helgather.domain.TodayExercise;
 import com.mate.helgather.dto.*;
 import com.mate.helgather.exception.BaseException;
 import com.mate.helgather.exception.ErrorCode;
+import com.mate.helgather.exception.S3NoPathException;
+import com.mate.helgather.repository.AmazonS3Repository;
 import com.mate.helgather.repository.MemberProfileRepository;
 import com.mate.helgather.repository.MemberRepository;
 import com.mate.helgather.util.JwtTokenProvider;
@@ -16,14 +20,17 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
+import java.io.File;
+import java.io.IOException;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.mate.helgather.exception.ErrorCode.EXIST_MEMBER_PROFILE;
-import static com.mate.helgather.exception.ErrorCode.NO_SUCH_MEMBER_ERROR;
+import static com.mate.helgather.exception.ErrorCode.*;
 
 @Service
 @Transactional
@@ -34,6 +41,9 @@ public class MemberService {
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final JwtTokenProvider jwtTokenProvider;
     private final MemberProfileRepository memberProfileRepository;
+    private final AmazonS3Repository amazonS3Repository;
+    private static final String MEMBER_PROFILE_BASE_DIR = "profiles";
+    private static final String DEFAULT_IMAGE_URL = "s3://hel-gather/profiles/Base_Image.png";
 
     @Transactional
     public MemberResponseDto createMember(MemberRequestDto memberRequestDto) throws BaseException {
@@ -106,6 +116,7 @@ public class MemberService {
 
         MemberProfile profile = MemberProfile.builder()
                 .member(member)
+                .imageUrl(DEFAULT_IMAGE_URL)
                 .introduction(introduction)
                 .benchPress(benchPress)
                 .squat(squat)
@@ -116,11 +127,39 @@ public class MemberService {
 
         return MemberProfileResponseDto.builder()
                 .memberId(memberId)
+                .imageUrl(DEFAULT_IMAGE_URL)
                 .introduction(introduction)
                 .benchPress(benchPress)
                 .squat(squat)
                 .deadlift(deadlift)
                 .exerciseCount(0)
+                .build();
+    }
+
+    @Transactional
+    public MemberProfileImageResponseDto createProfileImage(Long memberId, MultipartFile multipartFile) throws Exception {
+
+        if (!memberRepository.existsById(memberId)) {
+            throw new BaseException(ErrorCode.NO_SUCH_MEMBER_ERROR);
+        }
+
+        String imageUrl = amazonS3Repository.saveV2(multipartFile, MEMBER_PROFILE_BASE_DIR);
+
+        //MemberProfile 데이터에서 특정 데이터 가져오기
+        MemberProfile memberProfile = memberProfileRepository.findByMember_id(memberId)
+                .orElseThrow(() -> new BaseException(NO_SUCH_MEMBER_PROFILE));
+
+        //이미지 등록이 되어 있는지 확인하기
+        if (StringUtils.hasText(memberProfile.getImageUrl())) {
+            throw new BaseException(EXIST_MEMBER_PROFILE_ERROR);
+        }
+
+        //memberProfile 에 이미지 등록해주기
+        memberProfile.setImageUrl(imageUrl);
+        memberProfileRepository.save(memberProfile);
+
+        return MemberProfileImageResponseDto.builder()
+                .imageUrl(imageUrl)
                 .build();
     }
 

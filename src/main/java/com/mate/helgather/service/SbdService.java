@@ -48,7 +48,7 @@ public class SbdService {
      * @return
      * @throws Exception
      */
-    public SbdResponseDto saveSBD(SbdCategory sbdCategory, Long memberId, MultipartFile multipartFile) throws Exception {
+    public SbdResponseDto saveSBD(SbdCategory sbdCategory, Long memberId, MultipartFile multipartFile) {
         String fileId = UUID.randomUUID().toString();
         File videoFile = new File(getLocalHomeDirectory(), createPath(multipartFile.getContentType(), fileId));
         String thumbNailPath = String.format("%s/%s.%s", THUMBNAIL_BASE_DIR, fileId, THUMBNAIL_EXTENSION);
@@ -95,7 +95,7 @@ public class SbdService {
         return "/home/ubuntu/";
     }
 
-    public File extractThumbnail(File source, String path) throws Exception {
+    public File extractThumbnail(File source, String path) {
         // 썸네일 파일 생성
         File thumbnail = new File(getLocalHomeDirectory(), path);
 
@@ -120,7 +120,7 @@ public class SbdService {
         }
     }
 
-    public List<SbdResponseDto> findSBDByCategory(Long memberId, String category) throws Exception {
+    public List<SbdResponseDto> findSBDByCategory(Long memberId, String category) {
         SbdCategory sbdCategory = SbdCategory.of(category);
 
         if (!memberRepository.existsById(memberId)) {
@@ -136,7 +136,7 @@ public class SbdService {
         return sbdResponseDtos;
     }
 
-    public List<SbdResponseDto> findSBD(Long memberId) throws Exception {
+    public List<SbdResponseDto> findSBD(Long memberId) {
         if (!memberRepository.existsById(memberId)) {
             throw new BaseException(ErrorCode.NO_SUCH_MEMBER_ERROR);
         }
