@@ -1,6 +1,5 @@
 package com.mate.helgather.controller;
 
-import com.mate.helgather.domain.status.SbdCategory;
 import com.mate.helgather.dto.*;
 import com.mate.helgather.exception.BaseResponse;
 import com.mate.helgather.service.MemberService;
@@ -25,15 +24,15 @@ public class MemberController {
         return new ResponseEntity<>(new BaseResponse(result), HttpStatus.OK);
     }
 
-//    //로그인 로직
-//    @PostMapping("/login")
-//    public ResponseEntity<BaseResponse> loginMember(@RequestBody MemberLoginRequestDto memberLoginRequestDto) {
-//        String nickname = memberLoginRequestDto.getNickname();
-//        String password = memberLoginRequestDto.getPassword();
-//
-//        MemberLoginResponseDto memberLoginResponseDto = memberService.loginMember(nickname, password);
-//        return new ResponseEntity<>(new BaseResponse(memberLoginResponseDto), HttpStatus.OK);
-//    }
+    //로그인 로직
+    @PostMapping("/login")
+    public ResponseEntity<BaseResponse> loginMember(@RequestBody MemberLoginRequestDto memberLoginRequestDto) {
+        String nickname = memberLoginRequestDto.getNickname();
+        String password = memberLoginRequestDto.getPassword();
+
+        MemberLoginResponseDto memberLoginResponseDto = memberService.loginMember(nickname, password);
+        return new ResponseEntity<>(new BaseResponse(memberLoginResponseDto), HttpStatus.OK);
+    }
 
     //프로필 입력 정보 로직(이미지 제외)
     @PostMapping("/profile/{memberId}")
@@ -51,7 +50,7 @@ public class MemberController {
     //프로필 이미지 정보 입력 로직
     @PostMapping("/profile/{memberId}/image")
     public ResponseEntity<BaseResponse> createProfileImage(@PathVariable Long memberId,
-                                                           @RequestPart("file") MultipartFile multipartFile) {
+                                                           @RequestPart("file") MultipartFile multipartFile) throws Exception {
         MemberProfileImageResponseDto dto = memberService.createProfileImage(memberId, multipartFile);
         return new ResponseEntity<>(new BaseResponse(dto), HttpStatus.OK);
     }
