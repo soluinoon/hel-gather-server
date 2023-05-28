@@ -2,6 +2,7 @@ package com.mate.helgather.service;
 
 import com.mate.helgather.domain.Member;
 import com.mate.helgather.domain.MemberProfile;
+import com.mate.helgather.domain.status.MemberStatus;
 import com.mate.helgather.dto.*;
 import com.mate.helgather.exception.BaseException;
 import com.mate.helgather.exception.ErrorCode;
@@ -235,6 +236,20 @@ public class MemberService {
                 .build();
     }
 
+    public MemberResponseDto deleteMember(Long memberId) {
+
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new BaseException(NO_SUCH_MEMBER_ERROR));
+
+        //STATUS 바꾸기
+        member.changeStatus(MemberStatus.INACTIVE);
+
+        return MemberResponseDto.builder()
+                .id(memberId)
+                .nickname(member.getNickname())
+                .build();
+    }
+
     private String extractKey(String url, String baseUrl) {
         int index = url.indexOf(baseUrl);
         return url.substring(index);
@@ -296,7 +311,4 @@ public class MemberService {
             throw new BaseException(ErrorCode.EXIST_NICKNAME_ERROR);
         }
     }
-
-
-
 }
