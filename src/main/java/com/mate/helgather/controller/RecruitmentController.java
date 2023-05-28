@@ -1,7 +1,7 @@
 package com.mate.helgather.controller;
 
-import com.mate.helgather.dto.RecruitmentRequestDto;
 import com.mate.helgather.dto.RecruitmentListResponseDto;
+import com.mate.helgather.dto.RecruitmentRequestDto;
 import com.mate.helgather.dto.RecruitmentResponseDto;
 import com.mate.helgather.exception.BaseResponse;
 import com.mate.helgather.service.RecruitmentService;
@@ -11,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -27,9 +26,8 @@ public class RecruitmentController {
      * @return
      */
     @PostMapping()
-    public ResponseEntity<BaseResponse> save(@Valid RecruitmentRequestDto recruitmentRequestDto) {
+    public ResponseEntity<BaseResponse> save(@RequestBody RecruitmentRequestDto recruitmentRequestDto) {
         recruitmentService.save(recruitmentRequestDto);
-
         return new ResponseEntity<>(new BaseResponse("성공"), HttpStatus.OK);
     }
 

@@ -2,6 +2,7 @@ package com.mate.helgather.dto;
 
 import com.mate.helgather.domain.Member;
 import com.mate.helgather.domain.Recruitment;
+import com.mate.helgather.domain.status.RecruitmentStatus;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -28,6 +29,7 @@ public class RecruitmentRequestDto {
                 .subLocation(this.subLocation)
                 .title(this.title)
                 .description(this.description)
+                .status(RecruitmentStatus.ACTIVE)
                 .build();
     }
 }

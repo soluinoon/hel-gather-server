@@ -68,9 +68,6 @@ public class Member implements UserDetails {
     @OneToOne(mappedBy = "member")
     private Recruitment recruitment;
 
-    @OneToOne(mappedBy = "member")
-    private Application application;
-
     @Builder.Default
     @OneToMany(mappedBy = "member")
     private List<Message> messages = new ArrayList<>();
