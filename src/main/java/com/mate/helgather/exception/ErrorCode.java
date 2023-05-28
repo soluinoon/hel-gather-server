@@ -31,6 +31,7 @@ public enum ErrorCode {
     NO_SUCH_SUB_LOCATION_ERROR(4011, "존재하지 않는 지역 입니다."),
     NO_SUCH_LOCATION_ERROR(4012, "존재하지 않는 상세 지역 입니다."),
     NO_SUCH_RECRUITMENT_ERROR(4013, "존재하지 않는 게시물 입니다."),
+    ALREADY_DELETE_MEMBER_ERROR(4014, "이미 회원 탈퇴한 회원입니다."),
     S3_CONNECT_ERROR(5001, "S3 오류입니다."),
     S3_NO_PATH_ERROR(5002, "S3 경로 디렉토리가 있는지 확인해주세요."),
     DEFAULT_IMAGE_ERROR(5003, "기본 이미지가 없습니다.");
