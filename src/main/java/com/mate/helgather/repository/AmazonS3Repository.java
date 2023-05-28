@@ -81,8 +81,9 @@ public class AmazonS3Repository {
 
     public String getLocalHomeDirectory() {
         // 로컬
+//        System.out.println(System.getProperty("user.home"));
 //        return System.getProperty("user.home");
-        // 서버
+//         서버
         return "/home/ubuntu/";
     }
 

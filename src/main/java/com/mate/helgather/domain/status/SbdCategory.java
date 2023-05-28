@@ -17,7 +17,7 @@ public enum SbdCategory {
         this.category = category;
     }
 
-    public static SbdCategory of(String category) throws Exception {
+    public static SbdCategory of(String category) throws RuntimeException {
         for (SbdCategory sbdCategory : SbdCategory.values()) {
             if (sbdCategory.getCategory().equals(category)) {
                 return sbdCategory;

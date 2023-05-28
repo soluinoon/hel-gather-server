@@ -2,12 +2,16 @@ package com.mate.helgather.service;
 
 import com.mate.helgather.domain.Member;
 import com.mate.helgather.domain.MemberProfile;
+import com.mate.helgather.domain.Sbd;
+import com.mate.helgather.domain.TodayExercise;
 import com.mate.helgather.dto.*;
 import com.mate.helgather.exception.BaseException;
 import com.mate.helgather.exception.ErrorCode;
+import com.mate.helgather.exception.S3NoPathException;
+import com.mate.helgather.repository.AmazonS3Repository;
 import com.mate.helgather.repository.MemberProfileRepository;
 import com.mate.helgather.repository.MemberRepository;
-//import com.mate.helgather.util.JwtTokenProvider;
+import com.mate.helgather.util.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -19,11 +23,14 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
+import java.io.File;
+import java.io.IOException;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.mate.helgather.exception.ErrorCode.EXIST_MEMBER_PROFILE;
-import static com.mate.helgather.exception.ErrorCode.NO_SUCH_MEMBER_ERROR;
+import static com.mate.helgather.exception.ErrorCode.*;
 
 @Service
 @Transactional
@@ -31,9 +38,11 @@ import static com.mate.helgather.exception.ErrorCode.NO_SUCH_MEMBER_ERROR;
 public class MemberService {
 
     private final MemberRepository memberRepository;
-//    private final AuthenticationManagerBuilder authenticationManagerBuilder;
-//    private final JwtTokenProvider jwtTokenProvider;
+    private final AuthenticationManagerBuilder authenticationManagerBuilder;
+    private final JwtTokenProvider jwtTokenProvider;
     private final MemberProfileRepository memberProfileRepository;
+    private final AmazonS3Repository amazonS3Repository;
+    private static final String MEMBER_PROFILE_BASE_DIR = "profiles";
 
     @Transactional
     public MemberResponseDto createMember(MemberRequestDto memberRequestDto) throws BaseException {
@@ -49,47 +58,47 @@ public class MemberService {
         );
     }
 
-//    @Transactional
-//    public MemberLoginResponseDto loginMember(String nickname, String password) throws BaseException {
-//        if (!StringUtils.hasText(nickname)) {
-//            throw new BaseException(ErrorCode.NO_INPUT_NICKNAME);
-//        }
-//
-//        if (!StringUtils.hasText(password)) {
-//            throw new BaseException(ErrorCode.NO_INPUT_PASSWORD);
-//        }
-//
-//        // 1. Login ID/PW 기반으로 Authentication 객체 생성
-//        // 이 때 authentication 는 인증 여부를 확인하는 authenticated 값이 false
-//        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(nickname, password);
-//
-//        // 2. 실제 검증 (사용자 비밀번호 체크)이 이루어지는 부분
-//        // authenticate 메서드가 실행될 때 CustomUserDetailsService 에서 만든 loadUserByUsername 가 실행
-//        try {
-//            Authentication authenticate = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
-//            // 3. Authentication 객체를 통해 Principal 얻기
-//            Object principal = authenticate.getPrincipal();
-//
-//            // 4. UserDetails 캐스팅
-//            UserDetails userDetails = (UserDetails) principal;
-//
-//            TokenDto tokenDto = jwtTokenProvider.generateToken(authenticate);
-//
-//            Member member = memberRepository.findByNickname(nickname)
-//                    .orElseThrow(() -> new BaseException(NO_SUCH_MEMBER_ERROR));
-//
-//            // 인증 정보를 기반으로 JWT 토큰 생성
-//            return MemberLoginResponseDto.builder()
-//                    .memberId(member.getId())
-//                    .nickname(userDetails.getUsername())
-//                    .grantType("Bearer")
-//                    .accessToken(tokenDto.getAccessToken())
-//                    .refreshToken(tokenDto.getRefreshToken())
-//                    .build();
-//        } catch (AuthenticationException e) {
-//            throw new BaseException(ErrorCode.PASSWORD_CORRECT_ERROR);
-//        }
-//    }
+    @Transactional
+    public MemberLoginResponseDto loginMember(String nickname, String password) throws BaseException {
+        if (!StringUtils.hasText(nickname)) {
+            throw new BaseException(ErrorCode.NO_INPUT_NICKNAME);
+        }
+
+        if (!StringUtils.hasText(password)) {
+            throw new BaseException(ErrorCode.NO_INPUT_PASSWORD);
+        }
+
+        // 1. Login ID/PW 기반으로 Authentication 객체 생성
+        // 이 때 authentication 는 인증 여부를 확인하는 authenticated 값이 false
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(nickname, password);
+
+        // 2. 실제 검증 (사용자 비밀번호 체크)이 이루어지는 부분
+        // authenticate 메서드가 실행될 때 CustomUserDetailsService 에서 만든 loadUserByUsername 가 실행
+        try {
+            Authentication authenticate = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+            // 3. Authentication 객체를 통해 Principal 얻기
+            Object principal = authenticate.getPrincipal();
+
+            // 4. UserDetails 캐스팅
+            UserDetails userDetails = (UserDetails) principal;
+
+            TokenDto tokenDto = jwtTokenProvider.generateToken(authenticate);
+
+            Member member = memberRepository.findByNickname(nickname)
+                    .orElseThrow(() -> new BaseException(NO_SUCH_MEMBER_ERROR));
+
+            // 인증 정보를 기반으로 JWT 토큰 생성
+            return MemberLoginResponseDto.builder()
+                    .memberId(member.getId())
+                    .nickname(userDetails.getUsername())
+                    .grantType("Bearer")
+                    .accessToken(tokenDto.getAccessToken())
+                    .refreshToken(tokenDto.getRefreshToken())
+                    .build();
+        } catch (AuthenticationException e) {
+            throw new BaseException(ErrorCode.PASSWORD_CORRECT_ERROR);
+        }
+    }
 
     @Transactional
     public MemberProfileResponseDto createProfile(Long memberId, String introduction,
@@ -125,10 +134,30 @@ public class MemberService {
     }
 
     @Transactional
-    public MemberProfileImageResponseDto createProfileImage(Long memberId, MultipartFile multipartFile) {
+    public MemberProfileImageResponseDto createProfileImage(Long memberId, MultipartFile multipartFile) throws Exception {
 
+        if (!memberRepository.existsById(memberId)) {
+            throw new BaseException(ErrorCode.NO_SUCH_MEMBER_ERROR);
+        }
 
-        return null;
+        String imageUrl = amazonS3Repository.saveV2(multipartFile, MEMBER_PROFILE_BASE_DIR);
+
+        //MemberProfile 데이터에서 특정 데이터 가져오기
+        MemberProfile memberProfile = memberProfileRepository.findByMember_id(memberId)
+                .orElseThrow(() -> new BaseException(NO_SUCH_MEMBER_PROFILE));
+
+        //이미지 등록이 되어 있는지 확인하기
+        if (StringUtils.hasText(memberProfile.getImageUrl())) {
+            throw new BaseException(EXIST_MEMBER_PROFILE_ERROR);
+        }
+
+        //memberProfile 에 이미지 등록해주기
+        memberProfile.setImageUrl(imageUrl);
+        memberProfileRepository.save(memberProfile);
+
+        return MemberProfileImageResponseDto.builder()
+                .imageUrl(imageUrl)
+                .build();
     }
 
     private void validateMemberRequest(MemberRequestDto memberRequestDto) throws BaseException {
