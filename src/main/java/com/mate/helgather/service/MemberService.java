@@ -241,6 +241,10 @@ public class MemberService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new BaseException(NO_SUCH_MEMBER_ERROR));
 
+        if (member.getStatus() == MemberStatus.INACTIVE) {
+            throw new BaseException(ALREADY_DELETE_MEMBER_ERROR);
+        }
+
         //STATUS 바꾸기
         member.changeStatus(MemberStatus.INACTIVE);
 
