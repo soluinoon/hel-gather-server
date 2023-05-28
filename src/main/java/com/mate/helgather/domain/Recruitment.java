@@ -22,6 +22,9 @@ public class Recruitment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private Long location;
+    private Long subLocation;
+
     @OneToOne
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
@@ -42,10 +45,7 @@ public class Recruitment {
     @NotNull
     private RecruitmentStatus status;
 
-    @OneToOne(mappedBy = "recruitment")
-    private ChatRoom chatRoom;
-
     @Builder.Default
     @OneToMany(mappedBy = "recruitment")
-    private List<Application> applications = new ArrayList<>();
+    private List<ChatRoom> chatRooms = new ArrayList<>();
 }
