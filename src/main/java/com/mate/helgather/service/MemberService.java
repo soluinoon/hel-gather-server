@@ -143,16 +143,11 @@ public class MemberService {
             throw new BaseException(ErrorCode.NO_SUCH_MEMBER_ERROR);
         }
 
-        String imageUrl = amazonS3Repository.saveV2(multipartFile, MEMBER_PROFILE_BASE_DIR);
-
         //MemberProfile 데이터에서 특정 데이터 가져오기
         MemberProfile memberProfile = memberProfileRepository.findByMember_id(memberId)
                 .orElseThrow(() -> new BaseException(NO_SUCH_MEMBER_PROFILE));
 
-        //이미지 등록이 되어 있는지 확인하기
-        if (StringUtils.hasText(memberProfile.getImageUrl())) {
-            throw new BaseException(EXIST_MEMBER_PROFILE_ERROR);
-        }
+        String imageUrl = amazonS3Repository.saveV2(multipartFile, MEMBER_PROFILE_BASE_DIR);
 
         //memberProfile 에 이미지 등록해주기
         memberProfile.setImageUrl(imageUrl);
