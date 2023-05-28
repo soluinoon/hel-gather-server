@@ -9,8 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
 class ChatRoomServiceTest {
-    @Autowired
-    private ChatRoomService chatRoomService;
+
     @Autowired
     private MemberChatRoomRepository memberChatRoomRepository;
     @Autowired
