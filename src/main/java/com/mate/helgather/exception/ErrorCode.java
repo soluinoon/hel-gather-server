@@ -34,8 +34,8 @@ public enum ErrorCode {
     ALREADY_DELETE_MEMBER_ERROR(4014, "이미 회원 탈퇴한 회원입니다."),
     S3_CONNECT_ERROR(5001, "S3 오류입니다."),
     S3_NO_PATH_ERROR(5002, "S3 경로 디렉토리가 있는지 확인해주세요."),
-    DEFAULT_IMAGE_ERROR(5003, "기본 이미지가 없습니다.");
-
+    DEFAULT_IMAGE_ERROR(5003, "기본 이미지가 없습니다."),
+    HIBERNATE_ERROR(5004, "하이버네이트 오류입니다.");
 
     @Getter
     private int code;

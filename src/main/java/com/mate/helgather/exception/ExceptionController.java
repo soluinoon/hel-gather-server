@@ -1,17 +1,12 @@
 package com.mate.helgather.exception;
 
-import com.amazonaws.AmazonClientException;
 import com.amazonaws.services.s3.model.AmazonS3Exception;
-import org.apache.catalina.connector.Response;
+import org.hibernate.HibernateException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
-import java.io.IOException;
-import java.net.http.HttpResponse;
-import java.util.NoSuchElementException;
 
 @RestControllerAdvice
 public class ExceptionController {
@@ -47,6 +42,13 @@ public class ExceptionController {
     public ResponseEntity<BaseResponse> handleDefaultImageException(DefaultImageException e) {
         e.printStackTrace();
         BaseResponse baseResponse = new BaseResponse(e.getErrorCode());
+        return new ResponseEntity<>(baseResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(HibernateException.class)
+    public ResponseEntity<BaseResponse> handleDefaultImageException(HibernateException e) {
+        e.printStackTrace();
+        BaseResponse baseResponse = new BaseResponse(ErrorCode.HIBERNATE_ERROR);
         return new ResponseEntity<>(baseResponse, HttpStatus.BAD_REQUEST);
     }
 }
