@@ -34,7 +34,7 @@ public class MemberController {
         return new ResponseEntity<>(new BaseResponse(memberLoginResponseDto), HttpStatus.OK);
     }
 
-    //프로필 입력 정보 로직(이미지 제외)
+    //프로필 입력 정보 로직(이미지는 기본 이미지)
     @PostMapping("/profile/{memberId}")
     public ResponseEntity<BaseResponse> createProfile(@PathVariable Long memberId,
                                                       @RequestBody MemberProfileRequestDto memberProfileRequestDto) {
@@ -51,6 +51,7 @@ public class MemberController {
     @PostMapping("/profile/{memberId}/image")
     public ResponseEntity<BaseResponse> createProfileImage(@PathVariable Long memberId,
                                                            @RequestPart("file") MultipartFile multipartFile) throws Exception {
+        System.out.println(multipartFile.getName());
         MemberProfileImageResponseDto dto = memberService.createProfileImage(memberId, multipartFile);
         return new ResponseEntity<>(new BaseResponse(dto), HttpStatus.OK);
     }

@@ -10,6 +10,7 @@ import lombok.Getter;
 public class MemberProfileResponseDto {
 
     private Long memberId;
+    private String imageUrl;
     private String introduction;
     private Integer benchPress;
     private Integer squat;
