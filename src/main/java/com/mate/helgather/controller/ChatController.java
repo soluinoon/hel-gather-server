@@ -2,7 +2,6 @@ package com.mate.helgather.controller;
 
 import com.mate.helgather.domain.Message;
 import com.mate.helgather.dto.ChatRequestDto;
-import com.mate.helgather.dto.ChatResponseDto;
 import com.mate.helgather.dto.ChatRoomListResponseDto;
 import com.mate.helgather.dto.MessagesResponseDto;
 import com.mate.helgather.exception.BaseResponse;
@@ -54,7 +53,7 @@ public class ChatController {
 //            System.out.println("headerValue = " + headerValue);
 //        }
 ////        log.info("chat {} send by {} to room number{}", chatRequestDto.getMessage(), chatRequestDto.getUserId(), chatRoomId);
-//        Message message = chatService.saveMessage(chatRequestDto, chatRoomId);
+        Message message = chatService.saveMessage(chatRequestDto, chatRoomId);
 //        // 이전 유저 꺼내오기
 //        Long prevMemberId = prevMap.getOrDefault(chatRoomId, -1L);
 //        // 이전 유저 저장
