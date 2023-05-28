@@ -26,7 +26,7 @@ public class RecruitmentController {
      * @param recruitmentRequestDto
      * @return
      */
-    @PostMapping
+    @PostMapping()
     public ResponseEntity<BaseResponse> save(@Valid RecruitmentRequestDto recruitmentRequestDto) {
         recruitmentService.save(recruitmentRequestDto);
 
@@ -51,7 +51,7 @@ public class RecruitmentController {
      * @param id
      * @return
      */
-    @GetMapping
+    @GetMapping("/{id}")
     public ResponseEntity<BaseResponse> findById(@PathVariable Long id) {
         RecruitmentResponseDto recruitmentResponseDto = recruitmentService.findById(id);
 
