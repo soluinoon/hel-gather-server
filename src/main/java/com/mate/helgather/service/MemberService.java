@@ -7,7 +7,7 @@ import com.mate.helgather.exception.BaseException;
 import com.mate.helgather.exception.ErrorCode;
 import com.mate.helgather.repository.MemberProfileRepository;
 import com.mate.helgather.repository.MemberRepository;
-import com.mate.helgather.util.JwtTokenProvider;
+//import com.mate.helgather.util.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -16,9 +16,9 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
-import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -31,8 +31,8 @@ import static com.mate.helgather.exception.ErrorCode.NO_SUCH_MEMBER_ERROR;
 public class MemberService {
 
     private final MemberRepository memberRepository;
-    private final AuthenticationManagerBuilder authenticationManagerBuilder;
-    private final JwtTokenProvider jwtTokenProvider;
+//    private final AuthenticationManagerBuilder authenticationManagerBuilder;
+//    private final JwtTokenProvider jwtTokenProvider;
     private final MemberProfileRepository memberProfileRepository;
 
     @Transactional
@@ -49,47 +49,47 @@ public class MemberService {
         );
     }
 
-    @Transactional
-    public MemberLoginResponseDto loginMember(String nickname, String password) throws BaseException {
-        if (!StringUtils.hasText(nickname)) {
-            throw new BaseException(ErrorCode.NO_INPUT_NICKNAME);
-        }
-
-        if (!StringUtils.hasText(password)) {
-            throw new BaseException(ErrorCode.NO_INPUT_PASSWORD);
-        }
-
-        // 1. Login ID/PW 기반으로 Authentication 객체 생성
-        // 이 때 authentication 는 인증 여부를 확인하는 authenticated 값이 false
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(nickname, password);
-
-        // 2. 실제 검증 (사용자 비밀번호 체크)이 이루어지는 부분
-        // authenticate 메서드가 실행될 때 CustomUserDetailsService 에서 만든 loadUserByUsername 가 실행
-        try {
-            Authentication authenticate = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
-            // 3. Authentication 객체를 통해 Principal 얻기
-            Object principal = authenticate.getPrincipal();
-
-            // 4. UserDetails 캐스팅
-            UserDetails userDetails = (UserDetails) principal;
-
-            TokenDto tokenDto = jwtTokenProvider.generateToken(authenticate);
-
-            Member member = memberRepository.findByNickname(nickname)
-                    .orElseThrow(() -> new BaseException(NO_SUCH_MEMBER_ERROR));
-
-            // 인증 정보를 기반으로 JWT 토큰 생성
-            return MemberLoginResponseDto.builder()
-                    .memberId(member.getId())
-                    .nickname(userDetails.getUsername())
-                    .grantType("Bearer")
-                    .accessToken(tokenDto.getAccessToken())
-                    .refreshToken(tokenDto.getRefreshToken())
-                    .build();
-        } catch (AuthenticationException e) {
-            throw new BaseException(ErrorCode.PASSWORD_CORRECT_ERROR);
-        }
-    }
+//    @Transactional
+//    public MemberLoginResponseDto loginMember(String nickname, String password) throws BaseException {
+//        if (!StringUtils.hasText(nickname)) {
+//            throw new BaseException(ErrorCode.NO_INPUT_NICKNAME);
+//        }
+//
+//        if (!StringUtils.hasText(password)) {
+//            throw new BaseException(ErrorCode.NO_INPUT_PASSWORD);
+//        }
+//
+//        // 1. Login ID/PW 기반으로 Authentication 객체 생성
+//        // 이 때 authentication 는 인증 여부를 확인하는 authenticated 값이 false
+//        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(nickname, password);
+//
+//        // 2. 실제 검증 (사용자 비밀번호 체크)이 이루어지는 부분
+//        // authenticate 메서드가 실행될 때 CustomUserDetailsService 에서 만든 loadUserByUsername 가 실행
+//        try {
+//            Authentication authenticate = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+//            // 3. Authentication 객체를 통해 Principal 얻기
+//            Object principal = authenticate.getPrincipal();
+//
+//            // 4. UserDetails 캐스팅
+//            UserDetails userDetails = (UserDetails) principal;
+//
+//            TokenDto tokenDto = jwtTokenProvider.generateToken(authenticate);
+//
+//            Member member = memberRepository.findByNickname(nickname)
+//                    .orElseThrow(() -> new BaseException(NO_SUCH_MEMBER_ERROR));
+//
+//            // 인증 정보를 기반으로 JWT 토큰 생성
+//            return MemberLoginResponseDto.builder()
+//                    .memberId(member.getId())
+//                    .nickname(userDetails.getUsername())
+//                    .grantType("Bearer")
+//                    .accessToken(tokenDto.getAccessToken())
+//                    .refreshToken(tokenDto.getRefreshToken())
+//                    .build();
+//        } catch (AuthenticationException e) {
+//            throw new BaseException(ErrorCode.PASSWORD_CORRECT_ERROR);
+//        }
+//    }
 
     @Transactional
     public MemberProfileResponseDto createProfile(Long memberId, String introduction,
@@ -122,6 +122,13 @@ public class MemberService {
                 .deadlift(deadlift)
                 .exerciseCount(0)
                 .build();
+    }
+
+    @Transactional
+    public MemberProfileImageResponseDto createProfileImage(Long memberId, MultipartFile multipartFile) {
+
+
+        return null;
     }
 
     private void validateMemberRequest(MemberRequestDto memberRequestDto) throws BaseException {
