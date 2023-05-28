@@ -62,4 +62,17 @@ public class MemberController {
         MemberProfileImageResponseDto dto = memberService.updateProfileImage(memberId, multipartFile);
         return new ResponseEntity<>(new BaseResponse(dto), HttpStatus.OK);
     }
+
+    //프로필 입력 정보 변경 로직
+    @PatchMapping("profile/{memberId}")
+    public ResponseEntity<BaseResponse> updateProfile(@PathVariable Long memberId,
+                                                      @RequestBody MemberProfileRequestDto memberProfileRequestDto) {
+        String introduction = memberProfileRequestDto.getIntroduction();
+        Integer benchPress = memberProfileRequestDto.getBenchPress();
+        Integer squat = memberProfileRequestDto.getSquat();
+        Integer deadlift = memberProfileRequestDto.getDeadlift();
+
+        MemberProfileResponseDto memberProfileResponseDto = memberService.updateProfile(memberId, introduction, benchPress, squat, deadlift);
+        return new ResponseEntity<>(new BaseResponse(memberProfileResponseDto), HttpStatus.OK);
+    }
 }

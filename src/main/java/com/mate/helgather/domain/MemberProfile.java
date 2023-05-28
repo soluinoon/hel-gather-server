@@ -54,4 +54,20 @@ public class MemberProfile {
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
     }
+
+    public void setIntroduction(String introduction) {
+        this.introduction = introduction;
+    }
+
+    public void setBenchPress(Integer benchPress) {
+        this.benchPress = benchPress;
+    }
+
+    public void setSquat(Integer squat) {
+        this.squat = squat;
+    }
+
+    public void setDeadLift(Integer deadLift) {
+        this.deadLift = deadLift;
+    }
 }
