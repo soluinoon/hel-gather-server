@@ -43,29 +43,29 @@ public class ChatController {
      * @param chatRequestDto 채팅 DTO
      */
     @MessageMapping("/chats/{id}") // 실제론 메세지 매핑으로 pub/chatroom/{id} 임
-    public ResponseEntity<BaseResponse> pubMessage(@DestinationVariable("id") Long chatRoomId, @Payload ChatRequestDto chatRequestDto,
+    public void pubMessage(@DestinationVariable("id") Long chatRoomId, @Payload ChatRequestDto chatRequestDto,
                                                    SimpMessageHeaderAccessor headerAccessor) {
-        System.out.println("ChatController.pubMessage");
-        Map<String, Object> headers = headerAccessor.toMap();
-        for (Map.Entry<String, Object> entry : headers.entrySet()) {
-            String headerName = entry.getKey();
-            Object headerValue = entry.getValue();
-            System.out.println("headerName = " + headerName);
-            System.out.println("headerValue = " + headerValue);
-        }
-//        log.info("chat {} send by {} to room number{}", chatRequestDto.getMessage(), chatRequestDto.getUserId(), chatRoomId);
-        Message message = chatService.saveMessage(chatRequestDto, chatRoomId);
-        // 이전 유저 꺼내오기
-        Long prevMemberId = prevMap.getOrDefault(chatRoomId, -1L);
-        // 이전 유저 저장
-        prevMap.put(chatRoomId, chatRequestDto.getUserId());
-        /**
-         * 채팅 구독 API
-         * 실제 URL은 sub/chats/{id}이다.
-         * API 명세서
-         */
-        template.convertAndSend("/sub/chats/" + chatRoomId, new ChatResponseDto(chatRequestDto, message, prevMemberId));
-        return new ResponseEntity<>(new BaseResponse("성공"), HttpStatus.OK);
+//        System.out.println("ChatController.pubMessage");
+//        Map<String, Object> headers = headerAccessor.toMap();
+//        for (Map.Entry<String, Object> entry : headers.entrySet()) {
+//            String headerName = entry.getKey();
+//            Object headerValue = entry.getValue();
+//            System.out.println("headerName = " + headerName);
+//            System.out.println("headerValue = " + headerValue);
+//        }
+////        log.info("chat {} send by {} to room number{}", chatRequestDto.getMessage(), chatRequestDto.getUserId(), chatRoomId);
+//        Message message = chatService.saveMessage(chatRequestDto, chatRoomId);
+//        // 이전 유저 꺼내오기
+//        Long prevMemberId = prevMap.getOrDefault(chatRoomId, -1L);
+//        // 이전 유저 저장
+//        prevMap.put(chatRoomId, chatRequestDto.getUserId());
+//        /**
+//         * 채팅 구독 API
+//         * 실제 URL은 sub/chats/{id}이다.
+//         * API 명세서
+//         */
+        template.convertAndSend("/sub/chats/" + chatRoomId, chatRequestDto);
+//        return new ResponseEntity<>(new BaseResponse("성공"), HttpStatus.OK);
     }
 
     @SubscribeMapping("/chats/{id}")
