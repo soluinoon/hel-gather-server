@@ -67,14 +67,28 @@ public class ChatController {
     }
 
     /**
-     * 4. 채팅방 목록 API
+     * 31. 채팅방 목록 API
      * 멤버의 id를 이용해 채팅방 정보 리스트를 반환한다.
      * @param memberId 멤버의 id 이다.
      * @return List<ChatRoomListResponse> 채팅방들의 원하는 정보를 리스트로 반환
      */
+//    @GetMapping("/chats")
+//    public ResponseEntity<BaseResponse> findChatRoomsByMemberIdV2(@RequestParam(value = "member") @Valid Long memberId) {
+//        List<ChatRoomListResponseDto> chatRoomsByMemberId = chatService.findChatRoomsByMemberId(memberId);
+//        return new ResponseEntity<>(new BaseResponse(chatRoomsByMemberId), HttpStatus.OK);
+//    }
+
+    /**
+     * 31. 채팅방 목록 API
+     * 멤버의 id를 이용해 채팅방 정보 리스트를 반환한다.
+     * 발표 전날 만든 메서드로, 기본이미지, 채팅방 이름은 모집글 제목으로
+     * 단체 채팅방으로 가정한다.
+     * @param memberId 멤버의 id 이다.
+     * @return List<ChatRoomListResponse> 채팅방들의 원하는 정보를 리스트로 반환
+     */
     @GetMapping("/chats")
-    public ResponseEntity<BaseResponse> findChatRoomsByMemberIdV2(@RequestParam(value = "member") @Valid Long memberId) {
-        List<ChatRoomListResponseDto> chatRoomsByMemberId = chatService.findChatRoomsByMemberId(memberId);
+    public ResponseEntity<BaseResponse> findChatRoomsByMemberIdV3(@RequestParam(value = "member") @Valid Long memberId) {
+        List<ChatRoomListResponseDto> chatRoomsByMemberId = chatService.findChatRoomsByMemberIdV2(memberId);
         return new ResponseEntity<>(new BaseResponse(chatRoomsByMemberId), HttpStatus.OK);
     }
 }

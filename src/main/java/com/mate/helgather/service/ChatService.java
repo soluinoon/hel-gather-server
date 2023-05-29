@@ -2,6 +2,7 @@ package com.mate.helgather.service;
 
 import com.mate.helgather.domain.MemberChatRoom;
 import com.mate.helgather.domain.Message;
+import com.mate.helgather.domain.Recruitment;
 import com.mate.helgather.dto.ChatDto;
 import com.mate.helgather.dto.ChatRequestDto;
 import com.mate.helgather.dto.ChatRoomListResponseDto;
@@ -27,6 +28,7 @@ public class ChatService {
     private final MessageRepository messageRepository;
     private final MemberRepository memberRepository;
     private final MemberChatRoomRepository memberChatRoomRepository;
+    private static final String CHATROOM_IMAGE_PATH = "http://hel-gather.s3.ap-northeast-2.amazonaws.com/images/istockphoto-1277134944-170667a.jpg";
 
     public Message saveMessage(ChatRequestDto chatRequestDTO, Long chatRoomId) {
         return messageRepository.save(Message.builder().chatRoom(chatRoomRepository.findById(chatRoomId)
@@ -63,7 +65,7 @@ public class ChatService {
                 .map(message -> new MessagesResponseDto(message, requestUserId))
                 .collect(Collectors.toList());
     }
-
+    /*
     public List<ChatRoomListResponseDto> findChatRoomsByMemberId(Long id) throws BaseException {
         if (!memberRepository.existsById(id)) {
             throw new BaseException(ErrorCode.NO_SUCH_MEMBER_ERROR);
@@ -80,6 +82,43 @@ public class ChatService {
                             .createdAt(LocalDateTime.now())
                             .build());
             chatRoomListResponsDtos.add(new ChatRoomListResponseDto(memberChatRoom.getMember().getNickname(),
+                    recentMessage.getCreatedAt().toString(),
+                    recentMessage.getDescription(),
+                    memberChatRoom.getChatRoom().getId()));
+        }
+        return chatRoomListResponsDtos;
+    }
+     */
+
+    /**
+     * 채팅방을 멤버 아이디로 찾는다.
+     * 발표 전날 만든 메서드이며, 차이점은 채팅방 기본 이미지, 채팅방 이름은 recruitment 제목으로
+     * 마지막으로 단체채팅방을 가정하고 만든다.
+     * @param id
+     * @return
+     * @throws BaseException
+     */
+    public List<ChatRoomListResponseDto> findChatRoomsByMemberIdV2(Long id) throws BaseException {
+        if (!memberRepository.existsById(id)) {
+            throw new BaseException(ErrorCode.NO_SUCH_MEMBER_ERROR);
+        }
+        List<MemberChatRoom> memberChatRooms = memberChatRoomRepository.findAllByMemberId(id);
+        List<ChatRoomListResponseDto> chatRoomListResponsDtos = new ArrayList<>();
+
+        for (MemberChatRoom memberChatRoom : memberChatRooms) {
+            // 해당하는 모집글 찾기
+            Recruitment recruitment = memberChatRoom.getChatRoom().getRecruitment();
+            // 가장 최근 메세지 찾기
+            Message recentMessage = messageRepository.findTopByChatRoomOrderByCreatedAtDesc(memberChatRoom.getChatRoom())
+                    .orElse(Message.builder()
+                            .chatRoom(memberChatRoom.getChatRoom())
+                            .description("아직 채팅이 없습니다.")
+                            .member(null)
+                            .createdAt(LocalDateTime.now())
+                            .build());
+            chatRoomListResponsDtos.add(new ChatRoomListResponseDto(recruitment.getTitle(),
+                    recruitment.getMember().getNickname(),
+                    CHATROOM_IMAGE_PATH,
                     recentMessage.getCreatedAt().toString(),
                     recentMessage.getDescription(),
                     memberChatRoom.getChatRoom().getId()));

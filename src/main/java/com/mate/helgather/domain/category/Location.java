@@ -22,10 +22,12 @@ public enum Location {
 
     public static Location of(Long locationNumber, Long subLocationNumber) {
         for (Location location : Location.values()) {
-            if (location.getLocationNumber().equals(locationNumber) && location.getMaxSubLocationNumber() >= subLocationNumber) {
-                return location;
-            } else {
-                throw new BaseException(ErrorCode.NO_SUCH_SUB_LOCATION_ERROR);
+            if (location.getLocationNumber().equals(locationNumber)) {
+                if (location.getMaxSubLocationNumber() >= subLocationNumber) {
+                    return location;
+                } else {
+                    throw new BaseException(ErrorCode.NO_SUCH_SUB_LOCATION_ERROR);
+                }
             }
         }
         throw new BaseException(ErrorCode.NO_SUCH_LOCATION_ERROR);

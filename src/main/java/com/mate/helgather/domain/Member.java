@@ -7,17 +7,12 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
@@ -65,8 +60,9 @@ public class Member { //implements UserDetails
     @OneToOne(mappedBy = "member")
     private SocialLogin socialLogin;
 
-    @OneToOne(mappedBy = "member")
-    private Recruitment recruitment;
+    @Builder.Default
+    @OneToMany(mappedBy = "member")
+    private List<Recruitment> recruitments = new ArrayList<>();
 
     @Builder.Default
     @OneToMany(mappedBy = "member")
