@@ -27,8 +27,7 @@ public class Recruitment {
     private Long location;
     private Long subLocation;
 
-    @OneToOne
-    @JoinColumn(name = "member_id", nullable = false)
+    @ManyToOne
     private Member member;
 
     @Column(length = 100, nullable = false)

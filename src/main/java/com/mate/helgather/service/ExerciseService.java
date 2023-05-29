@@ -1,16 +1,19 @@
 package com.mate.helgather.service;
 
 import com.mate.helgather.domain.Member;
+import com.mate.helgather.domain.MemberProfile;
 import com.mate.helgather.domain.TodayExercise;
 import com.mate.helgather.dto.TodayExerciseRequestDto;
 import com.mate.helgather.dto.TodayExerciseResponseDto;
 import com.mate.helgather.exception.BaseException;
 import com.mate.helgather.exception.ErrorCode;
 import com.mate.helgather.repository.AmazonS3Repository;
+import com.mate.helgather.repository.MemberProfileRepository;
 import com.mate.helgather.repository.MemberRepository;
 import com.mate.helgather.repository.TodayExerciseRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -22,9 +25,10 @@ public class ExerciseService {
     private final TodayExerciseRepository todayExerciseRepository;
     private final AmazonS3Repository amazonS3Repository;
     private final MemberRepository memberRepository;
-
+    private final MemberProfileRepository memberProfileRepository;
     private static final String TODAY_EXERCISE_BASE_DIR = "thumbnails";
 
+    @Transactional
     public TodayExerciseResponseDto save(Long memberId, MultipartFile multipartFile) {
         if (!memberRepository.existsById(memberId)) {
             throw new BaseException(ErrorCode.NO_SUCH_MEMBER_ERROR);
@@ -35,7 +39,11 @@ public class ExerciseService {
                 .member(memberRepository.getReferenceById(memberId))
                 .imageUrl(imageUrl)
                 .build());
-
+        MemberProfile memberProfile = memberProfileRepository.findByMember_id(memberId)
+                .orElseThrow(() -> new BaseException(ErrorCode.NO_SUCH_MEMBER_PROFILE));
+        // 운동횟수 증가
+        Integer exerciseCount = memberProfile.getExerciseCount();
+        memberProfile.setExerciseCount(exerciseCount + 1);
         return new TodayExerciseResponseDto(imageUrl);
     }
 

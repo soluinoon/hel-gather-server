@@ -70,4 +70,8 @@ public class MemberProfile {
     public void setDeadLift(Integer deadLift) {
         this.deadLift = deadLift;
     }
+
+    public void setExerciseCount(Integer exerciseCount) {
+        this.exerciseCount = exerciseCount;
+    }
 }

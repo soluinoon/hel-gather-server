@@ -44,6 +44,34 @@ public class RecruitmentService {
         recruitmentRepository.save(recruitment);
     }
 
+    /**
+     * 게시글 작성 -> 단체 채팅방 개설
+     * 이 메서드는 발표전날 한 모집글에 한 단체 채팅방을 생각해서 만든 메서드 입니다.
+     * @param recruitmentRequestDto
+     */
+    @Transactional
+    public void saveV2(RecruitmentRequestDto recruitmentRequestDto) {
+        Member member = memberRepository.findById(recruitmentRequestDto.getMemberId())
+                .orElseThrow(() -> new BaseException(ErrorCode.NO_SUCH_MEMBER_ERROR));
+
+        Recruitment recruitment = recruitmentRequestDto.toEntity(member);
+
+        Location location = Location.of(recruitment.getLocation(), recruitment.getSubLocation());
+
+        Recruitment save = recruitmentRepository.save(recruitment);
+        // 채팅방도 생성
+        ChatRoom chatRoom = chatRoomRepository.save(ChatRoom.builder()
+                .recruitment(save)
+                .status(ChatRoomStatus.ACTIVE)
+                .build());
+        // n : m에 저장
+        memberChatRoomRepository.save(MemberChatRoom
+                .builder()
+                .member(member)
+                .chatRoom(chatRoom)
+                .build());
+    }
+
     @Transactional
     public List<RecruitmentListResponseDto> findAll(Long locationNumber, Long subLocationNumber) {
         Location location = Location.of(locationNumber, subLocationNumber);
@@ -89,6 +117,38 @@ public class RecruitmentService {
                             .build());
             // DTO 반환
             return new RecruitmentChatResponseDto(savedChatRoom.getId(), recruitment.getMember().getId(), requestMemberId);
+        } catch (EntityNotFoundException e) {
+            throw new BaseException(ErrorCode.NO_SUCH_MEMBER_ERROR);
+        }
+    }
+
+    /**
+     * 이 메서드는 발표 전날 게시글이 단체채팅방으로 관리되는 방법 때문에 만든 것 입니다.
+     * @param recruitmentId
+     * @param requestMemberId
+     * @return
+     */
+    @Transactional
+    public RecruitmentChatResponseDto apply(Long recruitmentId, Long requestMemberId) {
+        try {
+            // TODO: 탈퇴한 회원일 때 예외처리
+            Member referenceById = memberRepository.getReferenceById(requestMemberId);
+            // 존재하는 모집글인지 확인
+            Recruitment recruitment = recruitmentRepository.findById(recruitmentId)
+                    .orElseThrow(() -> new BaseException(ErrorCode.NO_SUCH_RECRUITMENT_ERROR));
+            // 채팅방 하나 만들기
+            // 현재 n:m이라 오류 발생 가능(채팅방 : 리크루트먼트)
+            ChatRoom chatRoom = chatRoomRepository.findByRecruitment(recruitment)
+                    // 추후 다른 에러코드로 바꿀 것
+                    .orElseThrow(() -> new BaseException(ErrorCode.NO_SUCH_CHATROOM_ERROR));
+            // n:m 연관관계 테이블에 저장
+            memberChatRoomRepository.save(MemberChatRoom
+                    .builder()
+                    .member(referenceById)
+                    .chatRoom(chatRoom)
+                    .build());
+            // DTO 반환
+            return new RecruitmentChatResponseDto(chatRoom.getId(), recruitment.getMember().getId(), requestMemberId);
         } catch (EntityNotFoundException e) {
             throw new BaseException(ErrorCode.NO_SUCH_MEMBER_ERROR);
         }

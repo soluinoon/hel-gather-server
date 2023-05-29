@@ -25,7 +25,7 @@ public class RecruitmentController {
      */
     @PostMapping()
     public ResponseEntity<BaseResponse> save(@RequestBody RecruitmentRequestDto recruitmentRequestDto) {
-        recruitmentService.save(recruitmentRequestDto);
+        recruitmentService.saveV2(recruitmentRequestDto);
         return new ResponseEntity<>(new BaseResponse("성공"), HttpStatus.OK);
     }
 
@@ -62,9 +62,23 @@ public class RecruitmentController {
      * @param recruitmentChatRequestDto 클라이언트에게 채팅방 id와 유저2명 id 반환
      * @return
      */
+//    @PostMapping("/{id}/chat")
+//    public ResponseEntity<BaseResponse> createChatRoom(@PathVariable Long id, @RequestBody RecruitmentChatRequestDto recruitmentChatRequestDto) {
+//        RecruitmentChatResponseDto recruitmentChatResponseDto = recruitmentService.createChatRoom(id, recruitmentChatRequestDto.getMemberId());
+//        return new ResponseEntity<>(new BaseResponse(recruitmentChatResponseDto), HttpStatus.OK);
+//    }
+
+    /**
+     * 45. 모집글 채팅신청 API
+     * 핵심 로직
+     * 채팅신청버튼 클릭 -> 채팅방 만들고 n:m 테이블에 저장 -> 클라이언트에게 채팅방 id와 유저2명 id 반환
+     * @param id 모집글 id
+     * @param recruitmentChatRequestDto 클라이언트에게 채팅방 id와 유저2명 id 반환
+     * @return
+     */
     @PostMapping("/{id}/chat")
-    public ResponseEntity<BaseResponse> createChatRoom(@PathVariable Long id, @RequestBody RecruitmentChatRequestDto recruitmentChatRequestDto) {
-        RecruitmentChatResponseDto recruitmentChatResponseDto = recruitmentService.createChatRoom(id, recruitmentChatRequestDto.getMemberId());
+    public ResponseEntity<BaseResponse> apply(@PathVariable Long id, @RequestBody RecruitmentChatRequestDto recruitmentChatRequestDto) {
+        RecruitmentChatResponseDto recruitmentChatResponseDto = recruitmentService.apply(id, recruitmentChatRequestDto.getMemberId());
         return new ResponseEntity<>(new BaseResponse(recruitmentChatResponseDto), HttpStatus.OK);
     }
 }

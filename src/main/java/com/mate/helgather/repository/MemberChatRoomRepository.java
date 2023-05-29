@@ -9,7 +9,8 @@ import java.util.List;
 
 public interface MemberChatRoomRepository extends JpaRepository<MemberChatRoom, Long> {
     @Query("SELECT c FROM MemberChatRoom c WHERE c.chatRoom IN (SELECT c1.chatRoom FROM MemberChatRoom c1 WHERE c1.member.id = :memberId) AND c.member.id <> :memberId")
-    List<MemberChatRoom> findAllByMemberId(@Param("memberId") Long memberId);
+    List<MemberChatRoom> findAllByMemberIdWithCond(@Param("memberId") Long memberId);
+    List<MemberChatRoom> findAllByMemberId(Long memberId);
     boolean existsByChatRoomIdAndMemberId(Long chatRoomId, Long memberID);
 
 }
