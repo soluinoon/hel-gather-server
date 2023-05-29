@@ -39,7 +39,7 @@ public class SbdService {
     private static final String THUMBNAIL_BASE_DIR = "thumbnails";
     private static final String THUMBNAIL_EXTENSION = "png";
     private static final String DEFAULT_IMAGE_PATH = "https://hel-gather.s3.ap-northeast-2.amazonaws.com/images/istockphoto-1277134944-170667a.jpg";
-
+    private static final String DEFAULT_GET_PATH = "https:/hel-gather.s3.ap-northeast-2.amazonaws.com/images/istockphoto-1277134944-170667a.jpg";
     /**
      * SBD를 저장한다.
      * @param sbdCategory
@@ -62,7 +62,7 @@ public class SbdService {
             String videoUrl = amazonS3Repository.save(videoFile, createPath(multipartFile.getContentType(), fileId));
             String thumbnailUrl = DEFAULT_IMAGE_PATH;
             // 이미지 추출이 성공했다면 세이브 진행.
-            if (!thumbnailFile.getPath().equals(DEFAULT_IMAGE_PATH)) {
+            if (!thumbnailFile.getPath().equals(DEFAULT_GET_PATH)) {
                 thumbnailUrl = amazonS3Repository.save(thumbnailFile, thumbNailPath);
             }
             // 레포지터리에 운동영상, 썸네일 영상 저장
