@@ -38,8 +38,8 @@ public class SbdService {
     private static final String VIDEO_BASE_DIR = "videos";
     private static final String THUMBNAIL_BASE_DIR = "thumbnails";
     private static final String THUMBNAIL_EXTENSION = "png";
-    private static final String DEFAULT_IMAGE_PATH = "https://hel-gather.s3.ap-northeast-2.amazonaws.com/thumbnails/default-thumbnail.jpeg";
-    private static final String DEFAULT_GET_PATH = "https:/hel-gather.s3.ap-northeast-2.amazonaws.com/thumbnails/default-thumbnail.jpeg";
+    private static String DEFAULT_IMAGE_PATH = "https://hel-gather.s3.ap-northeast-2.amazonaws.com/thumbnails/default-thumbnail.jpeg";
+    private static String DEFAULT_GET_PATH = "https:/hel-gather.s3.ap-northeast-2.amazonaws.com/thumbnails/default-thumbnail.jpeg";
     /**
      * SBD를 저장한다.
      * @param sbdCategory
@@ -54,7 +54,7 @@ public class SbdService {
         String thumbNailPath = String.format("%s/%s.%s", THUMBNAIL_BASE_DIR, fileId, THUMBNAIL_EXTENSION);
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new BaseException(ErrorCode.NO_SUCH_MEMBER_ERROR));
-
+        setDefaultPathByCategory(sbdCategory);
         try {
             multipartFile.transferTo(videoFile);
             File thumbnailFile = extractThumbnail(videoFile, thumbNailPath);
@@ -75,6 +75,19 @@ public class SbdService {
             return new SbdResponseDto(exercise);
         } catch (IOException e) {
             throw new S3NoPathException();
+        }
+    }
+
+    private void setDefaultPathByCategory(SbdCategory category) {
+        if (category.equals(SbdCategory.SQUAT)) {
+            DEFAULT_IMAGE_PATH = "https://hel-gather.s3.ap-northeast-2.amazonaws.com/thumbnails/squat.png";
+            DEFAULT_GET_PATH = "https:/hel-gather.s3.ap-northeast-2.amazonaws.com/thumbnails/squat.png";
+        } else if (category.equals(SbdCategory.BENCH_PRESS)) {
+            DEFAULT_IMAGE_PATH = "https://hel-gather.s3.ap-northeast-2.amazonaws.com/thumbnails/bench_press.png";
+            DEFAULT_GET_PATH = "https:/hel-gather.s3.ap-northeast-2.amazonaws.com/thumbnails/bench_press.png";
+        } else if (category.equals(SbdCategory.DEAD_LIFT)) {
+            DEFAULT_IMAGE_PATH = "https://hel-gather.s3.ap-northeast-2.amazonaws.com/thumbnails/dead_lift.png";
+            DEFAULT_GET_PATH = "https:/hel-gather.s3.ap-northeast-2.amazonaws.com/thumbnails/dead_lift.png";
         }
     }
 
