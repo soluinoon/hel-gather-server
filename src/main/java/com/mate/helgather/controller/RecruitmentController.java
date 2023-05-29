@@ -36,8 +36,19 @@ public class RecruitmentController {
      * @return
      */
     @GetMapping
-    public ResponseEntity<BaseResponse> findAll(@RequestParam Long location, @RequestParam Long subLocation) {
-        List<RecruitmentListResponseDto> recruitmentListResponseDtos = recruitmentService.findAll(location, subLocation);
+    public ResponseEntity<BaseResponse> findAllByCategory(@RequestParam Long location, @RequestParam Long subLocation) {
+        List<RecruitmentListResponseDto> recruitmentListResponseDtos = recruitmentService.findAllByCategory(location, subLocation);
+
+        return new ResponseEntity<>(new BaseResponse(recruitmentListResponseDtos), HttpStatus.OK);
+    }
+
+    /**
+     *
+     * @return
+     */
+    @GetMapping("/all")
+    public ResponseEntity<BaseResponse> findAll() {
+        List<RecruitmentListResponseDto> recruitmentListResponseDtos = recruitmentService.findAll();
 
         return new ResponseEntity<>(new BaseResponse(recruitmentListResponseDtos), HttpStatus.OK);
     }

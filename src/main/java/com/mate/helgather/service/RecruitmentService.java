@@ -73,12 +73,21 @@ public class RecruitmentService {
     }
 
     @Transactional
-    public List<RecruitmentListResponseDto> findAll(Long locationNumber, Long subLocationNumber) {
+    public List<RecruitmentListResponseDto> findAllByCategory(Long locationNumber, Long subLocationNumber) {
         Location location = Location.of(locationNumber, subLocationNumber);
 
         // 날짜순으로 내림차순으로 정렬되서 줌
         // TODO: 만약, 멤버가 없어졌다면(탈퇴) 어떻게 되는지 알아보기.
         List<Recruitment> recruitments = recruitmentRepository.findAllByLocationAndSubLocationOrderByCreatedAtDesc(locationNumber, subLocationNumber);
+
+        return recruitments.stream().map(RecruitmentListResponseDto::new)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public List<RecruitmentListResponseDto> findAll() {
+        // 날짜순으로 내림차순으로 정렬되서 줌
+        List<Recruitment> recruitments = recruitmentRepository.findAll();
 
         return recruitments.stream().map(RecruitmentListResponseDto::new)
                 .collect(Collectors.toList());
