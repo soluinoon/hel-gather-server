@@ -38,7 +38,7 @@ public class SbdService {
     private static final String VIDEO_BASE_DIR = "videos";
     private static final String THUMBNAIL_BASE_DIR = "thumbnails";
     private static final String THUMBNAIL_EXTENSION = "png";
-    private static final String DEFAULT_IMAGE_PATH = "src/main/resources/static/images/default-thumbnail.png";
+    private static final String DEFAULT_IMAGE_PATH = "https://hel-gather.s3.ap-northeast-2.amazonaws.com/images/istockphoto-1277134944-170667a.jpg";
 
     /**
      * SBD를 저장한다.
