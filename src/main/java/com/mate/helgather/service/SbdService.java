@@ -38,8 +38,8 @@ public class SbdService {
     private static final String VIDEO_BASE_DIR = "videos";
     private static final String THUMBNAIL_BASE_DIR = "thumbnails";
     private static final String THUMBNAIL_EXTENSION = "png";
-    private static final String DEFAULT_IMAGE_PATH = "https://hel-gather.s3.ap-northeast-2.amazonaws.com/images/istockphoto-1277134944-170667a.jpg";
-    private static final String DEFAULT_GET_PATH = "https:/hel-gather.s3.ap-northeast-2.amazonaws.com/images/istockphoto-1277134944-170667a.jpg";
+    private static final String DEFAULT_IMAGE_PATH = "https://hel-gather.s3.ap-northeast-2.amazonaws.com/thumbnails/default-thumbnail.jpeg";
+    private static final String DEFAULT_GET_PATH = "https:/hel-gather.s3.ap-northeast-2.amazonaws.com/thumbnails/default-thumbnail.jpeg";
     /**
      * SBD를 저장한다.
      * @param sbdCategory
