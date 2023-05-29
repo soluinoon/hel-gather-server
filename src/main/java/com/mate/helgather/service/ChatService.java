@@ -2,6 +2,7 @@ package com.mate.helgather.service;
 
 import com.mate.helgather.domain.MemberChatRoom;
 import com.mate.helgather.domain.Message;
+import com.mate.helgather.dto.ChatDto;
 import com.mate.helgather.dto.ChatRequestDto;
 import com.mate.helgather.dto.ChatRoomListResponseDto;
 import com.mate.helgather.dto.MessagesResponseDto;
@@ -33,6 +34,15 @@ public class ChatService {
                 .member(memberRepository.findById(chatRequestDTO.getUserId()).
                         orElseThrow(() -> new BaseException(ErrorCode.NO_SUCH_MEMBER_ERROR)))
                 .description(chatRequestDTO.getMessage())
+                .build());
+    }
+
+    public Message saveMessage(ChatDto chatDto, Long chatRoomId) {
+        return messageRepository.save(Message.builder().chatRoom(chatRoomRepository.findById(chatRoomId)
+                        .orElseThrow(() -> new BaseException(ErrorCode.NO_SUCH_CHATROOM_ERROR)))
+                .member(memberRepository.findById(chatDto.getUserId()).
+                        orElseThrow(() -> new BaseException(ErrorCode.NO_SUCH_MEMBER_ERROR)))
+                .description(chatDto.getMessage())
                 .build());
     }
 
