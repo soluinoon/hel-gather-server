@@ -62,7 +62,7 @@ public class ChatController {
 //         * 실제 URL은 sub/chats/{id}이다.
 //         * API 명세서
 //         */
-        headerAccessor.setHeader("custom-header", "custom-value");
+//        headerAccessor.setHeader("custom-header", "custom-value");
         template.convertAndSend("/sub/chats/" + chatRoomId, chatRequestDto);
 //        return new ResponseEntity<>(new BaseResponse("성공"), HttpStatus.OK);
     }
