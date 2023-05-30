@@ -179,9 +179,9 @@ public class MemberService {
         String[] split = memberProfile.getImageUrl().split("/");
 
         //s3에서 기본 프로필 이미지 외 기존 이미지 정보 지우기
-        if (!split[split.length - 1].equals("Base_Image.png")) {
-            amazonS3Repository.delete(extractKey(memberProfile.getImageUrl(), MEMBER_PROFILE_BASE_DIR));
-        }
+//        if (!split[split.length - 1].equals("Base_Image.png")) {
+//            amazonS3Repository.delete(extractKey(memberProfile.getImageUrl(), MEMBER_PROFILE_BASE_DIR));
+//        }
 
         //memberProfile 에 이미지 등록해주기
         String imageUrl = amazonS3Repository.saveV2(multipartFile, MEMBER_PROFILE_BASE_DIR);
