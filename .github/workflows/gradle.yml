@@ -33,9 +33,11 @@ jobs:
     - name: Setup MySQL
       uses: samin/mysql-action@v1
       with:
-        mysql database: ${{ secrets.TEST }}
+        mysql host: ${{ secrets.RDS_END_POINT }}
+        mysql port: 3306
+        mysql database: hel_gather
         mysql user: kingjihong
-        mysql password: ${{ secrets.TEST }} # github Secret 탭에서 설정하세요!
+        mysql password: ${{ secrets.MY_SQL_PASSWORD }}
         
     - name: Build with Gradle
       uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
