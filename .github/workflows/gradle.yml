@@ -33,9 +33,9 @@ jobs:
     - name: Setup MySQL
       uses: samin/mysql-action@v1
       with:
-        mysql database: kk
+        mysql database: ${{ secrets.TEST }}
         mysql user: kingjihong
-        mysql password: kk # github Secret 탭에서 설정하세요!
+        mysql password: ${{ secrets.TEST }} # github Secret 탭에서 설정하세요!
         
     - name: Build with Gradle
       uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
