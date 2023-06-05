@@ -28,6 +28,13 @@ jobs:
       with:
         java-version: '11'
         distribution: 'temurin'
+    - name: Setup MySQL
+      uses: samin/mysql-action@v1
+      with:
+        character set server: 'utf8' 
+        mysql database: ${{ secrets.MY_SQL_ADDR }} 
+        mysql user: kingjihong
+        mysql password: ${{ secrets.MY_SQL_PASSWORD }} # github Secret 탭에서 설정하세요!
     - name: Build with Gradle
       uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
       with:
