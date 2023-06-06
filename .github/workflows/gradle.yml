@@ -55,7 +55,7 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_KEY }}
       - name: SCP transfer
-        run: scp *.jar ${{ secrets.SSH_USER }}@${{ secrets.ADDR }}:~/cicd
+        run: scp *.jar ${{ secrets.SSH_USER }}@${{ secrets.SSH_ADDR }}:~/cicd
       - name: Execute remote commands
         run: |
           ssh ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} "sudo fuser -k 8080/tcp"
