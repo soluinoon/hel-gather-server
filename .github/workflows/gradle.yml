@@ -77,9 +77,16 @@ jobs:
           aws ec2 authorize-security-group-ingress --group-name ${{ env.AWS_SG_NAME }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32    
       
       - name: SCP transfer
-        run: |
-          ssh-keygen -R ec2-13-124-19-96.ap-northeast-2.compute.amazonaws.com
-          scp *.jar ${{ secrets.SSH_USER }}@${{ secrets.SSH_ADDR }}:~/cicd
+        uses: appleboy/scp-action@master
+        with:
+          username: ${{ secrets.SSH_USER }}
+          host: ${{ secrets.SSH_ADDR }}
+          key: ${{ secrets.SSH_KEY }}
+          rm: true
+          source: "*.jar"
+          target: ${{ secrets.DIST_PATH }}
+          ## 작업에 사용했던 dist 디렉토리를 경로상에서 제거
+          strip_components: 1
 
 
       - name: Execute remote commands
