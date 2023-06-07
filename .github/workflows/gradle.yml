@@ -88,12 +88,22 @@ jobs:
           ## 작업에 사용했던 dist 디렉토리를 경로상에서 제거
           strip_components: 1
 
-
-      - name: Execute remote commands
-        run: |
-          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_ADDR }} "sudo fuser -k 8080/tcp"
-          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_ADDR }} "sudo nohup java -jar ~/cicd/*.jar &"
+#       - name: Execute remote commands
+#         run: |
+#           ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_ADDR }} "sudo fuser -k 8080/tcp"
+#           ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_ADDR }} "
       
+      - name: Execute Server Init Script
+        uses: appleboy/ssh-action@master
+        with:
+          username: ${{ secrets.SSH_USER }}
+          host: ${{ secrets.SSH_ADDR }}
+          key: ${{ secrets.SSH_KEY }}
+          script_stop: true
+          script: | 
+            sudo fuser -k 8080/tcp
+            sudo nohup java -jar ~/cicd/*.jar &
+            
       - name: Remove Github Actions IP from security group
         run: |
          aws ec2 revoke-security-group-ingress --group-name ${{ env.AWS_SG_NAME }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
