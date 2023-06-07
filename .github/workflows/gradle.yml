@@ -83,7 +83,7 @@ jobs:
           host: ${{ secrets.SSH_ADDR }}
           key: ${{ secrets.SSH_KEY }}
           rm: true
-          source: "*.jar"
+          source: "./build/libs/*.jar"
           target: ${{ secrets.DIST_PATH }}
           ## 작업에 사용했던 dist 디렉토리를 경로상에서 제거
           strip_components: 1
