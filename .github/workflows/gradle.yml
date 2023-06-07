@@ -36,20 +36,20 @@ jobs:
 #         arguments: build
       run : ./gradlew clean build -x test
       
-    - name: Upload artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: cicdsample
-        path: build/libs/*.jar
+#     - name: Upload artifact
+#       uses: actions/upload-artifact@v2
+#       with:
+#         name: cicdsample
+#         path: build/libs/*.jar
  
   deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download artifact
-        uses: actions/download-artifact@v2
-        with:
-          name: cicdsample
+#     needs: build
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Download artifact
+#         uses: actions/download-artifact@v2
+#         with:
+#           name: cicdsample
           
       - name: Setup SSH
         uses: webfactory/ssh-agent@v0.5.4
@@ -76,6 +76,11 @@ jobs:
         run: |
           aws ec2 authorize-security-group-ingress --group-name ${{ env.AWS_SG_NAME }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32    
       
+      - name: Check artifact
+        run: |
+          cd ./build/libs
+          ls -l
+          
       - name: SCP transfer
         uses: appleboy/scp-action@master
         with:
