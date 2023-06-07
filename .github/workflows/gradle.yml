@@ -36,20 +36,20 @@ jobs:
 #         arguments: build
       run : ./gradlew clean build -x test
       
-#     - name: Upload artifact
-#       uses: actions/upload-artifact@v2
-#       with:
-#         name: cicdsample
-#         path: build/libs/*.jar
+    - name: Upload artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: cicdsample
+        path: build/libs/*.jar
  
   deploy:
     needs: build
     runs-on: ubuntu-latest
     steps:
-#       - name: Download artifact
-#         uses: actions/download-artifact@v2
-#         with:
-#           name: cicdsample
+      - name: Download artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: cicdsample
           
       - name: Setup SSH
         uses: webfactory/ssh-agent@v0.5.4
@@ -88,7 +88,7 @@ jobs:
           host: ${{ secrets.SSH_ADDR }}
           key: ${{ secrets.SSH_KEY }}
           rm: true
-          source: "./build/libs/*.jar"
+          source: "/home/runner/work/hel-gather-server/hel-gather-server/*.jar"
           target: ${{ secrets.DIST_PATH }}
           ## 작업에 사용했던 dist 디렉토리를 경로상에서 제거
           strip_components: 1
