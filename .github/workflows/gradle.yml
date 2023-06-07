@@ -102,7 +102,7 @@ jobs:
           script_stop: true
           script: | 
             sudo fuser -k 8080/tcp
-            sudo nohup java -jar ~/cicd/*.jar &
+            sudo nohup java -jar ~/cicd/workspace/hel-gather-0.0.1-SNAPSHOT.jar &
             
       - name: Remove Github Actions IP from security group
         run: |
