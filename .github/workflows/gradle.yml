@@ -51,10 +51,10 @@ jobs:
         with:
           name: cicdsample
           
-      - name: Setup SSH
-        uses: webfactory/ssh-agent@v0.5.4
-        with:
-          ssh-private-key: ${{ secrets.SSH_KEY }}
+#       - name: Setup SSH
+#         uses: webfactory/ssh-agent@v0.5.4
+#         with:
+#           ssh-private-key: ${{ secrets.SSH_KEY }}
       
       - name: Get Github action IP
         id: ip
