@@ -18,6 +18,7 @@ public enum ErrorCode {
     NO_INPUT_BIRTH_YEAR(3008, "생일년도를 입력해주세요."),
     NO_INPUT_BIRTH_MONTH(3009, "생일달을 입력해주세요."),
     NO_INPUT_BIRTH_DAY(3010, "생일을 입력해주세요."),
+    MAX_BIGGER_THAN_MIN(3011, "최소값이 최대값보다 작아야 합니다."),
     NO_SUCH_MEMBER_ERROR(4001, "존재하지 않는 멤버 입니다."),
     NO_SUCH_CHATROOM_ERROR(4002, "존재하지 않는 채팅방 입니다."),
     EXIST_NICKNAME_ERROR(4003, "이미 존재하는 닉네임입니다."),
