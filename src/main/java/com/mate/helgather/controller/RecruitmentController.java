@@ -107,7 +107,7 @@ public class RecruitmentController {
      * @return 베이스 리스폰스
      */
     @GetMapping
-    public ResponseEntity<BaseResponse> findByOptions(@ModelAttribute @Valid RecruitmentOptions recruitmentOptions, BindingResult bindingResult) {
+    public ResponseEntity<BaseResponse> findByOptions(@Valid RecruitmentOptions recruitmentOptions, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new BaseException(ErrorCode.FORMAT_ERROR);
         }

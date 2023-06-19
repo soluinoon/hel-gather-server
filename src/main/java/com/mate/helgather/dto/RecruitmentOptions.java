@@ -27,7 +27,6 @@ public class RecruitmentOptions {
     private Integer maxDeadLift = 500;
 
     public RecruitmentOptions(Long location, Long subLocation, Integer minBenchPress, Integer maxBenchPress, Integer minSquat, Integer maxSquat, Integer minDeadLift, Integer maxDeadLift) {
-        System.out.println("location = " + location + ", subLocation = " + subLocation + ", minBenchPress = " + minBenchPress + ", maxBenchPress = " + maxBenchPress + ", minSquat = " + minSquat + ", maxSquat = " + maxSquat + ", minDeadLift = " + minDeadLift + ", maxDeadLift = " + maxDeadLift);
         this.location = location;
         this.subLocation = subLocation;
         this.minBenchPress = minBenchPress;
