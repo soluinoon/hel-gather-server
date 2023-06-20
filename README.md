@@ -25,7 +25,7 @@
 |<img width="100" alt="Screenshot 2023-06-19 at 2 35 05 PM" src="https://github.com/hel-gather/hel-gather-server/assets/67910922/48efcd3b-e472-4a83-b423-76a8b811792f">|
 
 ### 🚪 백엔드
-|[J.S.C](https://github.com/BENDENG1)|[soluinoon](https://github.com/soluinoon)|
+|[J.S.C](https://github.com/vmfaldwntjd)|[soluinoon](https://github.com/soluinoon)|
 |---|---|
 |<img width="100" alt="Screenshot 2023-06-19 at 2 41 20 PM" src="https://github.com/hel-gather/hel-gather-server/assets/67910922/d9ade50f-3d51-4674-bbc2-96046980e01d">|<img src="https://github.com/hel-gather/hel-gather-server/assets/67910922/119dd9f5-5fbe-4c46-ac7a-a195526f2112" alt="이미지" style="width: 100px;">|
 
