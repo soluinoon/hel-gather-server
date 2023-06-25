@@ -162,4 +162,15 @@ public class RecruitmentService {
             throw new BaseException(ErrorCode.NO_SUCH_MEMBER_ERROR);
         }
     }
+
+    @Transactional
+    public List<RecruitmentListResponseDto> findByOptions(RecruitmentOptions recruitmentOptions) {
+        Location location = Location.of(recruitmentOptions.getLocation(), recruitmentOptions.getSubLocation());
+        // TODO: 만약, 멤버가 없어졌다면(탈퇴) 어떻게 되는지 알아보기.
+        List<Recruitment> recruitments = recruitmentRepository.findAllByRecruitmentOptions(recruitmentOptions);
+
+        return recruitments.stream()
+                .map(RecruitmentListResponseDto::new)
+                .collect(Collectors.toList());
+    }
 }
