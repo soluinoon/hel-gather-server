@@ -14,7 +14,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.Collection;
+import java.util.Date;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -22,10 +25,12 @@ import java.util.stream.Collectors;
 public class JwtTokenProvider {
 
     private final Key key;
+    private final CustomUserDetailService customUserDetailService;
 
-    public JwtTokenProvider(@Value("${jwt.secret}") String secretKey) {
+    public JwtTokenProvider(@Value("${jwt.secret}") String secretKey, CustomUserDetailService customUserDetailService) {
         byte[] keyBytes = Base64.getDecoder().decode(secretKey);
         this.key = Keys.hmacShaKeyFor(keyBytes);
+        this.customUserDetailService = customUserDetailService;
     }
 
     //유저 정보를 가지고 AccessToken, RefreshToken을 생셩하는 메서드
@@ -39,6 +44,7 @@ public class JwtTokenProvider {
 
         //Access Token 생성
         Date accessTokenExpiresIn = new Date(now + 604800000);
+
         String accessToken = Jwts.builder()
                 .setSubject(authentication.getName())
                 .claim("auth", authorities)
@@ -62,6 +68,9 @@ public class JwtTokenProvider {
 
     //JWT 토큰을 복호화하여 토큰에 들어있는 정보를 꺼내는 메서드
     public Authentication getAuthentication(String accessToken) {
+        // 이전 코드 입니다. 현재 loadUserByUsername으로 사용하도록 리팩토링해서 @AuthenticationPrincipal이 사용되도록 변경했습니다.
+        // 이 코드를 사용하면 @AuthenticationPrincipal이 null이 들어옵니다.
+
         //토큰 복호화
         Claims claims = parseClaims(accessToken);
 
@@ -77,7 +86,13 @@ public class JwtTokenProvider {
 
         // UserDetails 객체를 만들어서 Authentication 리턴
         UserDetails principal = new User(claims.getSubject(), "", authorities);
-        return new UsernamePasswordAuthenticationToken(principal, "", authorities);
+
+
+        // 추가
+        UserDetails userDetails = customUserDetailService.loadUserByUsername(claims.getSubject());
+//        return new UsernamePasswordAuthenticationToken(principal, "", authorities);
+        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
+
     }
 
     //토큰 정보를 검증하는 메서드
@@ -101,7 +116,38 @@ public class JwtTokenProvider {
         return false;
     }
 
-    private Claims parseClaims(String accessToken) {
+    /**
+     * STOMP 에서 사용되는 토큰 검증입니다.
+     * 실제 사용하는 BaseException 에러를 던지도록 구현했습니다.
+     * @see com.mate.helgather.configuration.ChatPreHandler
+     * @param token
+     * @return
+     */
+    public boolean validateTokenAtStomp(String token) {
+        try {
+            Jwts.parserBuilder()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(token);
+            return true;
+        } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
+            log.info("Invalid JWT Token");
+            throw new BaseException(ErrorCode.INVALID_JWT_TOKEN);
+        } catch (ExpiredJwtException e) {
+            log.info("Expired JWT Token");
+            throw new BaseException(ErrorCode.EXPIRED_JWT_TOKEN);
+        } catch (UnsupportedJwtException e) {
+            log.info("Unsupported JWT Token");
+            throw new BaseException(ErrorCode.UNSUPPORTED_JWT_TOKEN);
+        } catch (IllegalArgumentException e) {
+            log.info("JWT claims string is empty");
+            throw new BaseException(ErrorCode.CLAIM_STRING_EMPTY);
+        }
+    }
+
+    // 토큰을 클레임 형태로 만들어서 권한 정보가 있는지 없는지 확인
+    // 6.23) STOMP jwt 검증으로 인해 private -> public 변경
+    public Claims parseClaims(String accessToken) {
         try {
             return Jwts.parserBuilder()
                     .setSigningKey(key)
