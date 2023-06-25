@@ -9,7 +9,7 @@ import com.mate.helgather.exception.ErrorCode;
 import com.mate.helgather.repository.AmazonS3Repository;
 import com.mate.helgather.repository.MemberProfileRepository;
 import com.mate.helgather.repository.MemberRepository;
-//import com.mate.helgather.util.JwtTokenProvider;
+import com.mate.helgather.util.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -44,7 +44,7 @@ public class MemberService {
         validateMemberRequest(memberRequestDto);
 
         Member member = memberRequestDto.toEntity();
-//        member.getRoles().add("USER");
+        member.getRoles().add("USER"); // 주석 해제
 
         member = memberRepository.save(member);
 
