@@ -28,7 +28,7 @@ public class RecruitmentController {
      * @return
      */
     @PostMapping()
-    public ResponseEntity<BaseResponse> save(@RequestBody RecruitmentRequestDto recruitmentRequestDto) {
+    public ResponseEntity<BaseResponse> create(@RequestBody RecruitmentRequestDto recruitmentRequestDto) {
         recruitmentService.saveV2(recruitmentRequestDto);
         return new ResponseEntity<>(new BaseResponse("성공"), HttpStatus.OK);
     }
