@@ -1,14 +1,18 @@
 package com.mate.helgather.controller;
 
 import com.mate.helgather.dto.*;
+import com.mate.helgather.exception.BaseException;
 import com.mate.helgather.exception.BaseResponse;
+import com.mate.helgather.exception.ErrorCode;
 import com.mate.helgather.service.RecruitmentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController

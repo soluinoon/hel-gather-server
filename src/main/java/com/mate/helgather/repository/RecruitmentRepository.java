@@ -1,7 +1,10 @@
 package com.mate.helgather.repository;
 
 import com.mate.helgather.domain.Recruitment;
+import com.mate.helgather.dto.RecruitmentOptions;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
