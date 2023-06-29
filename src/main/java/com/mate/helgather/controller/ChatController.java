@@ -36,22 +36,11 @@ public class ChatController {
 
      */
     @MessageMapping("/chatroom/{id}") // 실제론 메세지 매핑으로 pub/chatroom/{id} 임
-    public void pubMessage(@DestinationVariable("id") Long id, ChatDto chatDTO) throws Exception {
+    public void pubMessage(@DestinationVariable("id") Long id, ChatDto chatDTO) {
         log.info("chat {} send by {} to room number{}", chatDTO.getMessage(), chatDTO.getUserId(), id);
         chatService.saveMessage(chatDTO, id);
         template.convertAndSend("/sub/chatroom/" + id, chatDTO);
     }
-
-//    @SubscribeMapping("/chats/{id}")
-//    public void subMessage(@DestinationVariable("id") Long chatRoomId, ChatRequestDto chatRequestDto, SimpMessageHeaderAccessor headerAccessor) {
-//        System.out.println("ChatController.subMessage");
-//        Map<String, Object> headers = headerAccessor.toMap();
-//        for (Map.Entry<String, Object> entry : headers.entrySet()) {
-//            String headerName = entry.getKey();
-//            Object headerValue = entry.getValue();
-//            log.info("Header - {}: {}", headerName, headerValue);
-//        }
-//    }
 
     /**
      * 5. 채팅방 메세지 API
