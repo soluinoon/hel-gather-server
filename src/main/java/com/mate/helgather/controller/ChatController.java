@@ -45,17 +45,6 @@ public class ChatController {
         template.convertAndSend("/sub/chatroom/" + id, chatDTO);
     }
 
-//    @SubscribeMapping("/chats/{id}")
-//    public void subMessage(@DestinationVariable("id") Long chatRoomId, ChatRequestDto chatRequestDto, SimpMessageHeaderAccessor headerAccessor) {
-//        System.out.println("ChatController.subMessage");
-//        Map<String, Object> headers = headerAccessor.toMap();
-//        for (Map.Entry<String, Object> entry : headers.entrySet()) {
-//            String headerName = entry.getKey();
-//            Object headerValue = entry.getValue();
-//            log.info("Header - {}: {}", headerName, headerValue);
-//        }
-//    }
-
     /**
      * 5. 채팅방 메세지 API
      * @param chatRoomId
