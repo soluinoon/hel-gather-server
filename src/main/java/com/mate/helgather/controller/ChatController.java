@@ -7,6 +7,8 @@ import com.mate.helgather.exception.BaseResponse;
 import com.mate.helgather.service.ChatService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
@@ -29,6 +31,7 @@ public class ChatController {
     private final ChatService chatService;
     private final SimpMessageSendingOperations template;
     private final static ConcurrentHashMap<Long, Long> prevMap = new ConcurrentHashMap<>();
+
     /**
      * 채팅 발행 API 명세서 6번
      * 실제 URL은 pub/chats/{id}이다.
@@ -36,7 +39,7 @@ public class ChatController {
 
      */
     @MessageMapping("/chatroom/{id}") // 실제론 메세지 매핑으로 pub/chatroom/{id} 임
-    public void pubMessage(@DestinationVariable("id") Long id, ChatDto chatDTO) throws Exception {
+    public void pubMessage(@DestinationVariable("id") Long id, ChatDto chatDTO) {
         log.info("chat {} send by {} to room number{}", chatDTO.getMessage(), chatDTO.getUserId(), id);
         chatService.saveMessage(chatDTO, id);
         template.convertAndSend("/sub/chatroom/" + id, chatDTO);
@@ -61,8 +64,10 @@ public class ChatController {
      */
     @GetMapping("/chats/{id}")
     public ResponseEntity<BaseResponse> findMessagesByChatRoomId(@PathVariable("id") Long chatRoomId,
-                                                     @RequestParam(value = "member", required = true) Long memberId) {
-        List<MessagesResponseDto> messages = chatService.findMessages(chatRoomId, memberId);
+                                                                 @RequestParam(value = "member") Long memberId,
+                                                                 @PageableDefault Pageable pageable) {
+        log.info("size = {}, page = {}, sorted = {}", pageable.getPageSize(), pageable.getPageNumber(), pageable.getSort());
+        List<MessagesResponseDto> messages = chatService.findMessages(chatRoomId, memberId, pageable);
         return new ResponseEntity<>(new BaseResponse(messages), HttpStatus.OK);
     }
 

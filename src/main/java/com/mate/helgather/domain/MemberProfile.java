@@ -1,5 +1,6 @@
 package com.mate.helgather.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.mate.helgather.domain.status.MemberProfileStatus;
 import com.sun.istack.NotNull;
 import lombok.*;
@@ -23,6 +24,7 @@ public class MemberProfile {
     private Long id;
 
     @OneToOne
+    @JsonIgnore
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
