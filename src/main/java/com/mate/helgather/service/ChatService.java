@@ -14,6 +14,8 @@ import com.mate.helgather.repository.MemberChatRoomRepository;
 import com.mate.helgather.repository.MemberRepository;
 import com.mate.helgather.repository.MessageRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -48,7 +50,7 @@ public class ChatService {
                 .build());
     }
 
-    public List<MessagesResponseDto> findMessages(Long chatRoomId, Long requestUserId) throws BaseException {
+    public List<MessagesResponseDto> findMessages(Long chatRoomId, Long requestUserId, Pageable pageable) throws BaseException {
         if (!chatRoomRepository.existsById(chatRoomId)) {
             throw new BaseException(ErrorCode.NO_SUCH_CHATROOM_ERROR);
         }
@@ -59,7 +61,7 @@ public class ChatService {
             throw new BaseException(ErrorCode.MEMBER_NOT_EXIST_IN_ROOM);
         }
 
-        List<Message> messages = messageRepository.findAllByChatRoom_IdOrderByCreatedAt(chatRoomId);
+        Slice<Message> messages = messageRepository.findSlicesByChatRoom_Id(chatRoomId, pageable);
 
         return messages.stream()
                 .map(message -> new MessagesResponseDto(message, requestUserId))

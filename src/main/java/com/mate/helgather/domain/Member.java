@@ -1,5 +1,6 @@
 package com.mate.helgather.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.mate.helgather.domain.status.MemberStatus;
 import com.sun.istack.NotNull;
 import lombok.*;
@@ -59,6 +60,7 @@ public class Member implements UserDetails {
     @NotNull
     private MemberStatus status = MemberStatus.ACTIVE;
 
+    @JsonIgnore
     @OneToOne(mappedBy = "member")
     private MemberProfile memberProfile;
 
