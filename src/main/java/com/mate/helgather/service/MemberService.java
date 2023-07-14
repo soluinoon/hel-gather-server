@@ -71,18 +71,12 @@ public class MemberService {
             throw new BaseException(ErrorCode.NO_INPUT_PASSWORD);
         }
 
-//        Member member = memberRepository.findByNickname(nickname)
-//        .orElseThrow(() -> new BaseException(NO_SUCH_MEMBER_ERROR));
-//        return MemberLoginResponseDto.builder()
-//                .memberId(member.getId())
-//                .nickname(nickname)
-//                .build();
         // 1. Login ID/PW 기반으로 Authentication 객체 생성
-//         이 때 authentication 는 인증 여부를 확인하는 authenticated 값이 false
+        // 이 때 authentication 는 인증 여부를 확인하는 authenticated 값이 false
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(nickname, password);
 
-//         2. 실제 검증 (사용자 비밀번호 체크)이 이루어지는 부분
-//         authenticate 메서드가 실행될 때 CustomUserDetailsService 에서 만든 loadUserByUsername 가 실행
+        // 2. 실제 검증 (사용자 비밀번호 체크)이 이루어지는 부분
+        // authenticate 메서드가 실행될 때 CustomUserDetailsService 에서 만든 loadUserByUsername 가 실행
         try {
             Authentication authenticate = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
             // 3. Authentication 객체를 통해 Principal 얻기

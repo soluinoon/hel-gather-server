@@ -10,10 +10,10 @@ spring:
     name: helgather
 
   datasource:
-    url: jdbc:mysql://hel-gather-db.cps699alalgs.ap-northeast-2.rds.amazonaws.com:3306/hel_gather_prod?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    url: jdbc:h2:tcp://localhost/~/helgather
     username: kingjihong
     password: aA1349529!!!!
-    driver-class-name: com.mysql.cj.jdbc.Driver
+#    driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
       ddl-auto: update
