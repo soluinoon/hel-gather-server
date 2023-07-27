@@ -1,0 +1,42 @@
+= Hel-gather API 명세
+:doctype: book
+:icons: font
+// 문서에 표기되는 코드들 하이라이트
+:source-highlighter: prettify
+// 컨텐츠를 왼쪽에 두겠다는 의미
+:toc: left
+:toclevels: 2
+:sectlinks:
+
+[[모집]]
+== 모집 API
+[[모집-게시글-API]]
+=== 모집 생성 API
+operation::게시물 생성 API[snippets='http-request,request-parameters,request-parts,http-response,response-fields']
+
+[[모집-ID-조회-API]]
+=== 모집 ID 조회 API
+operation::게시물 ID 조회 API[snippets='http-request,request-parameters,request-parts,http-response,response-fields']
+
+[[모집-전체조회-API]]
+=== 모집 전체 조회 API
+operation::게시물 전체 조회 API[snippets='http-request,request-parameters,request-parts,http-response,response-fields']
+
+[[모집-필터링-조회-API]]
+=== 모집 필터링 조회 API
+operation::게시물 필터링 조회 API[snippets='http-request,request-parameters,request-parts,http-response,response-fields']
+
+
+[[운동]]
+== 운동 API
+[[운동-인증-API]]
+=== 운동 인증 API
+operation::exercise_post_API[snippets='http-request,request-parameters,request-parts,http-response,response-fields']
+
+[[운동-삭제-API]]
+=== 운동 삭제 API
+operation::운동 게시물 삭제 API[snippets='http-request,request-parameters,request-parts,http-response,response-fields']
+
+[[운동-게시물-전체조회-API]]
+=== 운동 게시물 전체조회 API
+operation::운동 게시물 전체조회 API[snippets='http-request,request-parameters,request-parts,http-response,response-fields']
