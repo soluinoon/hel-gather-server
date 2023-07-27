@@ -1,7 +1,15 @@
-server:
-  port: 8080
+spring:
+  profile:
+    group:
+      local: common, local-db
+      prod: common, prod-db
+
+---
 
 spring:
+  config:
+    activate:
+      on-profile: common
   servlet:
     multipart:
       max-file-size: 20MB
@@ -9,6 +17,31 @@ spring:
   application:
     name: helgather
 
+  cloud:
+    aws:
+      s3:
+        bucket: hel-gather-s3
+      credentials:
+        access-key: AKIA5IZYF7FRFZEO3WT3
+        secret-key: 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
+      region:
+        static: ap-northeast-2
+        auto: false
+      stack:
+        auto: false
+
+  server:
+    port: 8080
+
+  jwt:
+    secret: VlwEyVBsYt9V7zq57TejMnVUyzblYcfPQye08f7MGVA9XkHa
+
+---
+
+spring:
+  config:
+    active:
+      on-profile: local-db
   datasource:
     url: jdbc:h2:tcp://localhost/~/helgather
     username: kingjihong
@@ -21,19 +54,23 @@ spring:
       hibernate:
         format_sql: true
         show_sql: true
-cloud:
-  aws:
-    s3:
-      bucket: hel-gather
-    credentials:
-      access-key: AKIATNMKTXLNOOG6SY7F
-      secret-key: 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
-    region:
-      static: ap-northeast-2
-      auto: false
-    stack:
-      auto: false
 
-jwt:
-  secret: VlwEyVBsYt9V7zq57TejMnVUyzblYcfPQye08f7MGVA9XkHa
+---
+
+spring:
+  config:
+    active:
+      on-profile: prod-db
+  datasource:
+    url: jdbc:mysql://hel-gather-prod-db-instance-1.cdvy1x08ijsd.ap-northeast-2.rds.amazonaws.com:3306/hel_gather_prod?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: kingjihong
+    password: aA1349529!!!!
+  #    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
 
