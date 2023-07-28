@@ -54,6 +54,9 @@ dependencies {
 	implementation 'io.jsonwebtoken:jjwt-impl:0.11.5'
 	implementation 'io.jsonwebtoken:jjwt-jackson:0.11.5'
 
+	// jasypt 암호화
+	implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5'
+
 	// mockmvc
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'

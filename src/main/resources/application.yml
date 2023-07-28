@@ -4,6 +4,29 @@ spring:
       local: common, local-db
       prod: common, prod-db
 
+server:
+  port: 8080
+
+jwt:
+  secret: VlwEyVBsYt9V7zq57TejMnVUyzblYcfPQye08f7MGVA9XkHa
+
+jasypt:
+  encryptor:
+    bean: jasyptEncryptorAES
+
+cloud:
+  aws:
+    s3:
+      bucket: hel-gather-s3
+    credentials:
+      access-key: ENC(M4edAaknqmrwM/Y3Jld99CTyBHMur5fUb8T0Qqr/G3XHjBNx0KSZdlKaZHKc+po/M6JTqKMxbbmnXZ8RbKpy2w==)
+      secret-key: ENC(BufWatmfEgFIiGdqGEz726vCmDwoW2O5x66wTsOVr4WimODufIFbsRVZi+pw/wMfkwi5Dck3YDp35+VUeIRvs1F1G7L08YDmTJoP53+fBnw=)
+    region:
+      static: ap-northeast-2
+      auto: false
+    stack:
+      auto: false
+
 ---
 
 spring:
@@ -17,30 +40,11 @@ spring:
   application:
     name: helgather
 
-  cloud:
-    aws:
-      s3:
-        bucket: hel-gather-s3
-      credentials:
-        access-key: AKIA5IZYF7FRFZEO3WT3
-        secret-key: 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
-      region:
-        static: ap-northeast-2
-        auto: false
-      stack:
-        auto: false
-
-  server:
-    port: 8080
-
-  jwt:
-    secret: VlwEyVBsYt9V7zq57TejMnVUyzblYcfPQye08f7MGVA9XkHa
-
 ---
 
 spring:
   config:
-    active:
+    activate:
       on-profile: local-db
   datasource:
     url: jdbc:h2:tcp://localhost/~/helgather
@@ -59,12 +63,12 @@ spring:
 
 spring:
   config:
-    active:
+    activate:
       on-profile: prod-db
   datasource:
-    url: jdbc:mysql://hel-gather-prod-db-instance-1.cdvy1x08ijsd.ap-northeast-2.rds.amazonaws.com:3306/hel_gather_prod?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
-    username: kingjihong
-    password: aA1349529!!!!
+    url: ENC(J207p+aaszvNyuANu3K9GJ5HwvqG553wp4sPUO2bXeNkEDE3iHQZTFqBXc/6he2eKHyhV5ivDXFGWbdgOKymhF9AY6rjjc0vVF4+2p8ARWRQ4cBfT6WVMKaQryfmILpBglZdARoInRynr+w2PYYxKgS/YcLiRePOgcDYwli4V3SfkeOxYHkmITen0xyTTmLg6/OsVwEHZwxLA8yt9FidIyB4DRZEoLknm20lVFREZnh8PlV6AnCeetyFCOXBCVtc)
+    username: ENC(oQ6VBevtOVq9lt3vjoI/NbfwwkZXNUuNBTtir4J6JlFtmqkP8DQySIWPbDIVd4lR)
+    password: ENC(z7q+OQd9nPPHmUxBcAPv68dYO2w3Gz32Y24b0mz7Q4kbtQajUTo5eNLYyY5Ymv+/)
   #    driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
