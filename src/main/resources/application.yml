@@ -2,10 +2,9 @@ spring:
   profile:
     group:
       local: common, local-db
-      prod: common, prod-db
-
-server:
-  port: 8080
+      prod1: common, prod-db, prod1
+      prod2: common, prod-db, prod2
+      prod3: common, prod-db, prod3
 
 jwt:
   secret: VlwEyVBsYt9V7zq57TejMnVUyzblYcfPQye08f7MGVA9XkHa
@@ -19,8 +18,8 @@ cloud:
     s3:
       bucket: hel-gather-s3
     credentials:
-      access-key: ENC(M4edAaknqmrwM/Y3Jld99CTyBHMur5fUb8T0Qqr/G3XHjBNx0KSZdlKaZHKc+po/M6JTqKMxbbmnXZ8RbKpy2w==)
-      secret-key: ENC(BufWatmfEgFIiGdqGEz726vCmDwoW2O5x66wTsOVr4WimODufIFbsRVZi+pw/wMfkwi5Dck3YDp35+VUeIRvs1F1G7L08YDmTJoP53+fBnw=)
+      access-key: ENC(X6mP91P3GtjXmsn1HRqSUR1jzPzi/F4/6sJKc9YyYfh7sSVhSnQOpwijUAnvlC60RI5gEVOd5nFLwzK/X0jgig==)
+      secret-key: ENC(K3UNLT8RnQLkQ1ACC9YTCb6syCkVDg91U8RQHVieqG04j9Npw55Ixm5xvWCQh3a+cUvqbxcoyRwi6jbWmS7rReSp7KqmQkFWwRv00Su8ZJY=)
     region:
       static: ap-northeast-2
       auto: false
@@ -66,9 +65,9 @@ spring:
     activate:
       on-profile: prod-db
   datasource:
-    url: ENC(J207p+aaszvNyuANu3K9GJ5HwvqG553wp4sPUO2bXeNkEDE3iHQZTFqBXc/6he2eKHyhV5ivDXFGWbdgOKymhF9AY6rjjc0vVF4+2p8ARWRQ4cBfT6WVMKaQryfmILpBglZdARoInRynr+w2PYYxKgS/YcLiRePOgcDYwli4V3SfkeOxYHkmITen0xyTTmLg6/OsVwEHZwxLA8yt9FidIyB4DRZEoLknm20lVFREZnh8PlV6AnCeetyFCOXBCVtc)
-    username: ENC(oQ6VBevtOVq9lt3vjoI/NbfwwkZXNUuNBTtir4J6JlFtmqkP8DQySIWPbDIVd4lR)
-    password: ENC(z7q+OQd9nPPHmUxBcAPv68dYO2w3Gz32Y24b0mz7Q4kbtQajUTo5eNLYyY5Ymv+/)
+    url: ENC(4h35jdBKUxNmd3F9HqNzPmKMI1FQfknTbRK/9R25bOvSG7tUgYd7UxCCrZuUSrJBmrauBQpjdZGjZY91QHP5U/GsZm0HG1xUXcPT/UHd0UJuQjr2nkLOajdZAydlonhUbdxgt3R17wTtudlrbhjaUT3KDrLZkthitdpDBSilUjcl3GH7K6XUKbXxCpC9T6+sqcRi/iVxjRUkaCN7a1nG+FcHjN2LBDdhLRP2fmyvpkIW50Tcb4jwrJIlISpPgZrmDvsT+9H2wiS9q78aTQzMcg==)
+    username: ENC(IoypxQU/L2gWg4z/XTbzmSNVTelD0HfRhmpOYSgxy/jQcK+EeJPEUVFnq6wVK4Mp)
+    password: ENC(7qwkjtEPdsPqgic+P3btJSd9i6qUldsDKPE6pmyHuxb1ipr5wtu/o8J93hs4MaZS)
   #    driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
@@ -78,3 +77,50 @@ spring:
         format_sql: true
         show_sql: true
 
+---
+
+spring:
+  config:
+    activate:
+      on-profile: prod1
+
+serverName: hel-gather-prod1
+
+server:
+  port: 8080
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: prod2
+
+serverName: hel-gather-prod2
+
+server:
+  port: 8081
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: prod3
+
+serverName: hel-gather-prod3
+
+server:
+  port: 8080
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: prod4
+
+serverName: hel-gather-prod4
+
+server:
+  port: 8081
