@@ -17,15 +17,14 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 
 import java.time.LocalDate;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -48,9 +47,6 @@ class RecruitmentControllerTest {
 
     @MockBean
     private RecruitmentService recruitmentService;
-
-//    @Autowired
-//    private ApplicationContext applicationContext;
 
     private String token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjb3JlTmljazciLCJhdXRoIjoiUk9MRV9VU0VSIiwiZXhwIjoxNjg4NDcyMzA3fQ.bBWrIpULfrZsIUAF-MrhPa100k-b0d6LF84Iyr-Gjss";
 
@@ -155,6 +151,7 @@ class RecruitmentControllerTest {
                     .description("3~6시 아무때나 연락주세요!!")
                     .status(RecruitmentStatus.ACTIVE)
                     .build()));
+        System.out.println("in tc : " + recruitmentResponseDtos);
         //when
         when(recruitmentService.findAll()).thenReturn(recruitmentResponseDtos);
 
@@ -178,18 +175,6 @@ class RecruitmentControllerTest {
                                 fieldWithPath("result[].createdAt").description("작성일")
                         )
                 ));
-        MvcResult mvcResult = resultActions.andReturn();
-        MockHttpServletResponse response = mvcResult.getResponse();
-
-// 출력
-        System.out.println("Status = " + response.getStatus());
-        System.out.println("Error message = " + response.getErrorMessage());
-        System.out.println("Headers = " + response.getHeaderNames());
-        System.out.println("Content type = " + response.getContentType());
-        System.out.println("Body = " + response.getContentAsString());
-        System.out.println("Forwarded URL = " + response.getForwardedUrl());
-        System.out.println("Redirected URL = " + response.getRedirectedUrl());
-        System.out.println("Cookies = " + response.getCookies());
     }
 
     @Test
@@ -204,11 +189,10 @@ class RecruitmentControllerTest {
                 .birthDate(LocalDate.of(2004, 5, 31))
                 .password("kksf")
                 .build();
-
         final List<RecruitmentListResponseDto> recruitmentResponseDtos = List.of(new RecruitmentListResponseDto(Recruitment.builder()
                         .id(1L)
                         .member(member)
-                        .subLocation(2L)
+                        .subLocation(1L)
                         .location(2L)
                         .title("같이 운동하실분")
                         .description("내일쯤 예상하고 있습니다.")
@@ -223,17 +207,16 @@ class RecruitmentControllerTest {
                         .description("3~6시 아무때나 연락주세요!!")
                         .status(RecruitmentStatus.ACTIVE)
                         .build()));
-        RecruitmentOptions recruitmentOptions = new RecruitmentOptions(2L, 2L, 80,
-                100, 30, 80, 80, 100);
+        RecruitmentOptions recruitmentOptions = new RecruitmentOptions(2L, 1L, 80,
+                100, 80, 120, 80, 110);
         //when
-        when(recruitmentService.findByOptions(recruitmentOptions)).thenReturn(recruitmentResponseDtos);
-
-      this.mockMvc.perform(get("/recruitments")
+        when(recruitmentService.findByOptions(any())).thenReturn(recruitmentResponseDtos);
+        this.mockMvc.perform(get("/recruitments")
                 .header("Authorization", "Bearer " + token)
                 .accept(MediaType.APPLICATION_JSON)
                 .with(csrf()) // 오류사항2
                 .queryParam("location", "2")
-                .queryParam("subLocation", "2")
+                .queryParam("subLocation", "1")
                 .queryParam("maxDeadLift", "100")
                 .queryParam("minDeadLift", "80")
                 .queryParam("maxSquat", "120")
@@ -241,19 +224,6 @@ class RecruitmentControllerTest {
                 .queryParam("maxBenchPress", "110")
                 .queryParam("minBenchPress", "90"))
                 .andExpect(status().isOk())
-
-//        MvcResult mvcResult = resultActions.andReturn();
-//        MockHttpServletResponse response = mvcResult.getResponse();
-
-// 출력
-//        System.out.println("Status = " + response.getStatus());
-//        System.out.println("Error message = " + response.getErrorMessage());
-//        System.out.println("Headers = " + response.getHeaderNames());
-//        System.out.println("Content type = " + response.getContentType());
-//        System.out.println("Body = " + response.getContentAsString());
-//        System.out.println("Forwarded URL = " + response.getForwardedUrl());
-//        System.out.println("Redirected URL = " + response.getRedirectedUrl());
-//        System.out.println("Cookies = " + response.getCookies());
 
                 .andDo(document("게시물 필터링 조회 API",
                         requestParameters(

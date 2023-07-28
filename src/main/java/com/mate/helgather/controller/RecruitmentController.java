@@ -53,7 +53,7 @@ public class RecruitmentController {
     @GetMapping("/all")
     public ResponseEntity<BaseResponse> findAll() {
         List<RecruitmentListResponseDto> recruitmentListResponseDtos = recruitmentService.findAll();
-
+        System.out.println("in ct hash : " + recruitmentListResponseDtos);
         return new ResponseEntity<>(new BaseResponse(recruitmentListResponseDtos), HttpStatus.OK);
     }
 
@@ -111,8 +111,10 @@ public class RecruitmentController {
         if (bindingResult.hasErrors()) {
             throw new BaseException(ErrorCode.FORMAT_ERROR);
         }
+        System.out.println("in ct : " + recruitmentOptions);
         //TODO: 조건이 일부 없어도 동작되게 만들고 싶은데 방법 찾아볼 것.
         List<RecruitmentListResponseDto> recruitmentListResponseDtos = recruitmentService.findByOptions(recruitmentOptions);
+//        System.out.println("in ct hash = " + recruitmentListResponseDtos);
         return new ResponseEntity<>(new BaseResponse(recruitmentListResponseDtos), HttpStatus.OK);
     }
 }
