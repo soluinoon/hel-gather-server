@@ -1,10 +1,12 @@
+
 spring:
-  profile:
+  profiles:
+    active: local
     group:
       local: common, local-db
-      prod1: common, prod-db, prod1
-      prod2: common, prod-db, prod2
-      prod3: common, prod-db, prod3
+      prod1: common, prod-db, prod1-server
+      prod2: common, prod-db, prod2-server
+      prod3: common, prod-db, prod3-server
 
 jwt:
   secret: VlwEyVBsYt9V7zq57TejMnVUyzblYcfPQye08f7MGVA9XkHa
@@ -32,31 +34,36 @@ spring:
   config:
     activate:
       on-profile: common
-  servlet:
-    multipart:
-      max-file-size: 20MB
-      max-request-size: 20MB
-  application:
-    name: helgather
 
+servlet:
+  multipart:
+    max-file-size: 20MB
+    max-request-size: 20MB
+
+application:
+  name: helgather
+
+serverName: common
 ---
 
 spring:
   config:
     activate:
       on-profile: local-db
-  datasource:
-    url: jdbc:h2:tcp://localhost/~/helgather
-    username: kingjihong
-    password: aA1349529!!!!
+
+datasource:
+  url: jdbc:h2:tcp://localhost/~/helgather
+  username: kingjihong
+  password: aA1349529!!!!
 #    driver-class-name: com.mysql.cj.jdbc.Driver
-  jpa:
+jpa:
+  hibernate:
+    ddl-auto: update
+  properties:
     hibernate:
-      ddl-auto: update
-    properties:
-      hibernate:
-        format_sql: true
-        show_sql: true
+      format_sql: true
+      show_sql: true
+dbInfo: h2
 
 ---
 
@@ -64,25 +71,27 @@ spring:
   config:
     activate:
       on-profile: prod-db
-  datasource:
-    url: ENC(4h35jdBKUxNmd3F9HqNzPmKMI1FQfknTbRK/9R25bOvSG7tUgYd7UxCCrZuUSrJBmrauBQpjdZGjZY91QHP5U/GsZm0HG1xUXcPT/UHd0UJuQjr2nkLOajdZAydlonhUbdxgt3R17wTtudlrbhjaUT3KDrLZkthitdpDBSilUjcl3GH7K6XUKbXxCpC9T6+sqcRi/iVxjRUkaCN7a1nG+FcHjN2LBDdhLRP2fmyvpkIW50Tcb4jwrJIlISpPgZrmDvsT+9H2wiS9q78aTQzMcg==)
-    username: ENC(IoypxQU/L2gWg4z/XTbzmSNVTelD0HfRhmpOYSgxy/jQcK+EeJPEUVFnq6wVK4Mp)
-    password: ENC(7qwkjtEPdsPqgic+P3btJSd9i6qUldsDKPE6pmyHuxb1ipr5wtu/o8J93hs4MaZS)
-  #    driver-class-name: com.mysql.cj.jdbc.Driver
-  jpa:
+
+datasource:
+  url: ENC(4h35jdBKUxNmd3F9HqNzPmKMI1FQfknTbRK/9R25bOvSG7tUgYd7UxCCrZuUSrJBmrauBQpjdZGjZY91QHP5U/GsZm0HG1xUXcPT/UHd0UJuQjr2nkLOajdZAydlonhUbdxgt3R17wTtudlrbhjaUT3KDrLZkthitdpDBSilUjcl3GH7K6XUKbXxCpC9T6+sqcRi/iVxjRUkaCN7a1nG+FcHjN2LBDdhLRP2fmyvpkIW50Tcb4jwrJIlISpPgZrmDvsT+9H2wiS9q78aTQzMcg==)
+  username: ENC(IoypxQU/L2gWg4z/XTbzmSNVTelD0HfRhmpOYSgxy/jQcK+EeJPEUVFnq6wVK4Mp)
+  password: ENC(7qwkjtEPdsPqgic+P3btJSd9i6qUldsDKPE6pmyHuxb1ipr5wtu/o8J93hs4MaZS)
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+jpa:
+  hibernate:
+    ddl-auto: create
+  properties:
     hibernate:
-      ddl-auto: create
-    properties:
-      hibernate:
-        format_sql: true
-        show_sql: true
+      format_sql: true
+      show_sql: true
+dbInfo: rds
 
 ---
 
 spring:
   config:
     activate:
-      on-profile: prod1
+      on-profile: prod1-server
 
 serverName: hel-gather-prod1
 
@@ -94,19 +103,21 @@ server:
 spring:
   config:
     activate:
-      on-profile: prod2
+      on-profile: prod2-server
 
 serverName: hel-gather-prod2
 
 server:
   port: 8081
 
+
+
 ---
 
 spring:
   config:
     activate:
-      on-profile: prod3
+      on-profile: prod3-server
 
 serverName: hel-gather-prod3
 
@@ -118,9 +129,11 @@ server:
 spring:
   config:
     activate:
-      on-profile: prod4
+      on-profile: prod4-server
 
 serverName: hel-gather-prod4
 
 server:
   port: 8081
+
+---
