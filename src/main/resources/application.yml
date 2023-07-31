@@ -6,7 +6,9 @@ spring:
       local: common, local-db
       prod1: common, prod-db, prod1-server
       prod2: common, prod-db, prod2-server
-      prod3: common, prod-db, prod3-server
+
+server:
+  env: blue
 
 jwt:
   secret: VlwEyVBsYt9V7zq57TejMnVUyzblYcfPQye08f7MGVA9XkHa
@@ -110,8 +112,6 @@ serverName: hel-gather-prod2
 server:
   port: 8081
 
-
-
 ---
 
 spring:
@@ -123,17 +123,5 @@ serverName: hel-gather-prod3
 
 server:
   port: 8080
-
----
-
-spring:
-  config:
-    activate:
-      on-profile: prod4-server
-
-serverName: hel-gather-prod4
-
-server:
-  port: 8081
 
 ---
