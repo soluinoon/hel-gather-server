@@ -80,13 +80,13 @@ jobs:
       - name: health check
         run: |
           echo "INSTANCE_ENV=$(curl -s "http://{{ secrets.NGINX_IP }}/env")" >> $GITHUB_ENV
-          echo "{{ env.INSTANCE_ENV }}"
+          echo {{ env.INSTANCE_ENV }}
           
-          if [ "{{ env.INSTANCE_ENV }}" = "blue" ]; then
+          if [ {{ env.INSTANCE_ENV }} = "blue" ]; then
             echo "CURRENT_IP={{ secrets.BLUE_IP }}" >> $GITHUB_ENV
             echo "STOPPED_IP={{ secrets.GREEN_IP }}" >> $GITHUB_ENV
             echo "blue"
-          elif [ "{{ env.INSTANCE_ENV }}" = "green" ]; then
+          elif [ {{ env.INSTANCE_ENV }} = "green" ]; then
             echo "CURRENT_IP={{ secrets.GREEN_IP }}" >> $GITHUB_ENV
             echo "STOPPED_IP={{ secrets.BLUE_IP }}" >> $GITHUB_ENV
             echo "green"
