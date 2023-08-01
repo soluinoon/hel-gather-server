@@ -141,12 +141,10 @@ jobs:
             
       # 깃허브 러너 아이피를 인바운드 룰에서 제거
       - name: Remove Github Actions IP from security group
+        if: always()
         run: |
           aws ec2 revoke-security-group-ingress --group-name ${{ secrets.AWS_SG_NAME }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
           aws ec2 revoke-security-group-ingress --group-name ${{ secrets.AWS_SG_NAME }} --protocol tcp --port 80 --cidr ${{ steps.ip.outputs.ipv4 }}/32
           aws ec2 revoke-security-group-ingress --group-name ${{ secrets.AWS_SG_NAME }} --protocol tcp --port 8080 --cidr ${{ steps.ip.outputs.ipv4 }}/32
 
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_IAM_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_IAM_SECRET_KEY }}
-          AWS_DEFAULT_REGION: ap-northeast-2
+
