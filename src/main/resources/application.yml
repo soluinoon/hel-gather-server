@@ -57,7 +57,7 @@ datasource:
   url: jdbc:h2:tcp://localhost/~/helgather
   username: kingjihong
   password: aA1349529!!!!
-#    driver-class-name: com.mysql.cj.jdbc.Driver
+
 jpa:
   hibernate:
     ddl-auto: update
@@ -78,7 +78,7 @@ datasource:
   url: ENC(4h35jdBKUxNmd3F9HqNzPmKMI1FQfknTbRK/9R25bOvSG7tUgYd7UxCCrZuUSrJBmrauBQpjdZGjZY91QHP5U/GsZm0HG1xUXcPT/UHd0UJuQjr2nkLOajdZAydlonhUbdxgt3R17wTtudlrbhjaUT3KDrLZkthitdpDBSilUjcl3GH7K6XUKbXxCpC9T6+sqcRi/iVxjRUkaCN7a1nG+FcHjN2LBDdhLRP2fmyvpkIW50Tcb4jwrJIlISpPgZrmDvsT+9H2wiS9q78aTQzMcg==)
   username: ENC(IoypxQU/L2gWg4z/XTbzmSNVTelD0HfRhmpOYSgxy/jQcK+EeJPEUVFnq6wVK4Mp)
   password: ENC(7qwkjtEPdsPqgic+P3btJSd9i6qUldsDKPE6pmyHuxb1ipr5wtu/o8J93hs4MaZS)
-#    driver-class-name: com.mysql.cj.jdbc.Driver
+
 jpa:
   hibernate:
     ddl-auto: update
