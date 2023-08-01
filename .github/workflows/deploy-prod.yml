@@ -105,7 +105,8 @@ jobs:
           host: ${{ env.STOPPED_IP }}
           key: ${{ secrets.SSH_KEY }}
           script_stop: true
-          script: | 
+          run: |
+            sudo su
             docker-compose up -d
       
       # 새로운 인스턴스에 헬스체크
