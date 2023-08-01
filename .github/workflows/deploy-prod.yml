@@ -82,6 +82,8 @@ jobs:
           echo "INSTANCE_ENV=$(curl -s "http://${{ secrets.NGINX_IP }}/env")" >> $GITHUB_ENV
           echo ${{ env.INSTANCE_ENV }}
           echo "${{ env.INSTANCE_ENV }}"
+          curl -s "http://${{ secrets.NGINX_IP }}/env"
+          echo "${{ secrets.SSH_USER }}"
           
           if [ "${{ env.INSTANCE_ENV }}" = "blue" ]; then
             echo "CURRENT_IP={{ secrets.BLUE_IP }}" >> $GITHUB_ENV
