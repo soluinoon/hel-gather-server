@@ -30,4 +30,9 @@ public class ServerController {
 
         return ResponseEntity.ok(serverInfo);
     }
+
+    @GetMapping("/env")
+    public String getEnv() {
+        return env;
+    }
 }
