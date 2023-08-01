@@ -127,7 +127,7 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           script_stop: true
           script: |
-            docker exec -it webserver bash
+            docker exec -i webserver bash
             echo 'set \\\$service_env ${{ env.INSTANCE_ENV }};' > /etc/nginx/conf.d/service-env.inc && service nginx reload
 
       # 기존 인스턴스 중단
