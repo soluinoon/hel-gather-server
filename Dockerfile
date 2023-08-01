@@ -10,4 +10,4 @@ ARG ENV
 COPY ${JAR_FILE} app.jar
 
 # 시스템 진입점 정의
-ENTRYPOINT ["java", "-Dspring.profiles.active=${PROFILES}", "Dserver.env=${ENV}", "-jar", "/app.jar"]
+ENTRYPOINT ["java", "-Dspring.profiles.active=${PROFILES}", "-Dserver.env=${ENV}", "-jar", "/app.jar"]
