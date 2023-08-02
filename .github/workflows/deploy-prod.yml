@@ -84,13 +84,15 @@ jobs:
       # 헬스 체크를 통한 인스턴스 체크
       - name: Set target ip
         run: |
-          if [ "${{ env.INSTANCE_ENV }}" = "blue" ]; then
+          if [ curl -s "http://${{ secrets.NGINX_IP }}/env = "blue" ]; then
             echo "CURRENT_IP=${{ secrets.BLUE_IP }}" >> $GITHUB_ENV
             echo "STOPPED_IP=${{ secrets.GREEN_IP }}" >> $GITHUB_ENV
+            echo "TARGET_UPSTREAM=green" >> $GITHUB_ENV
             echo "blue"
-          elif [ "${{ env.INSTANCE_ENV }}" = "green" ]; then
+          elif [ curl -s "http://${{ secrets.NGINX_IP }}/env = "green" ]; then
             echo "CURRENT_IP=${{ secrets.GREEN_IP }}" >> $GITHUB_ENV
             echo "STOPPED_IP=${{ secrets.BLUE_IP }}" >> $GITHUB_ENV
+            echo "TARGET_UPSTREAM=blue" >> $GITHUB_ENV
             echo "green"
           else
             echo "error"
@@ -128,7 +130,8 @@ jobs:
           script_stop: true
           script: |
             docker exec -i webserver bash
-            echo 'set \\\$service_env ${{ env.INSTANCE_ENV }};' > /etc/nginx/conf.d/service-env.inc && service nginx reload
+            pwd
+            echo 'set \\\$service_env ${{ env.TARGET_UPSTREAM }};' > /etc/nginx/conf.d/service-env.inc && service nginx reload
 
       # 기존 인스턴스 중단
       - name: Terminate prev instance
