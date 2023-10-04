@@ -29,12 +29,19 @@
 |---|---|
 |<img width="100" alt="Screenshot 2023-06-19 at 2 41 20 PM" src="https://github.com/hel-gather/hel-gather-server/assets/67910922/d9ade50f-3d51-4674-bbc2-96046980e01d">|<img src="https://github.com/hel-gather/hel-gather-server/assets/67910922/119dd9f5-5fbe-4c46-ac7a-a195526f2112" alt="이미지" style="width: 100px;">|
 
+## 인프라 구조
+
+![Screenshot 2023-08-02 at 5 26 59 PM](https://github.com/hel-gather/hel-gather-server/assets/67910922/7b87df0d-d726-4f48-9a04-60479738ae6a)
+
+
 ## 기술스택
 
+### 💪 클라이언트
+![image](https://github.com/hel-gather/hel-gather-client/assets/76191161/9ad1d526-39b6-46b4-9b62-2eb7dc3de441)
+
 ### 🚪 백엔드
-<img width="947" alt="Screenshot 2023-06-18 at 8 10 48 PM" src="https://github.com/hel-gather/hel-gather-server/assets/67910922/ad5c8217-154e-41e7-8d54-4fbfb807c3ae">
+<img width="1032" alt="Screenshot 2023-10-04 at 1 36 48 PM" src="https://github.com/hel-gather/hel-gather-server/assets/67910922/3aa23414-a5a9-4087-84d6-0540e5b69c8e">
 
 ### ⚙️ 인프라
-<img width="746" alt="Screenshot 2023-06-19 at 2 25 36 PM" src="https://github.com/hel-gather/hel-gather-server/assets/67910922/bad9b524-5414-4bb8-87db-b1eea555cb78">
-
+<img width="880" alt="Screenshot 2023-10-04 at 1 34 45 PM" src="https://github.com/hel-gather/hel-gather-server/assets/67910922/35a42e14-7215-43b5-a2eb-cf354cb9239f">
 
